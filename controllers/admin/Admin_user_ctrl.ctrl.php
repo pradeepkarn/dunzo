@@ -186,7 +186,6 @@ class Admin_user_ctrl
             if (isset($request->bio)) {
                 $arr['bio'] = sanitize_remove_tags($request->bio);
             }
-
             $arr['created_at'] = date('Y-m-d H:i:s');
             $postid = (new Model('pk_user'))->store($arr);
             if (intval($postid)) {
