@@ -55,7 +55,6 @@ $req->ug = $ug;
                                 <th scope="col">Gender</th>
                                 <th scope="col">Username</th>
                                 <th scope="col">Email</th>
-                                <th scope="col">Role</th>
                                 <th scope="col">Register Date</th>
                                 <?php
                                 if ($active == true) { ?>
@@ -95,7 +94,6 @@ $req->ug = $ug;
                                     <td><?php echo gender_view($pv->gender); ?></td>
                                     <td><?php echo $pv->username; ?></td>
                                     <td><?php echo $pv->email; ?></td>
-                                    <td><?php echo $pv->role; ?></td>
                                     <td><?php echo $pv->created_at; ?></td>
                                     <?php
                                     if ($active == true) { ?>

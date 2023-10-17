@@ -38,6 +38,37 @@ $req->ug = $ug;
                             <h4>Lats name</h4>
                             <input type="text" name="last_name" value="<?php echo $ud->last_name; ?>" class="form-control my-3" placeholder="Last name">
                         </div>
+                        <?php if ($req->ug=='driver'): ?>
+                        
+                        <div class="col-md-6 my-2">
+                            <label for="">National ID No.</label>
+                            <input type="text" name="nid_no" value="<?php echo $ud->nid_no; ?>" class="form-control">
+                        </div>
+                        <div class="col-md-6 my-2">
+                            <label for="">National ID DOC (PDF)</label>
+                            <input accept="application/pdf" type="file" name="nid_doc" class="form-control">
+                        </div>
+                    
+                    
+                        <div class="col-md-6 my-2">
+                            <label for="">Vehicle No.</label>
+                            <input type="text" name="vhcl_no" value="<?php echo $ud->vhcl_no; ?>" class="form-control">
+                        </div>
+                        <div class="col-md-6 my-2">
+                            <label for="">Vehicle Doc (PDF)</label>
+                            <input accept="application/pdf" type="file" name="vhcl_doc" class="form-control">
+                        </div>
+
+                        <div class="col-md-6 my-2">
+                            <label for="">DL No.</label>
+                            <input type="text" name="dl_no" value="<?php echo $ud->dl_no; ?>" class="form-control">
+                        </div>
+                        <div class="col-md-6 my-2">
+                            <label for="">DL DOC (PDF)</label>
+                            <input accept="application/pdf" type="file" name="dl_doc" class="form-control">
+                        </div>
+                    
+                    <?php endif; ?>
                         <div class="col-md-12">
                             <h4>Bio</h4>
                             <textarea class="form-control" name="bio" aria-hidden="true"><?php echo $ud->bio; ?></textarea>
@@ -47,18 +78,13 @@ $req->ug = $ug;
 
                 <div class="col-md-4">
                     <h4>Profile Image</h4>
-                    <input accept="image/*" id="image-input" type="file" name="profile_image" class="form-control my-3">
+                    <input accept="image/*" id="image-input" type="file" name="image" class="form-control my-3">
                     <div class="text-center">
                     <img style="width:200px; height:200px; object-fit:cover; border-radius:50%;" id="image" src="/<?php echo MEDIA_URL; ?>/images/profiles/<?php echo $ud->image; ?>" alt="<?php echo $ud->image; ?>">
                     </div>
                     <h4>Password</h4>
                     <input type="text" name="password" class="form-control my-3" placeholder="Password">
-                    <h4>Role</h4>
-                    <select name="role" class="form-select">
-                        <?php foreach (USER_ROLES as $rlk => $rlv) { ?>
-                            <option <?php echo $ud->role==$rlk?"selected":null; ?> value="<?php echo $rlk; ?>"><?php echo $rlv; ?></option>
-                        <?php } ?>
-                    </select>
+                    
                     <div class="d-grid">
                         <button id="update-user-btn" type="button" class="btn btn-primary my-3">Update</button>
                     </div>

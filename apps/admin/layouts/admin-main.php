@@ -34,20 +34,20 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.all.min.js"></script>
     <script>
-        function swalert(obj) {
-            Swal.fire(
-                obj.title,
-                obj.msg,
-                obj.icon
-            ).then(() => {
-                if (obj.gotoLink) {
-                    window.location.href = obj.gotoLink;
-                }
-            })
-        }
+      function swalert(obj) {
+        Swal.fire(
+          obj.title,
+          obj.msg,
+          obj.icon
+        ).then(() => {
+          if (obj.gotoLink) {
+            window.location.href = obj.gotoLink;
+          }
+        })
+      }
     </script>
     <style>
-      .hide{
+      .hide {
         display: none !important;
       }
     </style>
@@ -66,12 +66,12 @@
           <img src="/<?php echo STATIC_URL; ?>/admin/assets/img/logo.png" alt="">
           <span class="d-none d-lg-block"><?php echo SITE_NAME; ?></span>
         </a>
-        
+
         <i class="bi bi-list toggle-sidebar-btn"></i>
       </div>
       <a href="/<?php echo home; ?>/" target="_blank" class="ps-5 logo d-flex align-items-center">
-          <i style="font-size:20px;" class="ri-external-link-fill"></i>
-        </a>
+        <i style="font-size:20px;" class="ri-external-link-fill"></i>
+      </a>
       <!-- End Logo -->
 
       <!-- <div class="search-bar">
@@ -242,7 +242,7 @@
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
               <li class="dropdown-header">
                 <h6><?php echo USER['first_name']; ?> <?php echo USER['last_name']; ?></h6>
-                <span><?php echo USER['role']; ?></span>
+                <span><?php echo USER['user_group']; ?></span>
               </li>
               <li>
                 <hr class="dropdown-divider">
@@ -371,38 +371,28 @@
 
           </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link collapsed" href="<?php echo BASEURI.route('paymentList') ?>">
+        <!-- <li class="nav-item">
+          <a class="nav-link collapsed" href="<?php //echo BASEURI . route('paymentList') ?>">
             <i class="bi bi-menu-button-wide"></i><span>Payment</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
-        </li>
+        </li> -->
         <!-- Porducts components -->
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#products-nav" data-bs-toggle="collapse" href="#">
-            <i class="bi bi-menu-button-wide"></i><span>Games</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="bi bi-menu-button-wide"></i><span>Category</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
           <ul id="products-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
             <li>
               <a href="/<?php echo home . route('productCatCreate'); ?>">
-                <i class="bi bi-circle"></i><span>Add Game</span>
+                <i class="bi bi-circle"></i><span>Add Category</span>
               </a>
             </li>
             <li>
               <a href="/<?php echo home . route('productCatList'); ?>">
-                <i class="bi bi-circle"></i><span>All Games</span>
+                <i class="bi bi-circle"></i><span>Category</span>
               </a>
             </li>
             <hr>
-            <!-- <li>
-              <a href="/<?php echo home . route('gameCreate'); ?>">
-                <i class="bi bi-circle"></i><span>Add Games URL</span>
-              </a>
-            </li> -->
-            <!-- <li>
-              <a href="/<?php echo home . route('gameList'); ?>">
-                <i class="bi bi-circle"></i><span>All Games URL</span>
-              </a>
-            </li> -->
           </ul>
         </li>
         <!-- End Components  -->
@@ -422,6 +412,30 @@
                 <i class="bi bi-circle"></i><span>All users</span>
               </a>
             </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-drivers" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Drivers</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-drivers" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li>
+              <a href="/<?php echo home . route('userCreate', ['ug' => 'driver']); ?>">
+                <i class="bi bi-circle"></i><span>Add driver</span>
+              </a>
+            </li>
+            <li>
+              <a href="/<?php echo home . route('userList', ['ug' => 'driver']); ?>">
+                <i class="bi bi-circle"></i><span>All drivers</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-admins" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Admins</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-admins" class="nav-content collapse " data-bs-parent="#sidebar-nav">
             <li>
               <a href="/<?php echo home . route('userCreate', ['ug' => 'admin']); ?>">
                 <i class="bi bi-circle"></i><span>Add Admin</span>
@@ -672,24 +686,24 @@
       });
     </script>
 
-<script>
-    // // Check if the collapse state is stored in local storage
-    // const menuOpened = localStorage.getItem('menuOpened');
+    <script>
+      // // Check if the collapse state is stored in local storage
+      // const menuOpened = localStorage.getItem('menuOpened');
 
-    // // If it's not null and 'true', collapse the element
-    // if (menuOpened === true) {
-    //     $('#components-pages').removeClass('show');
-    // }
+      // // If it's not null and 'true', collapse the element
+      // if (menuOpened === true) {
+      //     $('#components-pages').removeClass('show');
+      // }
 
-    // // Add an event listener to save the collapse state when it changes
-    // $('#components-pages').on('click', function () {
-    //   if ( $('#components-pages').hasClass('show')) {
-    //     localStorage.setItem('menuOpened', true);
-    //   }else{
-    //     localStorage.setItem('menuOpened', false);
-    //   }
-    // });
-</script>
+      // // Add an event listener to save the collapse state when it changes
+      // $('#components-pages').on('click', function () {
+      //   if ( $('#components-pages').hasClass('show')) {
+      //     localStorage.setItem('menuOpened', true);
+      //   }else{
+      //     localStorage.setItem('menuOpened', false);
+      //   }
+      // });
+    </script>
   </body>
 
   </html>

@@ -11,7 +11,7 @@ $req->ug = $ug;
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <h5 class="card-title">Add user</h5>
+                    <h5 class="card-title">Add <?php echo $req->ug; ?></h5>
                 </div>
                 <div class="col text-end my-3">
                     <a class="btn btn-dark" href="/<?php echo home . route('userList',['ug'=>$req->ug]); ?>">Back</a>
@@ -23,7 +23,7 @@ $req->ug = $ug;
                     <div class="row">
                         <div class="col-md-8">
                             <h4>Email</h4>
-                            <input type="email" name="email" class="form-control my-3" placeholder="Eemail">
+                            <input type="email" name="email" class="form-control my-3" placeholder="Email">
                         </div>
                         <div class="col-md-4">
                             <h4>Username</h4>
@@ -37,6 +37,37 @@ $req->ug = $ug;
                             <h4>Lats name</h4>
                             <input type="text" name="last_name" class="form-control my-3" placeholder="Last name">
                         </div>
+                        <?php if ($req->ug=='driver'): ?>
+                        
+                            <div class="col-md-6 my-2">
+                                <label for="">National ID No.</label>
+                                <input type="text" name="nid_no" class="form-control">
+                            </div>
+                            <div class="col-md-6 my-2">
+                                <label for="">National ID DOC (PDF)</label>
+                                <input accept="application/pdf" type="file" name="nid_doc" class="form-control">
+                            </div>
+                        
+                        
+                            <div class="col-md-6 my-2">
+                                <label for="">Vehicle No.</label>
+                                <input type="text" name="vhcl_no" class="form-control">
+                            </div>
+                            <div class="col-md-6 my-2">
+                                <label for="">Vehicle Doc (PDF)</label>
+                                <input accept="application/pdf" type="file" name="vhcl_doc" class="form-control">
+                            </div>
+
+                            <div class="col-md-6 my-2">
+                                <label for="">DL No.</label>
+                                <input type="text" name="dl_no" class="form-control">
+                            </div>
+                            <div class="col-md-6 my-2">
+                                <label for="">DL DOC (PDF)</label>
+                                <input accept="application/pdf" type="file" name="dl_doc" class="form-control">
+                            </div>
+                        
+                        <?php endif; ?>
                         <div class="col-md-12">
                             <h4>Bio</h4>
                             <textarea class="form-control" name="bio" aria-hidden="true"></textarea>
@@ -50,12 +81,7 @@ $req->ug = $ug;
                     <img style="width:100%; max-height:300px; object-fit:contain;" id="banner" src="" alt="">
                     <h4>Password</h4>
                     <input type="text" name="password" class="form-control my-3" placeholder="Password">
-                    <h4>Role</h4>
-                    <select name="role" class="form-select">
-                        <?php foreach (USER_ROLES as $rlk => $rlv) { ?>
-                            <option value="<?php echo $rlk; ?>"><?php echo $rlv; ?></option>
-                        <?php } ?>
-                    </select>
+                    
                     <div class="d-grid">
                         <button id="register-user-btn" type="button" class="btn btn-primary my-3">Save</button>
                     </div>
