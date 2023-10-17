@@ -13,6 +13,6 @@ error_log
 /payref/*.json
 /media/images/pages
 
-# /vendor
+/vendor
 *.pdf
 *.csv
