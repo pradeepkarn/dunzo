@@ -23,6 +23,7 @@ const USER_GROUP = array(
     'user'=>'user',
     'driver'=>'driver',
 );
+const USER_GROUP_LIST = ['driver','user'];
 
 
 

@@ -15,7 +15,7 @@ class Users_api extends Main_ctrl
         $data['nid_doc'] = $_FILES['nid_doc'] ?? null;
 
         if (isset($req->ug)) {
-            if (!in_array($req->ug, USER_GROUP)) {
+            if (!in_array($req->ug, USER_GROUP_LIST)) {
                 $ok = false;
                 msg_set("Invalid account group");
             }
