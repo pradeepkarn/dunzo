@@ -85,7 +85,17 @@ class Dbobjects extends Dbh
         $this->sql = "SELECT * FROM `$this->tableName` ORDER BY `$id` $ord LIMIT $limit";
         return $this->show($this->sql);
     }
-
+    public function findOne($assoc_arr)
+    {
+        $id = $this->id();
+        foreach ($assoc_arr as $col => $val) :
+            $arr[] = "`{$col}` = '" . addslashes($val) . "'";
+        endforeach;
+        $this->sql = "SELECT * FROM `$this->tableName` WHERE " . implode(" and ", $arr) .";";
+        $this->qry = implode(" and ", $arr);
+        $assoc_arr = null;
+        return $this->showOne($this->sql);
+    }
     public function filter($assoc_arr, $ord = '', $limit = 9999999, $change_order_by_col = "")
     {
         if ($change_order_by_col != "") {

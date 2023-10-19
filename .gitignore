@@ -12,6 +12,7 @@ error_log
 /payref/sms/*.json
 /payref/*.json
 /media/images/pages
+/media/images/profiles
 
 # /vendor
 *.pdf

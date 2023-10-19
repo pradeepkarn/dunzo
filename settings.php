@@ -19,8 +19,8 @@ const ADMIN_ROLES = array(
 );
 
 const USER_GROUP = array(
-    'admin'=>'Admin',
-    'user'=>'User',
+    'admin'=>'admin',
+    'user'=>'user',
     'driver'=>'driver',
 );
 
