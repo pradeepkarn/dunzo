@@ -3,6 +3,105 @@
 class Users_api extends Main_ctrl
 {
 
+    function driver_login($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+        if (isset($req->ug)) {
+            if (!in_array($req->ug, USER_GROUP_LIST)) {
+                $ok = false;
+                msg_set("Invalid account group");
+            }
+        } else {
+            $ok = false;
+            msg_set("No user group provided");
+        }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true);
+            echo json_encode($api);
+            exit;
+        }
+        $rules = [
+            'credit' => 'required|string',
+            'password' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true);
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $db = new Dbobjects;
+        $db->tableName = "pk_user";
+        if (!$user) {
+            $arr['username'] = $data->credit;
+            $arr['password'] = md5($data->password);
+            $user = $db->findOne($arr);
+            $arr = null;
+        }
+        if (!$user) {
+            $arr['email'] = $data->credit;
+            $arr['password'] = md5($data->password);
+            $user = $db->findOne($arr);
+            $arr = null;
+        }
+
+        if (!$user) {
+            $arr['mobile'] = $data->credit;
+            $arr['password'] = md5($data->password);
+            $user = $db->findOne($arr);
+            $arr = null;
+        }
+
+        if ($user) {
+            $after_second = 10*60;
+            $app_login_time = strtotime($user['app_login_time'] ?? date('Y-m-d H:i:s'));
+            $time_out = $after_second + $app_login_time;
+            $current_time = strtotime(date('Y-m-d H:i:s'));
+            if ($current_time > $time_out) {
+                $token = uniqid() . bin2hex(random_bytes(8)) . "u" . $user['id'];
+                $datetime = date('Y-m-d H:i:s');
+                $db->tableName = 'pk_user';
+                $db->insertData = array('app_login_token' => $token, 'app_login_time' => $datetime);
+                $db->pk($user['id']);
+                $db->update();
+                msg_set("User found, token refreshed");
+                $api['success'] = true;
+                $api['data'] = array(
+                    'id' => $user['id'],
+                    'token' => $token,
+                );
+                $api['msg'] = msg_ssn(return: true);
+                echo json_encode($api);
+                exit;
+            }else{
+                msg_set("User found");
+                $api['success'] = true;
+                $api['data'] = array(
+                    'id' => $user['id'],
+                    'token' => $user['app_login_token'],
+                );
+                $api['msg'] = msg_ssn(return: true);
+                echo json_encode($api);
+                exit;
+            }
+        }else{
+            msg_set("User not found");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true);
+            echo json_encode($api);
+            exit;
+        }
+    }
     function create_account($req = null)
     {
         header('Content-Type: application/json');
@@ -88,6 +187,8 @@ class Users_api extends Main_ctrl
             $arr['username'] = $username;
             $arr['first_name'] = $request->first_name;
             $arr['last_name'] = $request->last_name;
+            $arr['isd_code'] = intval($request?->isd_code) ?? null;
+            $arr['mobile'] = intval($request?->mobile) ?? null;
             $arr['password'] = md5($request->password);
             $arr['nid_no'] = sanitize_remove_tags($request->nid_no ?? null);
             $arr['dl_no'] = sanitize_remove_tags($request->dl_no ?? null);
