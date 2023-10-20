@@ -62,6 +62,15 @@ class Users_api extends Main_ctrl
         }
 
         if ($user) {
+            if ($user['user_group']!=$req->ug) {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true);
+                echo json_encode($api);
+                exit;
+            }
             $after_second = 10*60;
             $app_login_time = strtotime($user['app_login_time'] ?? date('Y-m-d H:i:s'));
             $time_out = $after_second + $app_login_time;
