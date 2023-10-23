@@ -121,6 +121,8 @@ define("email", $env->email);
 define("emailhost", $env->emailhost);
 define("emailpass", $env->emailpass);
 
+define("REST_API_ENDPOINT", $env->REST_API_ENDPOINT);
+
 
 function php_mailer($new_PHPMailer)
 {
