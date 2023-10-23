@@ -3,6 +3,7 @@ class Mydb extends Dbobjects
 {
     public function __construct($table)
     {
+        $this->conn = $this->conn();
         $this->tableName = $table;
     }
     public function allData($ord = '',$limit = 5)
@@ -62,19 +63,19 @@ class Mydb extends Dbobjects
         $this->insertData = $arr;
         return $this->create();
     }
-    public function transactData($arr)
-    {
-        $this->insertData = $arr;
-        return $this->transact();
-    }
+    // public function transactData($arr)
+    // {
+    //     $this->insertData = $arr;
+    //     return $this->transact();
+    // }
     public function deleteData()
     {
         return $this->delete();
     }
-    public function transactionData($sqlarr)
-    {
-        return $this->transaction($sqlarr);
-    }
+    // public function transactionData($sqlarr)
+    // {
+    //     return $this->transaction($sqlarr);
+    // }
         
     public function update_sqlData()
     {

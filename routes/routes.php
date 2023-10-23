@@ -2,36 +2,20 @@
 $home = home;
 // Define the routes
 include_once 'login_routes.php';
-include_once 'game_routes.php';
 include_once 'public_routes.php';
-include_once 'user_routes.php';
 include_once 'api_routes.php';
-include_once 'chat_routes.php';
 include_once 'admin_routes.php';
-include_once 'admin_game_routes.php';
 include_once 'admin_payment_routes.php';
 include_once 'ajax_routes.php';
-include_once 'pay_now_routes.php';
-include_once 'sms_routes.php';
 
 
-
-include_once 'travel_pages_routes.php';
 
 $routes = array_merge(
     $public_routes,
     $login_routes,
-    $game_routes,
-    $user_routes,
     $admin_routes,
-    $admin_game_routes,
-    $admin_payment_routes,
-    $chat_routes,
     $api_routes,
-    $ajax,
-    $pay_now_routes,
-    $sms_routes,
-    $travel_pages,
+    $ajax
 );
 // define('ROUTES',$routes);
 
@@ -46,18 +30,18 @@ function userAuthMiddleware($next)
     // Call the next middleware or route handler
     return $next;
 }
-function userProfileCompleteMiddleware($next)
-{
-    if (authenticate()) {
-        $completed = profile_completed(USER['id']);
-        if ($completed < 80) {
-            header("Location: /" . home . route('userProfileEdit'));
-            exit;
-        }
-    }
-    // Call the next middleware or route handler
-    return $next;
-}
+// function userProfileCompleteMiddleware($next)
+// {
+//     if (authenticate()) {
+//         $completed = profile_completed(USER['id']);
+//         if ($completed < 80) {
+//             header("Location: /" . home . route('userProfileEdit'));
+//             exit;
+//         }
+//     }
+//     // Call the next middleware or route handler
+//     return $next;
+// }
 
 // Define middleware for admin authentication
 function adminAuthMiddleware($next)
@@ -125,13 +109,13 @@ foreach ($routes as $route => $handler) {
         $controller = new $controller();
 
         // Apply middleware for user authentication to the routes in the $user_routes array
-        if (in_array($route, array_keys($user_routes))) {
-            $controller = userAuthMiddleware($controller);
-        }
+        // if (in_array($route, array_keys($user_routes))) {
+        //     $controller = userAuthMiddleware($controller);
+        // }
         // Apply middleware for chat message authentication to the routes in the $user_routes array
-        if (in_array($route, array_keys($chat_routes))) {
-            $controller = userAuthMiddleware($controller);
-        }
+        // if (in_array($route, array_keys($chat_routes))) {
+        //     $controller = userAuthMiddleware($controller);
+        // }
 
         // Apply middleware for admin authentication to the routes in the $admin_routes array
         if (in_array($route, array_keys($admin_routes))) {

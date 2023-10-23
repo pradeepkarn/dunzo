@@ -100,7 +100,7 @@
     </ul>
   </li>
   <!-- user components -->
-  <li class="nav-item">
+  <li class="nav-item hide">
     <a class="nav-link collapsed" data-bs-target="#components-users" data-bs-toggle="collapse" href="#">
       <i class="bi bi-menu-button-wide"></i><span>Users</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
@@ -130,6 +130,19 @@
       </li>
       <li>
         <a href="/<?php echo home . route('fuelList', ['fg' => 'petrol']); ?>">
+          <i class="bi bi-circle"></i><span>List</span>
+        </a>
+      </li>
+    </ul>
+  </li>
+  <!-- orders component -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" data-bs-target="#components-orders" data-bs-toggle="collapse" href="#">
+      <i class="bi bi-menu-button-wide"></i><span>Orders </span><i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="components-orders" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+      <li>
+        <a href="/<?php echo home . route('orderListApi',['fg'=>'food']); ?>">
           <i class="bi bi-circle"></i><span>List</span>
         </a>
       </li>

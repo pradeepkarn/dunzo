@@ -25,6 +25,4 @@ const USER_GROUP = array(
 );
 const USER_GROUP_LIST = ['driver','user'];
 
-
-
-
+const RESTAURANT_KEY = "6SedFzPnMuFxC9L3hyLbLCJnevY+k8HAv6afu8WiQa0=";
