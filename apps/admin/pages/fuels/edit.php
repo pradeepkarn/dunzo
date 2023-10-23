@@ -1,21 +1,29 @@
 <?php
-$user_detail = $context->user_detail;
-$ud = obj($user_detail);
-$ug =  explode("/",REQUEST_URI);
-$ug = $ug[3];
+$fuel_detail = $context->fuel_detail;
+$fd = obj($fuel_detail);
+$fg =  explode("/", REQUEST_URI);
+$fg = $fg[3];
 $req = new stdClass;
-$req->ug = $ug;
+$req->fg = $fg;
 ?>
 
-<form action="/<?php echo home.route('userUpdateAjax',['id'=>$ud->id,'ug'=>$req->ug]); ?>" id="update-new-user-form">
+<form action="/<?php echo home . route('fuelUpdateAjax', ['id' => $fd->id, 'fg' => $req->fg]); ?>" id="update-new-fuel-form">
     <div class="card">
         <div class="card-body">
             <div class="row">
                 <div class="col">
-                    <h5 class="card-title">Add user</h5>
+                    <h5 class="card-title">Update <?php echo $req->fg; ?></h5>
                 </div>
+                <!-- <div class="position-relative">
+                    <div>
+                        <input id="userSearchInput" type="seach" name="searchuser" class="form-control" placeholder="search user...">
+                    </div>
+                    <div>
+                        <ul class="position-absolute w-100 bg-white border-dark" id="suggestionList"></ul>
+                    </div>
+                </div> -->
                 <div class="col text-end my-3">
-                    <a class="btn btn-dark" href="/<?php echo home . route('userList',['ug'=>$req->ug]); ?>">Back</a>
+                    <a class="btn btn-dark" href="/<?php echo home . route('fuelList', ['fg' => $req->fg]); ?>">Back</a>
                 </div>
             </div>
             <div id="res"></div>
@@ -24,69 +32,49 @@ $req->ug = $ug;
                     <div class="row">
                         <div class="col-md-8">
                             <h4>Email</h4>
-                            <input type="email" value="<?php echo $ud->email; ?>" name="email" class="form-control my-3" placeholder="Eemail">
+                            <input readonly type="email" value="<?php echo $fd->email; ?>" name="email" class="form-control my-3" placeholder="Eemail">
                         </div>
                         <div class="col-md-4">
                             <h4>Username</h4>
-                            <input type="text" name="username" value="<?php echo $ud->username; ?>" class="form-control my-3" placeholder="username">
+                            <input readonly type="text" name="username" value="<?php echo $fd->username; ?>" class="form-control my-3" placeholder="username">
+                        </div>
+                        <div class="col-md-3">
+                            <h4>ISD Code</h4>
+                            <input id="isd_code" type="number" name="isd_code" value="<?php echo $fd->isd_code; ?>" class="form-control my-3" placeholder="Ex: 96">
+                        </div>
+                        <div class="col-md-9">
+                            <h4>Mobile</h4>
+                            <input id="mobile" type="number" name="mobile" value="<?php echo $fd->mobile; ?>" class="form-control my-3" placeholder="mobile">
                         </div>
                         <div class="col-md-6">
                             <h4>First name</h4>
-                            <input type="text" name="first_name" value="<?php echo $ud->first_name; ?>" class="form-control my-3" placeholder="First name">
+                            <input type="text" name="first_name" value="<?php echo $fd->first_name; ?>" class="form-control my-3" placeholder="First name">
                         </div>
                         <div class="col-md-6">
                             <h4>Lats name</h4>
-                            <input type="text" name="last_name" value="<?php echo $ud->last_name; ?>" class="form-control my-3" placeholder="Last name">
-                        </div>
-                        <?php if ($req->ug=='driver'): ?>
-                        
-                        <div class="col-md-6 my-2">
-                            <label for="">National ID No.</label>
-                            <input type="text" name="nid_no" value="<?php echo $ud->nid_no; ?>" class="form-control">
-                        </div>
-                        <div class="col-md-6 my-2">
-                            <label for="">National ID DOC (PDF)</label>
-                            <input accept="application/pdf" type="file" name="nid_doc" class="form-control">
-                        </div>
-                    
-                    
-                        <div class="col-md-6 my-2">
-                            <label for="">Vehicle No.</label>
-                            <input type="text" name="vhcl_no" value="<?php echo $ud->vhcl_no; ?>" class="form-control">
-                        </div>
-                        <div class="col-md-6 my-2">
-                            <label for="">Vehicle Doc (PDF)</label>
-                            <input accept="application/pdf" type="file" name="vhcl_doc" class="form-control">
+                            <input type="text" name="last_name" value="<?php echo $fd->last_name; ?>" class="form-control my-3" placeholder="Last name">
                         </div>
 
-                        <div class="col-md-6 my-2">
-                            <label for="">DL No.</label>
-                            <input type="text" name="dl_no" value="<?php echo $ud->dl_no; ?>" class="form-control">
-                        </div>
-                        <div class="col-md-6 my-2">
-                            <label for="">DL DOC (PDF)</label>
-                            <input accept="application/pdf" type="file" name="dl_doc" class="form-control">
-                        </div>
-                    
-                    <?php endif; ?>
-                        <div class="col-md-12">
-                            <h4>Bio</h4>
-                            <textarea class="form-control" name="bio" aria-hidden="true"><?php echo $ud->bio; ?></textarea>
-                        </div>
                     </div>
                 </div>
 
                 <div class="col-md-4">
-                    <h4>Profile Image</h4>
-                    <input accept="image/*" id="image-input" type="file" name="image" class="form-control my-3">
-                    <div class="text-center">
-                    <img style="width:200px; height:200px; object-fit:cover; border-radius:50%;" id="image" src="/<?php echo MEDIA_URL; ?>/images/profiles/<?php echo $ud->image; ?>" alt="<?php echo $ud->image; ?>">
+                    <h4 class="text-capitalize"><?php echo $req->fg; ?></h4>
+                    <div class="d-flex gap-2 align-items-center">
+                        <div>
+                            <select class="form-control" name="balance">
+                                <option <?php echo $fd->balance==1?'selected':null; ?> value="1">Add</option>
+                                <option <?php echo $fd->balance==0?'selected':null; ?> value="0">Deduct</option>
+                            </select>
+                        </div>
+                        <div><input type="number" name="volume" value="<?php echo $fd->volume; ?>" class="form-control my-3" placeholder="<?php echo ucfirst($req->fg); ?> volume"></div>
+                        <div><span>Litre</span></div>
                     </div>
-                    <h4>Password</h4>
-                    <input type="text" name="password" class="form-control my-3" placeholder="Password">
-                    
+
                     <div class="d-grid">
-                        <button id="update-user-btn" type="button" class="btn btn-primary my-3">Update</button>
+                        <input type="hidden" name="user_id" id="user_id" value="<?php echo $fd->user_id; ?>">
+                        <input type="hidden" name="fg" value="<?php echo $req->fg; ?>">
+                        <button id="update-fuel-btn" type="button" class="btn btn-primary my-3">Update</button>
                     </div>
                 </div>
             </div>
@@ -95,19 +83,7 @@ $req->ug = $ug;
     </div>
 
 </form>
-<script>
-    const imageInputPost = document.getElementById('image-input');
-    const imagePost = document.getElementById('image');
 
-    imageInputPost.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        const fileReader = new FileReader();
-
-        fileReader.onload = () => {
-            imagePost.src = fileReader.result;
-        };
-
-        fileReader.readAsDataURL(file);
-    });
-</script>
-<?php pkAjax_form("#update-user-btn", "#update-new-user-form", "#res"); ?>
+<?php pkAjax_form("#update-fuel-btn", "#update-new-fuel-form", "#res"); ?>
+<?php //import("apps/admin/helpers/js/user-search.js.php"); 
+?>

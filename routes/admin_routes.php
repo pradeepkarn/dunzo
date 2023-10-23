@@ -87,6 +87,16 @@ $admin_routes = [
     '/admin/account/{ug}/restore/{id}' => 'Admin_user_ctrl@restore@name.userRestore',
     '/admin/account/{ug}/delete/{id}' => 'Admin_user_ctrl@delete_trash@name.userDelete',
     '/admin/account/{ug}/edit/{id}/save-by-ajax' => 'Admin_user_ctrl@update@name.userUpdateAjax',
+    // fuels
+    '/admin/fuel/{fg}/create' => 'Admin_fuel_ctrl@create@name.fuelCreate',
+    '/admin/fuel/{fg}/create/save-by-ajax' => 'Admin_fuel_ctrl@save@name.fuelStoreAjax',
+    '/admin/fuel/{fg}/list' => 'Admin_fuel_ctrl@list@name.fuelList',
+    '/admin/fuel/{fg}/trash-list' => 'Admin_fuel_ctrl@trash_list@name.fuelTrashList',
+    '/admin/fuel/{fg}/edit/{id}' => 'Admin_fuel_ctrl@edit@name.fuelEdit',
+    '/admin/fuel/{fg}/trash/{id}' => 'Admin_fuel_ctrl@move_to_trash@name.fuelTrash',
+    '/admin/fuel/{fg}/restore/{id}' => 'Admin_fuel_ctrl@restore@name.fuelRestore',
+    '/admin/fuel/{fg}/delete/{id}' => 'Admin_fuel_ctrl@delete_trash@name.fuelDelete',
+    '/admin/fuel/{fg}/edit/{id}/save-by-ajax' => 'Admin_fuel_ctrl@update@name.fuelUpdateAjax',
     // Comments
     '/admin/comments/{cg}/list' => 'Comment_admin_ctrl@list@name.commentList',
     '/admin/comments/{cg}/trash-list' => 'Comment_admin_ctrl@trash_list@name.commentTrashList',

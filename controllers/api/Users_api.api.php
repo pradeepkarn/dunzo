@@ -62,7 +62,7 @@ class Users_api extends Main_ctrl
         }
 
         if ($user) {
-            if ($user['user_group']!=$req->ug) {
+            if ($user['user_group'] != $req->ug) {
                 $ok = false;
                 msg_set("Invalid login portal");
                 $api['success'] = false;
@@ -71,7 +71,7 @@ class Users_api extends Main_ctrl
                 echo json_encode($api);
                 exit;
             }
-            $after_second = 10*60;
+            $after_second = 10 * 60;
             $app_login_time = strtotime($user['app_login_time'] ?? date('Y-m-d H:i:s'));
             $time_out = $after_second + $app_login_time;
             $current_time = strtotime(date('Y-m-d H:i:s'));
@@ -91,7 +91,7 @@ class Users_api extends Main_ctrl
                 $api['msg'] = msg_ssn(return: true);
                 echo json_encode($api);
                 exit;
-            }else{
+            } else {
                 msg_set("User found");
                 $api['success'] = true;
                 $api['data'] = array(
@@ -102,7 +102,7 @@ class Users_api extends Main_ctrl
                 echo json_encode($api);
                 exit;
             }
-        }else{
+        } else {
             msg_set("User not found");
             $api['success'] = false;
             $api['data'] = null;
@@ -326,7 +326,68 @@ class Users_api extends Main_ctrl
         }
     }
 
+    function search_users($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($_GET);
+        $data  = $_GET;
+     
+        $rules = [
+            'q' => 'required|string'
+        ];
 
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true);
+            echo json_encode($api);
+            exit;
+        }
+        $users = $this->user_search_list(user_group:"driver",keyword:$req->q);
+        if (count($users)>0) {
+            $searchedData = array_map(function($user) {
+                return [
+                    "id" => $user["id"],
+                    "first_name" => $user["first_name"],
+                    "last_name" => $user["last_name"],
+                    "username" => $user["username"],
+                    "email" => $user["email"],
+                    "isd_code" => $user["isd_code"],
+                    "mobile" => $user["mobile"],
+                ];
+            }, $users);
+            $api['success'] = true;
+            $api['data'] = $searchedData;
+            $api['msg'] = msg_ssn(return: true);
+            echo json_encode($api);
+            exit;
+        } else {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true);
+            echo json_encode($api);
+            exit;
+        }
+    }
+
+    // User search list
+    public function user_search_list($user_group = 'driver', $keyword = '', $ord = "DESC", $limit = 5, $active = 1)
+    {
+        $cntobj = new Model('pk_user');
+        $search_arr['username'] = $keyword;
+        $search_arr['email'] = $keyword;
+        $search_arr['first_name'] = $keyword;
+        $search_arr['last_name'] = $keyword;
+        $search_arr['mobile'] = $keyword;
+        return $cntobj->search(
+            assoc_arr: $search_arr,
+            ord: $ord,
+            limit: $limit,
+            whr_arr: array('user_group' => $user_group, 'is_active' => $active)
+        );
+    }
 
 
     function load_users($req)

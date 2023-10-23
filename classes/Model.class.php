@@ -6,10 +6,10 @@ class Model
     private $dbTableObj;
     public $table;
     public $json_obj;
-    public function __construct($table)
+    public function __construct($table,$db=null)
     {
         $this->table = $table;
-        $this->dbTableObj = new Dbobjects;
+        $this->dbTableObj = $db?$db:(new Dbobjects);
         $this->dbTableObj->tableName = $this->table;
         $this->json_obj = false;
     }
