@@ -21,7 +21,7 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -34,7 +34,7 @@ class Users_api extends Main_ctrl
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -67,7 +67,7 @@ class Users_api extends Main_ctrl
                 msg_set("Invalid login portal");
                 $api['success'] = false;
                 $api['data'] = null;
-                $api['msg'] = msg_ssn(return: true);
+                $api['msg'] = msg_ssn(return: true,lnbrk:" ");
                 echo json_encode($api);
                 exit;
             }
@@ -88,7 +88,7 @@ class Users_api extends Main_ctrl
                     'id' => $user['id'],
                     'token' => $token,
                 );
-                $api['msg'] = msg_ssn(return: true);
+                $api['msg'] = msg_ssn(return: true,lnbrk:" ");
                 echo json_encode($api);
                 exit;
             } else {
@@ -98,7 +98,7 @@ class Users_api extends Main_ctrl
                     'id' => $user['id'],
                     'token' => $user['app_login_token'],
                 );
-                $api['msg'] = msg_ssn(return: true);
+                $api['msg'] = msg_ssn(return: true,lnbrk:" ");
                 echo json_encode($api);
                 exit;
             }
@@ -106,7 +106,7 @@ class Users_api extends Main_ctrl
             msg_set("User not found");
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -134,7 +134,7 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -161,7 +161,7 @@ class Users_api extends Main_ctrl
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -185,7 +185,7 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -232,13 +232,13 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         } else {
             $api['success'] = true;
             $api['data'] = [];
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -341,7 +341,7 @@ class Users_api extends Main_ctrl
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }
@@ -360,13 +360,13 @@ class Users_api extends Main_ctrl
             }, $users);
             $api['success'] = true;
             $api['data'] = $searchedData;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         } else {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true);
+            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
             echo json_encode($api);
             exit;
         }

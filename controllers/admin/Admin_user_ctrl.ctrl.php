@@ -445,11 +445,12 @@ class Admin_user_ctrl
             //         }
             //     }
             // }
+           
             try {
                 (new Model('pk_user'))->update($request->id, $arr);
                 $_SESSION['msg'][] = "Updated";
                 echo js_alert(msg_ssn(return: true));
-                // echo go_to(route('userEdit', ['ug' => $req->ug, 'id' => $request->id]));
+                echo go_to(route('userEdit', ['ug' => $req->ug, 'id' => $request->id]));
                 exit;
             } catch (PDOException $e) {
                 echo js_alert('User not updated');

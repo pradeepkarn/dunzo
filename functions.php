@@ -1,5 +1,5 @@
 <?php
-function msg_ssn($var = 'msg', $return = false, $lnbrk = "\n")
+function msg_ssn($var = 'msg', $return = false, $lnbrk = "\\n")
 {
   if (isset($_SESSION[$var])) {
     if ($return == true) {
