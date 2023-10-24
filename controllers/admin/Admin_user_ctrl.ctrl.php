@@ -368,7 +368,7 @@ class Admin_user_ctrl
                     $arr['nid_doc'] = $docname;
                     // $old = obj($user);
                     if ($old) {
-                        if ($old->image != "") {
+                        if ($old->nid_doc != "") {
                             $olddir = MEDIA_ROOT . "docs/" . $old->nid_doc;
                             if (file_exists($olddir)) {
                                 unlink($olddir);
@@ -388,14 +388,14 @@ class Admin_user_ctrl
                     $arr['dl_doc'] = $docname;
                     // $old = obj($user);
                     if ($old) {
-                        if ($old->image != "") {
+                        if ($old->dl_doc != "") {
                             $olddir = MEDIA_ROOT . "docs/" . $old->dl_doc;
                             if (file_exists($olddir)) {
                                 unlink($olddir);
                             }
                         }
                     }
-                    $filearr['dl_doc'] = $imgname;
+                    $filearr['dl_doc'] = $docname;
                 }
                 
             }
@@ -408,7 +408,7 @@ class Admin_user_ctrl
                     $arr['vhcl_doc'] = $docname;
                     // $old = obj($user);
                     if ($old) {
-                        if ($old->image != "") {
+                        if ($old->vhcl_doc != "") {
                             $olddir = MEDIA_ROOT . "docs/" . $old->vhcl_doc;
                             if (file_exists($olddir)) {
                                 unlink($olddir);
@@ -421,30 +421,6 @@ class Admin_user_ctrl
             }
 
 
-
-
-
-
-
-
-            // if ($request->image != false && $request->image['name'] != "" && $request->image['error'] == 0) {
-            //     $ext = pathinfo($request->image['name'], PATHINFO_EXTENSION);
-            //     $imgname = str_replace(" ", "_", getUrlSafeString($request->username)) . uniqid("_") . "." . $ext;
-            //     $dir = MEDIA_ROOT . "images/profiles/" . $imgname;
-            //     $upload = move_uploaded_file($request->image['tmp_name'], $dir);
-            //     if ($upload) {
-            //         $arr['image'] = $imgname;
-            //         $old = obj($user);
-            //         if ($old) {
-            //             if ($old->image != "") {
-            //                 $olddir = MEDIA_ROOT . "images/profiles/" . $old->image;
-            //                 if (file_exists($olddir)) {
-            //                     unlink($olddir);
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
            
             try {
                 (new Model('pk_user'))->update($request->id, $arr);
