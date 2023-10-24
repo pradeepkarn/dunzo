@@ -55,7 +55,9 @@ $req->ug = $ug;
                                    
                                     <th scope="col">Username</th>
                                     <th scope="col">Email</th>
+                                    <?php if($req->ug=='driver'): ?>
                                     <th scope="col">Fuels</th>
+                                    <?php endif; ?>
                                    
                                     <?php
                                     if ($active == true) { ?>
@@ -95,11 +97,13 @@ $req->ug = $ug;
                                         
                                         <td><?php echo $pv->username; ?></td>
                                         <td><?php echo $pv->email; ?></td>
+                                        <?php if($req->ug=='driver'): ?>
                                         <td>
-                                            <a href="<?php echo BASEURI.route('fuelListByDriver',['driver_id'=>$pv->id,'fg'=>'petrol']); ?>" class="btn btn-primary btn-sm">
+                                            <a href="<?php echo BASEURI.route('fuelListByDriver',['driver_id'=>$pv->id,'fg'=>'petrol']); ?>" class="btn btn-warning btn-sm">
                                                 Add/Deduct
                                             </a>
                                         </td>
+                                        <?php endif; ?>
                                         
                                         <?php
                                         if ($active == true) { ?>

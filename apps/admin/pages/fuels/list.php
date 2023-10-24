@@ -21,8 +21,8 @@ $req = $context->req;
                         <div class="col my-3">
                             <h5 class="card-title">All fuels</h5>
                             <nav class="nav">
-                                <a class="nav-link <?php echo $active ? "btn btn-sm btn-primary text-white" : ""; ?>" href="/<?php echo home . route('fuelList', ['fg' => $req->fg]); ?>">Active List</a>
-                                <a class="nav-link <?php echo $active ? "" : "btn btn-sm btn-danger text-white"; ?>" href="/<?php echo home . route('fuelTrashList', ['fg' => $req->fg]); ?>">Trash List</a>
+                                <a class="nav-link <?php echo $active ? "btn btn-sm btn-primary text-white" : ""; ?>" href="/<?php echo home . route('fuelListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]); ?>">Active List</a>
+                                <a class="nav-link <?php echo $active ? "" : "btn btn-sm btn-danger text-white"; ?>" href="/<?php echo home . route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]); ?>">Trash List</a>
                             </nav>
 
                         </div>
@@ -143,9 +143,9 @@ $req = $context->req;
                         $tu = $tp; // Total pages
                         $current_page = $cp; // Assuming first page is the current page
                         if ($active == true) {
-                            $link =  route('fuelList', ['fg' => $req->fg]);
+                            $link =  route('fuelListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]);
                         } else {
-                            $link =  route('fuelTrashList', ['fg' => $req->fg]);
+                            $link =  route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]);
                         }
                         // Calculate start and end page numbers to display
                         $start_page = max(1, $current_page - 2);

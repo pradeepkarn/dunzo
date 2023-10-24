@@ -268,7 +268,7 @@ class Admin_fuel_ctrl extends DB_ctrl
         try {
             (new Model('fuels',$this->db))->update($req->id, array('is_active' => 0));
             // echo js_alert('fuel moved to trash');
-            echo go_to(route('fuelList', ['fg' => $req->fg]));
+            echo go_to(route('fuelListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
             exit;
         } catch (PDOException $e) {
             echo js_alert('Account not moved to trash');
@@ -278,13 +278,13 @@ class Admin_fuel_ctrl extends DB_ctrl
     public function restore($req = null)
     {
         $req = obj($req);
-        $user_exists = (new Model('fuels',$this->db))->exists(['id' => $req->id, 'fuel_group' => $req->fg]);
-        if ($user_exists == false) {
-            $_SESSION['msg'][] = "Object not found";
-            echo js_alert(msg_ssn("msg", true));
-            echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
-            exit;
-        }
+        // $user_exists = (new Model('fuels',$this->db))->exists(['id' => $req->id, 'fuel_group' => $req->fg]);
+        // if ($user_exists == false) {
+        //     $_SESSION['msg'][] = "Object not found";
+        //     echo js_alert(msg_ssn("msg", true));
+        //     echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
+        //     exit;
+        // }
         // $user = obj(getData(table: 'pk_user', id: $req->id));
         $data = null;
         $data['id'] = $req->id;
@@ -300,7 +300,7 @@ class Admin_fuel_ctrl extends DB_ctrl
         try {
             (new Model('fuels',$this->db))->update($req->id, array('is_active' => 1));
             echo js_alert('fuel restored');
-            echo go_to(route('fuelTrashList', ['fg' => $req->fg]));
+            echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
             exit;
         } catch (PDOException $e) {
             echo js_alert('fuel can not be restored');
@@ -310,13 +310,13 @@ class Admin_fuel_ctrl extends DB_ctrl
     public function delete_trash($req = null)
     {
         $req = obj($req);
-        $user_exists = (new Model('fuels',$this->db))->exists(['id' => $req->id, 'fuel_group' => $req->fg]);
-        if ($user_exists == false) {
-            $_SESSION['msg'][] = "Object not found";
-            echo js_alert(msg_ssn("msg", true));
-            echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
-            exit;
-        }
+        // $user_exists = (new Model('fuels',$this->db))->exists(['id' => $req->id, 'fuel_group' => $req->fg]);
+        // if ($user_exists == false) {
+        //     $_SESSION['msg'][] = "Object not found";
+        //     echo js_alert(msg_ssn("msg", true));
+        //     echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
+        //     exit;
+        // }
         // $user = obj(getData(table: 'pk_user', id: $req->id));
         $data = null;
         $data['id'] = $req->id;

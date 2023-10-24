@@ -90,21 +90,20 @@ $admin_routes = [
     // fuels
     '/admin/orders/{fg}/list' => 'Orders_api_ctrl@list@name.orderListApi',
     // fuels
-    '/admin/fuel/{fg}/create' => 'Admin_fuel_ctrl@create@name.fuelCreate',
-    '/admin/fuel/{fg}/create/save-by-ajax' => 'Admin_fuel_ctrl@save@name.fuelStoreAjax',
-    '/admin/fuel/{fg}/list' => 'Admin_fuel_ctrl@list@name.fuelList',
-    '/admin/fuel/{fg}/trash-list' => 'Admin_fuel_ctrl@trash_list@name.fuelTrashList',
-    '/admin/fuel/{fg}/edit/{id}' => 'Admin_fuel_ctrl@edit@name.fuelEdit',
-    '/admin/fuel/{fg}/trash/{id}' => 'Admin_fuel_ctrl@move_to_trash@name.fuelTrash',
-    '/admin/fuel/{fg}/restore/{id}' => 'Admin_fuel_ctrl@restore@name.fuelRestore',
-    '/admin/fuel/{fg}/delete/{id}' => 'Admin_fuel_ctrl@delete_trash@name.fuelDelete',
-    '/admin/fuel/{fg}/edit/{id}/save-by-ajax' => 'Admin_fuel_ctrl@update@name.fuelUpdateAjax',
+    // '/admin/fuel/{fg}/create' => 'Admin_fuel_ctrl@create@name.fuelCreate',
+    // '/admin/fuel/{fg}/create/save-by-ajax' => 'Admin_fuel_ctrl@save@name.fuelStoreAjax',
+    // '/admin/fuel/{fg}/list' => 'Admin_fuel_ctrl@list@name.fuelList',
+    // '/admin/fuel/{fg}/trash-list' => 'Admin_fuel_ctrl@trash_list@name.fuelTrashList',
+    // '/admin/fuel/{fg}/edit/{id}' => 'Admin_fuel_ctrl@edit@name.fuelEdit',
+    // '/admin/fuel/{fg}/trash/{id}' => 'Admin_fuel_ctrl@move_to_trash@name.fuelTrash',
+    // '/admin/fuel/{fg}/restore/{id}' => 'Admin_fuel_ctrl@restore@name.fuelRestore',
+    // '/admin/fuel/{fg}/delete/{id}' => 'Admin_fuel_ctrl@delete_trash@name.fuelDelete',
+    // '/admin/fuel/{fg}/edit/{id}/save-by-ajax' => 'Admin_fuel_ctrl@update@name.fuelUpdateAjax',
 
     // add fuels by driver
     '/admin/fuel/{fg}/create/{driver_id}' => 'Admin_fuel_ctrl@create@name.fuelCreateByDriver',
     '/admin/fuel/{fg}/create/save-by-ajax/{driver_id}' => 'Admin_fuel_ctrl@save@name.fuelStoreAjaxByDriver',
     '/admin/fuel/{fg}/list/{driver_id}' => 'Admin_fuel_ctrl@list@name.fuelListByDriver',
-
     '/admin/fuel/{fg}/trash-list/{driver_id}' => 'Admin_fuel_ctrl@trash_list@name.fuelTrashListByDriver',
     '/admin/fuel/{fg}/edit/{id}/{driver_id}' => 'Admin_fuel_ctrl@edit@name.fuelEditByDriver',
     '/admin/fuel/{fg}/trash/{id}/{driver_id}' => 'Admin_fuel_ctrl@move_to_trash@name.fuelTrashByDriver',
