@@ -8,7 +8,7 @@ function msg_ssn($var = 'msg', $return = false, $lnbrk = "\\n")
         $returnmsg .= "{$msg}$lnbrk";
       }
       unset($_SESSION[$var]);
-      return $returnmsg;
+      return trim($returnmsg);
     }
     foreach ($_SESSION[$var] as $msg) {
       echo "{$msg}<br>";
