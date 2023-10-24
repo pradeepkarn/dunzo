@@ -161,7 +161,7 @@ class Users_api extends Main_ctrl
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:" ");
+            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
             echo json_encode($api);
             exit;
         }
@@ -175,7 +175,7 @@ class Users_api extends Main_ctrl
         $username_exists = $db->get(['username' => $username]);
         $email_exists = $db->get(['email' => $request->email]);
         if ($username_exists) {
-            $_SESSION['msg'][] = 'Usernam not availble please try with another usernam';
+            $_SESSION['msg'][] = 'Usernam not availble please try with another username';
             $ok = false;
         }
         if ($email_exists) {
