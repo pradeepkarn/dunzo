@@ -3,33 +3,35 @@ $fuel_detail = $context->fuel_detail;
 $fd = obj($fuel_detail);
 $fg =  explode("/", REQUEST_URI);
 $fg = $fg[3];
-$req = new stdClass;
-$req->fg = $fg;
+$req = $context->req;
+$driver = isset($context->driver) ? obj($context->driver) : null;
 ?>
 
-<form action="/<?php echo home . route('fuelUpdateAjax', ['id' => $fd->id, 'fg' => $req->fg]); ?>" id="update-new-fuel-form">
+<form action="/<?php echo home . route('fuelUpdateAjaxByDriver', ['id' => $fd->id, 'fg' => $req->fg,'driver_id'=>$req->driver_id]); ?>" id="update-new-fuel-form">
     <div class="card">
         <div class="card-body">
-            <div class="row">
-                <div class="col">
-                    <h5 class="card-title">Update <?php echo $req->fg; ?></h5>
-                </div>
-                <!-- <div class="position-relative">
-                    <div>
-                        <input id="userSearchInput" type="seach" name="searchuser" class="form-control" placeholder="search user...">
-                    </div>
-                    <div>
-                        <ul class="position-absolute w-100 bg-white border-dark" id="suggestionList"></ul>
-                    </div>
-                </div> -->
-                <div class="col text-end my-3">
-                    <a class="btn btn-dark" href="/<?php echo home . route('fuelList', ['fg' => $req->fg]); ?>">Back</a>
-                </div>
-            </div>
+
             <div id="res"></div>
             <div class="row">
                 <div class="col-md-8">
                     <div class="row">
+                        <div class="col">
+                            <h5 class="card-title">Update <?php echo $req->fg; ?></h5>
+                        </div>
+                        <!-- <div class="position-relative">
+                                <div>
+                                    <input id="userSearchInput" type="seach" name="searchuser" class="form-control" placeholder="search user...">
+                                </div>
+                                <div>
+                                    <ul class="position-absolute w-100 bg-white border-dark" id="suggestionList"></ul>
+                                </div>
+                            </div>
+                         -->
+                        <div class="col text-end my-3">
+                            <a class="btn btn-dark" href="/<?php echo home . route('fuelListByDriver', ['fg' => $req->fg, 'driver_id' => $req->driver_id]); ?>">Back</a>
+                        </div>
+                    </div>
+                    <div class="row hide">
                         <div class="col-md-8">
                             <h4>Email</h4>
                             <input readonly type="email" value="<?php echo $fd->email; ?>" name="email" class="form-control my-3" placeholder="Eemail">
@@ -56,15 +58,13 @@ $req->fg = $fg;
                         </div>
 
                     </div>
-                </div>
 
-                <div class="col-md-4">
                     <h4 class="text-capitalize"><?php echo $req->fg; ?></h4>
                     <div class="d-flex gap-2 align-items-center">
                         <div>
                             <select class="form-control" name="balance">
-                                <option <?php echo $fd->balance==1?'selected':null; ?> value="1">Add</option>
-                                <option <?php echo $fd->balance==0?'selected':null; ?> value="0">Deduct</option>
+                                <option <?php echo $fd->balance == 1 ? 'selected' : null; ?> value="1">Add</option>
+                                <option <?php echo $fd->balance == 0 ? 'selected' : null; ?> value="0">Deduct</option>
                             </select>
                         </div>
                         <div><input type="number" name="volume" value="<?php echo $fd->volume; ?>" class="form-control my-3" placeholder="<?php echo ucfirst($req->fg); ?> volume"></div>

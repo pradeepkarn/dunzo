@@ -6,8 +6,9 @@ $active = $context->is_active;
 
 $ug =  explode("/", REQUEST_URI);
 $ug = $ug[3];
-$req = new stdClass;
-$req->fg = $ug;
+// $req = new stdClass;
+// $req->fg = $ug;
+$req = $context->req;
 ?>
 
 <section class="section">
@@ -38,7 +39,14 @@ $req->fg = $ug;
                             </form>
                         </div>
                         <div class="col text-end my-3">
-                            <a class="btn btn-dark" href="/<?php echo home . route('fuelCreate', ['fg' => $req->fg]); ?>">Add/Deduct</a>
+                            <div class="d-flex align-items-center gap-2 justify-content-between">
+                                <div>
+                                <a class="btn btn-dark" href="/<?php echo home . route('userList', ['ug' => 'driver']); ?>">Back</a>
+                                </div>
+                                <div>
+                                <a class="btn btn-dark" href="/<?php echo home . route('fuelCreateByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]); ?>">Add/Deduct</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -78,12 +86,12 @@ $req->fg = $ug;
                                     $pv = obj($pv);
                                     if ($pv->is_active == true) {
                                         $move_to_text = "Trash";
-                                        $move_to_link = route('fuelTrash', ['id' => $pv->id, 'fg' => $req->fg]);
+                                        $move_to_link = route('fuelTrashByDriver', ['id' => $pv->id, 'fg' => $req->fg,'driver_id'=>$req->driver_id]);
                                     } else {
-                                        $move_to_link = route('fuelDelete', ['id' => $pv->id, 'fg' => $req->fg]);
+                                        $move_to_link = route('fuelDeleteByDriver', ['id' => $pv->id, 'fg' => $req->fg,'driver_id'=>$req->driver_id]);
                                         $move_to_text = "Delete";
                                         $restore_text = "Restore";
-                                        $restore_link = route('fuelRestore', ['id' => $pv->id, 'fg' => $req->fg]);
+                                        $restore_link = route('fuelRestoreByDriver', ['id' => $pv->id, 'fg' => $req->fg,'driver_id'=>$req->driver_id]);
                                     }
                                 ?>
 
@@ -107,7 +115,7 @@ $req->fg = $ug;
                                         <?php
                                         if ($active == true) { ?>
                                             <td>
-                                                <a class="btn-primary btn btn-sm" href="/<?php echo home . route('fuelEdit', ['id' => $pv->id, 'fg' => $req->fg]); ?>">Edit</a>
+                                                <a class="btn-primary btn btn-sm" href="/<?php echo home . route('fuelEditByDriver', ['id' => $pv->id, 'fg' => $req->fg,'driver_id'=>$pv->user_id]); ?>">Edit</a>
                                             </td>
                                         <?php    }
                                         ?>

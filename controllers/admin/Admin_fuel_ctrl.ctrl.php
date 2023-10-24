@@ -5,11 +5,15 @@ class Admin_fuel_ctrl extends DB_ctrl
     public function create($req = null)
     {
         $req = obj($req);
+        if (isset($req->driver_id)) {
+            $driver = $this->db->showOne("select * from pk_user where user_group='driver' and is_active=1 and id=$req->driver_id");
+        }
         $context = (object) array(
             'page' => 'fuels/create.php',
             'data' => (object) array(
                 'req' => obj($req),
-                'cat_list' => $this->fuel_list(fuel_group: $req->fg, limit: 1000)
+                'cat_list' => $this->fuel_list(fuel_group: $req->fg, limit: 1000),
+                'driver'=>$driver??null
             )
         );
         $this->render_main($context);
@@ -34,9 +38,14 @@ class Admin_fuel_ctrl extends DB_ctrl
         } else {
             $tu = floor($tu / $data_limit) + 1;
         }
+
         if (isset($req->search)) {
             $fuel_list = $this->fuel_search_list(fuel_group: $req->fg, keyword: $req->search, ord: "DESC", limit: $page_limit, active: 1);
-        } else {
+        } 
+        if (isset($req->driver_id)) {
+            $fuel_list = $this->fuel_list(fuel_group: $req->fg, user_id:$req->driver_id, ord: "DESC", limit: $page_limit, active: 1);
+        }
+        else {
             $fuel_list = $this->fuel_list(fuel_group: $req->fg, ord: "DESC", limit: $page_limit, active: 1);
         }
         $context = (object) array(
@@ -110,11 +119,15 @@ class Admin_fuel_ctrl extends DB_ctrl
     public function edit($req = null)
     {
         $req = obj($req);
+        if (isset($req->driver_id)) {
+            $driver = $this->db->showOne("select * from pk_user where user_group='driver' and is_active=1 and id=$req->driver_id");
+        }
         $context = (object) array(
             'page' => 'fuels/edit.php',
             'data' => (object) array(
                 'req' => obj($req),
-                'fuel_detail' => $this->fuel_detail(id: $req->id, fuel_group: $req->fg)
+                'fuel_detail' => $this->fuel_detail(id: $req->id, fuel_group: $req->fg),
+                'driver'=>$driver??null
             )
         );
         $this->render_main($context);
@@ -146,7 +159,7 @@ class Admin_fuel_ctrl extends DB_ctrl
         if (isset($request->email)) {
             $arr = null;
             $arr['balance'] = $request->balance??0;
-            $arr['user_id'] = $request->user_id;
+            $arr['user_id'] = $req->driver_id??$request->user_id;
             $arr['volume'] = abs($request->volume);
             $arr['unit'] = 'litre';
             $arr['fuel_group'] = $req->fg;
@@ -161,7 +174,7 @@ class Admin_fuel_ctrl extends DB_ctrl
             $postid = (new Model('fuels',$this->db))->store($arr);
             if (intval($postid)) {
                 echo js_alert("$req->fg added");
-                echo go_to(route('fuelList', ['fg' => $req->fg]));
+                echo go_to(route('fuelListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id??$request->user_id]));
                 return true;
             } else {
                 echo js_alert("$req->fg not created");
@@ -204,7 +217,7 @@ class Admin_fuel_ctrl extends DB_ctrl
             if ($request->balance) {
                 $arr['balance'] = $request->balance;
             }
-            $arr['user_id'] = $request->user_id;
+            $arr['user_id'] = $req->driver_id??$request->user_id;
             $arr['volume'] = $request->volume;
             $arr['unit'] = 'litre';
             $arr['fuel_group'] = $req->fg;
@@ -219,7 +232,7 @@ class Admin_fuel_ctrl extends DB_ctrl
             $postid = (new Model('fuels',$this->db))->update($request->fuel_id,$arr);
             if ($postid!=false) {
                 echo js_alert("$req->fg updated");
-                echo go_to(route('fuelList', ['fg' => $req->fg]));
+                echo go_to(route('fuelListByDriver', ['fg' => $req->fg, 'driver_id'=>$req->driver_id]));
                 return true;
             } else {
                 echo js_alert("$req->fg not updated");
@@ -249,7 +262,7 @@ class Admin_fuel_ctrl extends DB_ctrl
         $pass = validateData(data: $data, rules: $rules);
         if (!$pass) {
             echo js_alert(msg_ssn("msg", true));
-            echo go_to(route('fuelList', ['fg' => $req->fg]));
+            echo go_to(route('fuelListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
             exit;
         }
         try {
@@ -269,7 +282,7 @@ class Admin_fuel_ctrl extends DB_ctrl
         if ($user_exists == false) {
             $_SESSION['msg'][] = "Object not found";
             echo js_alert(msg_ssn("msg", true));
-            echo go_to(route('fuelTrashList', ['fg' => $req->fg]));
+            echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
             exit;
         }
         // $user = obj(getData(table: 'pk_user', id: $req->id));
@@ -301,7 +314,7 @@ class Admin_fuel_ctrl extends DB_ctrl
         if ($user_exists == false) {
             $_SESSION['msg'][] = "Object not found";
             echo js_alert(msg_ssn("msg", true));
-            echo go_to(route('fuelTrashList', ['fg' => $req->fg]));
+            echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
             exit;
         }
         // $user = obj(getData(table: 'pk_user', id: $req->id));
@@ -313,7 +326,7 @@ class Admin_fuel_ctrl extends DB_ctrl
         $pass = validateData(data: $data, rules: $rules);
         if (!$pass) {
             echo js_alert(msg_ssn("msg", true));
-            echo go_to(route('fuelTrashList', ['fg' => $req->fg]));
+            echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
             exit;
         }
         try {
@@ -322,17 +335,17 @@ class Admin_fuel_ctrl extends DB_ctrl
                 $user = obj(getData('pk_user', $req->id));
                 if ($user->username == 'admin') {
                     echo js_alert('Supreme account cannot be deleted');
-                    echo go_to(route('fuelTrashList', ['fg' => $req->fg]));
+                    echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
                     exit;
                 }
                 if ((new Model('fuels',$this->db))->destroy($req->id)) {
                     echo js_alert('fuel deleted permanatly');
-                    echo go_to(route('fuelTrashList', ['fg' => $req->fg]));
+                    echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
                     exit;
                 }
             }
             echo js_alert('fuel does not exist');
-            echo go_to(route('fuelTrashList', ['fg' => $req->fg]));
+            echo go_to(route('fuelTrashListByDriver', ['fg' => $req->fg,'driver_id'=>$req->driver_id]));
             exit;
         } catch (PDOException $e) {
             echo js_alert('fuel not deleted');
@@ -341,9 +354,12 @@ class Admin_fuel_ctrl extends DB_ctrl
     }
 
     // User list
-    public function fuel_list($fuel_group = "petrol", $ord = "DESC", $limit = 5, $active = 1)
+    public function fuel_list($fuel_group = "petrol", $user_id=null, $ord = "DESC", $limit = 5, $active = 1)
     {
         $cntobj = new Model('fuels',$this->db);
+        if ($user_id!=null) {
+            return $cntobj->filter_index(array('fuel_group' => $fuel_group, 'is_active' => $active, 'user_id'=>$user_id), $ord, $limit);
+        }
         return $cntobj->filter_index(array('fuel_group' => $fuel_group, 'is_active' => $active), $ord, $limit);
     }
     // User detail

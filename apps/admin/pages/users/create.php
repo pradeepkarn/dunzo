@@ -2,8 +2,8 @@
 $createData = $context;
 $ug =  explode("/",REQUEST_URI);
 $ug = $ug[3];
-$req = new stdClass;
-$req->ug = $ug;
+// $req = new stdClass;
+$req= $context->req;
 ?>
 
 <form action="/<?php echo home.route('userStoreAjax',['ug'=>$req->ug]); ?>" id="register-new-user-form">
