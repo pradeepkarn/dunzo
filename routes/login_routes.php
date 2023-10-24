@@ -1,8 +1,7 @@
 <?php
 $login_routes = [
     "/set-language/{lang}" => "Lang_ctrl@set_lang@name.setLang",
-    "/login" => 'Game_auth_ctrl@user_login_page@name.userLogin',
-    "/logout" => 'Game_auth_ctrl@logout@name.logout',
+    "/logout" => 'Auth@logout@name.logout',
     "/user-login-ajax" => 'Game_auth_ctrl@user_login@name.userLoginAjax',
     "/admin-login" => 'Auth@admin_login_page@name.adminLogin',
     "/admin-login-ajax" => 'Auth@admin_login@name.adminLoginAjax',
