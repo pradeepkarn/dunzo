@@ -1,6 +1,6 @@
 <?php
 
-class Users_api
+class Users_api 
 {
     public $get;
     public $post;
