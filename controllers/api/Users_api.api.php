@@ -408,6 +408,7 @@ class Users_api
                     'email'=>$u->email,
                     'isd_code'=>$u->isd_code,
                     'mobile'=>$u->mobile,
+                    'token'=>$u->app_login_token,
                 );
             }
             
@@ -417,7 +418,21 @@ class Users_api
     function get_user_by_token($token=null)
     {
         if ($token) {
-            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile from pk_user where app_login_token = $token");
+            $u = $this->db->showOne("select * from pk_user where app_login_token = '$token'");
+            if ($u) {
+                $u = obj($u);
+                return array(
+                    'id'=>strval($u->id),
+                    'username'=>strval($u->username),
+                    'first_name'=>$u->first_name,
+                    'last_name'=>$u->last_name,
+                    'image'=>img_or_null($u->image),
+                    'email'=>$u->email,
+                    'isd_code'=>$u->isd_code,
+                    'mobile'=>$u->mobile,
+                    'token'=>$u->app_login_token,
+                );
+            }
         }
         return false;
     }
