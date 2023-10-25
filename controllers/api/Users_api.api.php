@@ -1,8 +1,14 @@
 <?php
 
-class Users_api extends Main_ctrl
+class Users_api extends DB_ctrl
 {
-
+    public $get;
+    public $post;
+    function __construct()
+    {
+        $this->get = $_GET;
+        $this->post = $_POST;
+    }
     function driver_login($req = null)
     {
         header('Content-Type: application/json');
