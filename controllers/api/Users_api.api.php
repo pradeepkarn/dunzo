@@ -1,6 +1,6 @@
 <?php
 
-class Users_api 
+class Users_api
 {
     public $get;
     public $post;
@@ -13,7 +13,7 @@ class Users_api
         $this->get = obj($_GET);
         $this->files = isset($_FILES) ? obj($_FILES) : null;
     }
-    function driver_login($req = null)
+    function login($req = null)
     {
         header('Content-Type: application/json');
         $ok = true;
@@ -91,7 +91,7 @@ class Users_api
                 $this->db->insertData = array('app_login_token' => $token, 'app_login_time' => $datetime);
                 $this->db->pk($user['id']);
                 $this->db->update();
-                $user = $this->get_user_by_id($id=$user['id']);
+                $user = $this->get_user_by_id($id = $user['id']);
                 msg_set("User found, token refreshed");
                 $api['success'] = true;
                 $api['data'] = $user;
@@ -99,7 +99,7 @@ class Users_api
                 echo json_encode($api);
                 exit;
             } else {
-                $user = $this->get_user_by_id($id=$user['id']);
+                $user = $this->get_user_by_id($id = $user['id']);
                 msg_set("User found");
                 $api['success'] = true;
                 $api['data'] = $user;
@@ -111,6 +111,68 @@ class Users_api
             msg_set("User not found");
             $api['success'] = false;
             $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
+    function login_via_token($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+        if (isset($req->ug)) {
+            if (!in_array($req->ug, USER_GROUP_LIST)) {
+                $ok = false;
+                msg_set("Invalid account group");
+            }
+        } else {
+            $ok = false;
+            msg_set("No user group provided");
+        }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $rules = [
+            'token' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = $this->get_user_by_token($data->token);
+
+        if ($user) {
+            if ($user['user_group'] != $req->ug) {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            msg_set("User found");
+            $api['success'] = true;
+            $api['data'] = $user;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }else{
+            msg_set("User not found, invalid token");
+            $api['success'] = true;
+            $api['data'] = $user;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
@@ -175,7 +237,7 @@ class Users_api
         $pdo = $this->db->conn;
         $pdo->beginTransaction();
         $this->db->tableName = 'pk_user';
-        $username = generate_clean_username($request->username??uniqid());
+        $username = generate_clean_username($request->username ?? uniqid());
         $username_exists = $this->db->get(['username' => $username]);
         $email_exists = $this->db->get(['email' => $request->email]);
         if ($username_exists) {
@@ -199,7 +261,7 @@ class Users_api
             $arr['email'] = $request->email;
             $arr['username'] = $username;
             $arr['first_name'] = $request->first_name;
-            $arr['last_name'] = $request->last_name??null;
+            $arr['last_name'] = $request->last_name ?? null;
             $arr['isd_code'] = intval($request?->isd_code) ?? null;
             $arr['mobile'] = intval($request?->mobile) ?? null;
             $arr['password'] = md5($request->password);
@@ -393,44 +455,43 @@ class Users_api
         );
     }
 
-    function get_user_by_id($id=null)
+    function get_user_by_id($id = null)
     {
         if ($id) {
             $u = $this->db->showOne("select * from pk_user where id = $id");
             if ($u) {
                 $u = obj($u);
                 return array(
-                    'id'=>strval($u->id),
-                    'username'=>strval($u->username),
-                    'first_name'=>$u->first_name,
-                    'last_name'=>$u->last_name,
-                    'image'=>img_or_null($u->image),
-                    'email'=>$u->email,
-                    'isd_code'=>$u->isd_code,
-                    'mobile'=>$u->mobile,
-                    'token'=>$u->app_login_token,
+                    'id' => strval($u->id),
+                    'username' => strval($u->username),
+                    'first_name' => $u->first_name,
+                    'last_name' => $u->last_name,
+                    'image' => img_or_null($u->image),
+                    'email' => $u->email,
+                    'isd_code' => $u->isd_code,
+                    'mobile' => $u->mobile,
+                    'token' => $u->app_login_token,
                 );
             }
-            
         }
         return false;
     }
-    function get_user_by_token($token=null)
+    function get_user_by_token($token = null)
     {
         if ($token) {
             $u = $this->db->showOne("select * from pk_user where app_login_token = '$token'");
             if ($u) {
                 $u = obj($u);
                 return array(
-                    'id'=>strval($u->id),
-                    'username'=>strval($u->username),
-                    'first_name'=>$u->first_name,
-                    'last_name'=>$u->last_name,
-                    'image'=>img_or_null($u->image),
-                    'email'=>$u->email,
-                    'isd_code'=>$u->isd_code,
-                    'mobile'=>$u->mobile,
-                    'token'=>$u->app_login_token,
+                    'id' => strval($u->id),
+                    'username' => strval($u->username),
+                    'first_name' => $u->first_name,
+                    'last_name' => $u->last_name,
+                    'image' => img_or_null($u->image),
+                    'email' => $u->email,
+                    'isd_code' => $u->isd_code,
+                    'mobile' => $u->mobile,
+                    'token' => $u->app_login_token,
                 );
             }
         }
