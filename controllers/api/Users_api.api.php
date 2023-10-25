@@ -4,10 +4,12 @@ class Users_api extends DB_ctrl
 {
     public $get;
     public $post;
+    public $files;
     function __construct()
     {
-        $this->get = $_GET;
-        $this->post = $_POST;
+        $this->post = obj($_POST);
+        $this->get = obj($_GET);
+        $this->files = isset($_FILES) ? obj($_FILES) : null;
     }
     function driver_login($req = null)
     {
