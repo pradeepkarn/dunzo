@@ -397,14 +397,14 @@ class Users_api
     function get_user_by_id($id=null)
     {
         if ($id) {
-            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile where id = $id");
+            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile from pk_user where id = $id");
         }
         return false;
     }
     function get_user_by_token($token=null)
     {
         if ($token) {
-            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile where app_login_token = $token");
+            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile from pk_user where app_login_token = $token");
         }
         return false;
     }
