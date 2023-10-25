@@ -463,6 +463,7 @@ class Users_api
                 $u = obj($u);
                 return array(
                     'id' => strval($u->id),
+                    'user_group' => $u->user_group,
                     'username' => strval($u->username),
                     'first_name' => $u->first_name,
                     'last_name' => $u->last_name,
@@ -484,6 +485,7 @@ class Users_api
                 $u = obj($u);
                 return array(
                     'id' => strval($u->id),
+                    'user_group' => $u->user_group,
                     'username' => strval($u->username),
                     'first_name' => $u->first_name,
                     'last_name' => $u->last_name,
