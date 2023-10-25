@@ -1,5 +1,5 @@
 <?php
-class Main_ctrl
+class Main_ctrl extends DB_ctrl
 {
     public $post;
     public $get;

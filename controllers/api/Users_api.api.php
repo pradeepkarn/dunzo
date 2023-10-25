@@ -21,7 +21,7 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
@@ -34,12 +34,12 @@ class Users_api extends Main_ctrl
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
         $user = false;
-        $db = new Dbobjects;
+        $db = $this->db;
         $db->tableName = "pk_user";
         if (!$user) {
             $arr['username'] = $data->credit;
@@ -67,7 +67,7 @@ class Users_api extends Main_ctrl
                 msg_set("Invalid login portal");
                 $api['success'] = false;
                 $api['data'] = null;
-                $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;
             }
@@ -88,17 +88,15 @@ class Users_api extends Main_ctrl
                     'id' => $user['id'],
                     'token' => $token,
                 );
-                $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;
             } else {
+                $user = $this->get_user_by_id($id=$user['id']);
                 msg_set("User found");
                 $api['success'] = true;
-                $api['data'] = array(
-                    'id' => $user['id'],
-                    'token' => $user['app_login_token'],
-                );
-                $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+                $api['data'] = $user;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;
             }
@@ -106,7 +104,7 @@ class Users_api extends Main_ctrl
             msg_set("User not found");
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
@@ -134,7 +132,7 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
@@ -161,13 +159,13 @@ class Users_api extends Main_ctrl
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
 
         $request = obj($data);
-        $db = new Dbobjects;
+        $db = $this->db;
         $pdo = $db->conn;
         $pdo->beginTransaction();
         $db->tableName = 'pk_user';
@@ -185,7 +183,7 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
@@ -232,13 +230,13 @@ class Users_api extends Main_ctrl
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         } else {
             $api['success'] = true;
             $api['data'] = [];
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
@@ -332,7 +330,7 @@ class Users_api extends Main_ctrl
         $ok = true;
         $req = obj($_GET);
         $data  = $_GET;
-     
+
         $rules = [
             'q' => 'required|string'
         ];
@@ -341,13 +339,13 @@ class Users_api extends Main_ctrl
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
-        $users = $this->user_search_list(user_group:"driver",keyword:$req->q);
-        if (count($users)>0) {
-            $searchedData = array_map(function($user) {
+        $users = $this->user_search_list(user_group: "driver", keyword: $req->q);
+        if (count($users) > 0) {
+            $searchedData = array_map(function ($user) {
                 return [
                     "id" => $user["id"],
                     "first_name" => $user["first_name"],
@@ -360,13 +358,13 @@ class Users_api extends Main_ctrl
             }, $users);
             $api['success'] = true;
             $api['data'] = $searchedData;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         } else {
             $api['success'] = false;
             $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true,lnbrk:", ");
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }
@@ -389,6 +387,20 @@ class Users_api extends Main_ctrl
         );
     }
 
+    function get_user_by_id($id=null)
+    {
+        if ($id) {
+            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile where id = $id");
+        }
+        return false;
+    }
+    function get_user_by_token($token=null)
+    {
+        if ($token) {
+            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile where app_login_token = $token");
+        }
+        return false;
+    }
 
     function load_users($req)
     {
