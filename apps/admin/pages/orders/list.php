@@ -32,6 +32,7 @@ $req->fg = $ug;
                                     <th scope="col">Buyer</th>
                                     <th>Buyer to Driver</th>
                                     <th scope="col">Buyer To Rest.</th>
+                                    <th>Add On Price</th>
 
                                 </tr>
                             </thead>
@@ -48,7 +49,9 @@ $req->fg = $ug;
                                         <th><?php echo $pv->buyer; ?></th>
                                         <th><?php echo $pv->driver_assigned ? $pv->driver_to_user . " " . $pv->distance_unit : 'NA'; ?></th>
                                         <th><?php echo $pv->user_to_rest . " " . $pv->distance_unit; ?></th>
-
+                                        <th>
+                                            <input type="text" name="add_on_price" class="form-control">
+                                        </th>
                                     </tr>
 
                                 <?php endforeach; ?>
