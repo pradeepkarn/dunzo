@@ -233,11 +233,12 @@ class Users_api
         }
 
         $request = obj($data);
+        $request->username = $request->username??uniqid();
         $this->db = $this->db;
         $pdo = $this->db->conn;
         $pdo->beginTransaction();
         $this->db->tableName = 'pk_user';
-        $username = generate_clean_username($request->username ?? uniqid());
+        $username = generate_clean_username($request->username );
         $username_exists = $this->db->get(['username' => $username]);
         $email_exists = $this->db->get(['email' => $request->email]);
         if ($username_exists) {
