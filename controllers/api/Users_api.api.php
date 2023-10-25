@@ -399,6 +399,7 @@ class Users_api
         if ($id) {
             $u = $this->db->showOne("select * from pk_user where id = $id");
             if ($u) {
+                $u = obj($u);
                 return array(
                     'id'=>strval($u->id),
                     'username'=>strval($u->username),
