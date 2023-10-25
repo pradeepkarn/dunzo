@@ -145,10 +145,9 @@ class Users_api
         }
         $rules = [
             'email' => 'required|email',
-            'username' => 'required|string|min:4|max:16',
+            // 'username' => 'required|string|min:4|max:16',
             'image' => 'required|file',
             'first_name' => 'required|string',
-            'last_name' => 'required|string',
             'password' => 'required|string'
         ];
         if ($req->ug == 'driver') {
@@ -176,7 +175,7 @@ class Users_api
         $pdo = $this->db->conn;
         $pdo->beginTransaction();
         $this->db->tableName = 'pk_user';
-        $username = generate_clean_username($request->username);
+        $username = generate_clean_username($request->username??uniqid());
         $username_exists = $this->db->get(['username' => $username]);
         $email_exists = $this->db->get(['email' => $request->email]);
         if ($username_exists) {
@@ -200,7 +199,7 @@ class Users_api
             $arr['email'] = $request->email;
             $arr['username'] = $username;
             $arr['first_name'] = $request->first_name;
-            $arr['last_name'] = $request->last_name;
+            $arr['last_name'] = $request->last_name??null;
             $arr['isd_code'] = intval($request?->isd_code) ?? null;
             $arr['mobile'] = intval($request?->mobile) ?? null;
             $arr['password'] = md5($request->password);
