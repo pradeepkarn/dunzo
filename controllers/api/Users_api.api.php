@@ -397,7 +397,20 @@ class Users_api
     function get_user_by_id($id=null)
     {
         if ($id) {
-            return $this->db->showOne("select id, username, first_name, last_name, image, email, isd_code, mobile from pk_user where id = $id");
+            $u = $this->db->showOne("select * from pk_user where id = $id");
+            if ($u) {
+                return array(
+                    'id'=>strval($u->id),
+                    'username'=>strval($u->username),
+                    'first_name'=>$u->first_name,
+                    'last_name'=>$u->last_name,
+                    'image'=>img_or_null($u->image),
+                    'email'=>$u->email,
+                    'isd_code'=>$u->isd_code,
+                    'mobile'=>$u->mobile,
+                );
+            }
+            
         }
         return false;
     }
