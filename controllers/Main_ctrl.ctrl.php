@@ -4,8 +4,10 @@ class Main_ctrl extends DB_ctrl
     public $post;
     public $get;
     public $files;
+    public $db;
     public function __construct()
     {
+        $this->db = $this->db;
         $this->post = obj($_POST);
         $this->get = obj($_GET);
         $this->files = isset($_FILES) ? obj($_FILES) : null;
