@@ -1,12 +1,14 @@
 <?php
 
-class Users_api extends DB_ctrl
+class Users_api
 {
     public $get;
     public $post;
     public $files;
+    public $db;
     function __construct()
     {
+        $this->db = (new DB_ctrl)->db;
         $this->post = obj($_POST);
         $this->get = obj($_GET);
         $this->files = isset($_FILES) ? obj($_FILES) : null;
@@ -47,25 +49,24 @@ class Users_api extends DB_ctrl
             exit;
         }
         $user = false;
-        $db = $this->db;
-        $db->tableName = "pk_user";
+        $this->db->tableName = "pk_user";
         if (!$user) {
             $arr['username'] = $data->credit;
             $arr['password'] = md5($data->password);
-            $user = $db->findOne($arr);
+            $user = $this->db->findOne($arr);
             $arr = null;
         }
         if (!$user) {
             $arr['email'] = $data->credit;
             $arr['password'] = md5($data->password);
-            $user = $db->findOne($arr);
+            $user = $this->db->findOne($arr);
             $arr = null;
         }
 
         if (!$user) {
             $arr['mobile'] = $data->credit;
             $arr['password'] = md5($data->password);
-            $user = $db->findOne($arr);
+            $user = $this->db->findOne($arr);
             $arr = null;
         }
 
@@ -86,10 +87,10 @@ class Users_api extends DB_ctrl
             if ($current_time > $time_out) {
                 $token = uniqid() . bin2hex(random_bytes(8)) . "u" . $user['id'];
                 $datetime = date('Y-m-d H:i:s');
-                $db->tableName = 'pk_user';
-                $db->insertData = array('app_login_token' => $token, 'app_login_time' => $datetime);
-                $db->pk($user['id']);
-                $db->update();
+                $this->db->tableName = 'pk_user';
+                $this->db->insertData = array('app_login_token' => $token, 'app_login_time' => $datetime);
+                $this->db->pk($user['id']);
+                $this->db->update();
                 msg_set("User found, token refreshed");
                 $api['success'] = true;
                 $api['data'] = array(
@@ -173,13 +174,13 @@ class Users_api extends DB_ctrl
         }
 
         $request = obj($data);
-        $db = $this->db;
-        $pdo = $db->conn;
+        $this->db = $this->db;
+        $pdo = $this->db->conn;
         $pdo->beginTransaction();
-        $db->tableName = 'pk_user';
+        $this->db->tableName = 'pk_user';
         $username = generate_clean_username($request->username);
-        $username_exists = $db->get(['username' => $username]);
-        $email_exists = $db->get(['email' => $request->email]);
+        $username_exists = $this->db->get(['username' => $username]);
+        $email_exists = $this->db->get(['email' => $request->email]);
         if ($username_exists) {
             $_SESSION['msg'][] = 'Usernam not availble please try with another username';
             $ok = false;
@@ -212,15 +213,15 @@ class Users_api extends DB_ctrl
                 $arr['bio'] = $request->bio;
             }
             $arr['created_at'] = date('Y-m-d H:i:s');
-            $db->tableName = 'pk_user';
-            $db->insertData = $arr;
+            $this->db->tableName = 'pk_user';
+            $this->db->insertData = $arr;
             try {
-                $userid = $db->create();
+                $userid = $this->db->create();
                 $filearr = $this->upload_files($userid, $request);
                 if ($filearr) {
-                    $db->pk($userid);
-                    $db->insertData = $filearr;
-                    $db->update();
+                    $this->db->pk($userid);
+                    $this->db->insertData = $filearr;
+                    $this->db->update();
                 }
                 msg_set('Account created');
                 $ok = true;
