@@ -91,12 +91,10 @@ class Users_api
                 $this->db->insertData = array('app_login_token' => $token, 'app_login_time' => $datetime);
                 $this->db->pk($user['id']);
                 $this->db->update();
+                $user = $this->get_user_by_id($id=$user['id']);
                 msg_set("User found, token refreshed");
                 $api['success'] = true;
-                $api['data'] = array(
-                    'id' => $user['id'],
-                    'token' => $token,
-                );
+                $api['data'] = $user;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;
