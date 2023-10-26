@@ -34,6 +34,30 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.27/dist/sweetalert2.all.min.js"></script>
     <script>
+    function commonCallbackHandler(res) {
+        if (res.success === true) {
+            swalert({
+                title: 'Success',
+                msg: res.msg,
+                icon: 'success'
+            });
+            location.reload();
+        } else if (res.success === false) {
+            swalert({
+                title: 'Failed',
+                msg: res.msg,
+                icon: 'error'
+            });
+        } else {
+            swalert({
+                title: 'Failed',
+                msg: 'Something went wrong',
+                icon: 'error'
+            });
+        }
+    }
+</script>
+    <script>
       function swalert(obj) {
         Swal.fire(
           obj.title,

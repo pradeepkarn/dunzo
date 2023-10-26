@@ -99,7 +99,7 @@ class Orders_api_ctrl
         "msg": "Data found\n"
         }';
         */
-       
+
         // testing end
         $curl = curl_init();
         $RESTAURANT_API_KEY = RESTAURANT_API_KEY;
@@ -121,30 +121,69 @@ class Orders_api_ctrl
         $response = curl_exec($curl);
         curl_close($curl);
         if (isset($response)) {
-            $res = json_decode($response,true);
+            $res = json_decode($response, true);
             try {
                 $data = $res['data'];
-                array_map(function($d) {
+                array_map(function ($d) {
                     $d = obj($d);
                     $this->db->tableName = 'orders';
-                    $this->db->insertData['jsn'] = json_encode($d);
                     $this->db->insertData['unique_id'] = $d->orderid;
                     $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
                     if ($arready) {
                         $this->db->tableName = 'orders';
-                        $this->db->pk($arready['id']);
+                        $single = $this->db->pk($arready['id']);
+                        $d->add_on_price = $single['add_on_price'];
+                        $this->db->insertData['jsn'] = json_encode($d);
                         $this->db->update();
-                    }else{
+                    } else {
+                        $d->add_on_price = 0;
                         $this->db->create();
                     }
-                    $this->db->insertData=null;
-                },$data);
-                
+                    $this->db->insertData = null;
+                }, $data);
             } catch (\Throwable $th) {
-                //throw $th;
+                
             }
         }
         return json_decode($response);
+    }
+    function update_addon_price($req = null)
+    {
+        $rules = [
+            'orderid' => 'required|string',
+        ];
+        $pass = validateData(data: $_POST, rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $d = obj($_POST);
+        $this->db->tableName = 'orders';
+        $this->db->insertData['add_on_price'] = floatval($d->add_on_price??0);
+        $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
+        if ($arready) {
+            $this->db->tableName = 'orders';
+            $this->db->pk($arready['id']);
+            if ($this->db->update()) {
+                msg_set('Orders updated');
+                $api['success'] = true;
+                $api['data'] = [];
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }else{
+                msg_set('Orders not updated');
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+        }
+        
     }
     function order_search_list($order_group = "petrol", $keyword = "", $ord = "DESC", $limit = 5, $active = 1)
     {

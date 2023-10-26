@@ -128,7 +128,7 @@ function pkAjax($button, $url, $data, $response, $event = 'click', $method = "po
   }
   echo $ajax;
 }
-function send_to_server($button, $data, $callback, $event = 'click')
+function send_to_server($button, $data, $callback="commonCallbackHandler", $event = 'click')
 {
   $ajax = "<script>
   $(document).ready(function () {
