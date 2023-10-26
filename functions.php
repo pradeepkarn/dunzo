@@ -1436,3 +1436,29 @@ function lineBreakBySemicolon($inputString)
 
   return $formattedInstructions;
 }
+function calculateDistance($startLat, $startLon, $endLat, $endLon)
+{
+  if ($startLat=='' || $startLon=='' || $endLat =='' || $endLon == '') {
+    return null;
+  }
+  $accessToken = MAPBOX_ACCESS_TOKEN;
+  $startCoordinates = "$startLon,$startLat";
+  $endCoordinates = "$endLon,$endLat";
+
+  $url = "https://api.mapbox.com/directions/v5/mapbox/driving-traffic/$startCoordinates;$endCoordinates?access_token=$accessToken";
+
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+  $response = curl_exec($ch);
+  curl_close($ch);
+
+  $data = json_decode($response, true);
+
+  if (isset($data['routes'][0]['distance'])) {
+    return $data['routes'][0]['distance']; // meters
+  } else {
+    return null;
+  }
+}

@@ -26,6 +26,7 @@ class Orders_api_ctrl
             foreach ($res['data'] as $d) {
                 // myprint($d);
                 $apidata = obj($d); // true parameter for associative array
+                // $user_to_driver = $apidata->user_to_rest*1000 + $driver_to_rest;
                 $dat = array(
                     'id' => $apidata->id,
                     'orderid' => $apidata->orderid,
@@ -36,7 +37,7 @@ class Orders_api_ctrl
                     "rest_lat" => $apidata->rest_lat,
                     "rest_lon" => $apidata->rest_lon,
                     "distance_unit" => $apidata->distance_unit,
-                    "user_to_rest" => $apidata->user_to_rest,
+                    "user_to_rest" => $apidata->user_to_rest
                 );
                 $d['api_data'] = $dat;
                 $orders_list[] = $d;

@@ -136,3 +136,5 @@ function php_mailer($new_PHPMailer)
    $mail->Port = 587;
    return $mail;
 }
+
+const MAPBOX_ACCESS_TOKEN = "pk.eyJ1Ijoid2ViYXJ0dmlzaW9uIiwiYSI6ImNsbTBlZTJjNDAzcHYzcXA5cXUwbnZ6d2MifQ.Ts7Y-Y3y8U-rLSiTTqjOlw";

@@ -28,6 +28,7 @@ $req->fg = $ug;
                                 <tr>
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Buyer</th>
+                                    <th scope="col">Driver to rest.</th>
                                     <th scope="col">Buyer To Rest.</th>
                                     <th class="text-center">Assign driver Set price or both</th>
 
@@ -43,14 +44,21 @@ $req->fg = $ug;
                                     $ord = $db->showOne("select add_on_price,driver_id from orders where orders.unique_id = '$pv->orderid'");
                                     $add_on_price = $ord['add_on_price'];
                                     $driver_id = $ord['driver_id'];
-                                    $drivers = $db->show("select id, email from pk_user where is_active=1 and user_group = 'driver'");
+                                    $driver = $db->showOne("select id, email, lat,lon from pk_user where is_active=1 and user_group = 'driver' and id ='{$driver_id}'");
+                                    $drivers = $db->show("select id, email, lat,lon from pk_user where is_active=1 and user_group = 'driver'");
+                                    $driver_to_rest = null;
+                                    if ($driver) {
+                                        $driver_to_rest = calculateDistance($startLat=$pv->rest_lat, $startLon=$pv->rest_lon, $endLat=$driver['lat'], $endLon=$driver['lon']);
+                                        $driver_to_rest = $driver_to_rest?round($driver_to_rest/1000,3):null;
+                                    }
+
                                 ?>
 
                                     <tr>
                                         <th><?php echo $pv->orderid; ?></th>
                                         <!-- <th><?php //echo $pv->driver_assigned ? $pv->driver : 'NA'; ?></th> -->
                                         <th><?php echo $pv->buyer; ?></th>
-                                        <!-- <th><?php //echo $pv->driver_assigned ? $pv->driver_to_user . " " . $pv->distance_unit : 'NA'; ?></th> -->
+                                        <th><?php echo $driver_to_rest??"NA"; ?></th>
                                         <th><?php echo $pv->user_to_rest . " " . $pv->distance_unit; ?></th>
                                         <th>
                                             <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateAddOnPrice'); ?>">
