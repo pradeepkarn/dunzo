@@ -39,14 +39,31 @@ class Orders_api
     function order_list()
     {
         $arr = [];
-        $data = $this->db->show("SELECT id, add_on_price as local_price, jsn as api_data FROM orders;");
+        $data = $this->db->show("
+        SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
+        FROM orders
+        LEFT JOIN pk_user ON pk_user.id = orders.driver_id;        
+        ");
 
         // Check if data is not empty
         if (!empty($data)) {
             // Loop through the data and decode the JSON values
             foreach ($data as $d) {
                 $d['id'] = intval($d['id']); // true parameter for associative array
-                $d['api_data'] = json_decode($d['api_data'], true); // true parameter for associative array
+                $apidata = json_decode($d['api_data']);
+                $dat = array(
+                    'id' => $apidata->id,
+                    'orderid' => $apidata->orderid,
+                    'buyer' => $apidata->buyer,
+                    "buyer_id" => $apidata->buyer_id,
+                    "buyer_lat" => $apidata->buyer_lat,
+                    "buyer_lon" => $apidata->buyer_lon,
+                    "rest_lat" => $apidata->rest_lat,
+                    "rest_lon" => $apidata->rest_lon,
+                    "distance_unit" => $apidata->distance_unit,
+                    "user_to_rest" => $apidata->user_to_rest,
+                );
+                $d['api_data'] = $dat;
                 $arr[] = $d;
             }
         }

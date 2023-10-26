@@ -20,12 +20,31 @@ class Orders_api_ctrl
             $current_page = (abs($req->page) - 1) * $data_limit;
             $page_limit = "$current_page,$data_limit";
         }
-        $data = $this->order_list(order_group: $req->fg, ord: "DESC", limit: 10000, active: 1);
-        if ($data->success == true) {
-            $orders_list = $data->data;
+        $res = $this->order_list(order_group: $req->fg, ord: "DESC", limit: 10000, active: 1);
+        if ($res['success'] == true) {
+            $orders_list = [];
+            foreach ($res['data'] as $d) {
+                // myprint($d);
+                $apidata = obj($d); // true parameter for associative array
+                $dat = array(
+                    'id' => $apidata->id,
+                    'orderid' => $apidata->orderid,
+                    'buyer' => $apidata->buyer,
+                    "buyer_id" => $apidata->buyer_id,
+                    "buyer_lat" => $apidata->buyer_lat,
+                    "buyer_lon" => $apidata->buyer_lon,
+                    "rest_lat" => $apidata->rest_lat,
+                    "rest_lon" => $apidata->rest_lon,
+                    "distance_unit" => $apidata->distance_unit,
+                    "user_to_rest" => $apidata->user_to_rest,
+                );
+                $d['api_data'] = $dat;
+                $orders_list[] = $d;
+            }
         } else {
             $orders_list = [];
         }
+        // myprint($orders_list);
         $tu = count($orders_list);
         if ($tu %  $data_limit == 0) {
             $tu = $tu / $data_limit;
@@ -145,7 +164,7 @@ class Orders_api_ctrl
                 
             }
         }
-        return json_decode($response);
+        return json_decode($response,true);
     }
     function update_addon_price($req = null)
     {
@@ -163,6 +182,7 @@ class Orders_api_ctrl
         $d = obj($_POST);
         $this->db->tableName = 'orders';
         $this->db->insertData['add_on_price'] = floatval($d->add_on_price??0);
+        $this->db->insertData['driver_id'] = $d->driver_id??null;
         $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
         if ($arready) {
             $this->db->tableName = 'orders';
