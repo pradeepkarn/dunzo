@@ -70,4 +70,38 @@ class Orders_api
 
         return $arr;
     }
+    function update_location($req=null)  {
+        $req = obj($req);
+        $rules = [
+            'token' => 'required|string',
+            'lat' => 'required|string',
+            'lon' => 'required|string',
+        ];
+        $reqdata = json_decode(file_get_contents("php://input"));
+        $pass = validateData(data: arr($reqdata), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $update = $this->db->execSql("update pk_user set lat = '$reqdata->lat', lon = '$reqdata->lon' where app_login_token = '$reqdata->token'");
+        if ($update) {
+            msg_set('Location updated');
+            $api['success'] = true;
+            $api['data'] = [];
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        else {
+            msg_set('Location not updated, user not found');
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
 }
