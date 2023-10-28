@@ -82,7 +82,7 @@ class Orders_api
                 $arr[] = $d;
             }
         }
-        $arr['status_codes'] = obj(STATUS_CODES);
+        // $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
     }
     function update_location($req = null)
