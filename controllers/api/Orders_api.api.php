@@ -172,14 +172,7 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             }
-            if (!isset($data->delivery_status)) {
-                msg_set("Provide delivery status");
-                $api['success'] = false;
-                $api['data'] = null;
-                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
-                echo json_encode($api);
-                exit;
-            }
+            
             try {
                 $dt = $this->order_list_by_driver($driver_id = $user['id']);
                 msg_set("Orders found");
