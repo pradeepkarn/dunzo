@@ -138,7 +138,6 @@ class Orders_api
         }
         $user = false;
         $user = (new Users_api)->get_user_by_token($data->token);
-
         if ($user) {
             if ($user['user_group'] != 'driver') {
                 $ok = false;
