@@ -58,8 +58,8 @@ class Orders_api
                 $dat = array(
                     // 'id' => $apidata->id,
                     'orderid' => $apidata->orderid,
-                    'is_prepaid' => $apidata->payment_method=='cod'?false:true,
-                    'amount' => $apidata->payment_method=='cod'?$apidata->amount:null,
+                    'is_prepaid' => strtolower($apidata->payment_method)!='cod'?true:true,
+                    'amount' => strtolower($apidata->payment_method)!='cod'?$apidata->amount:0,
                     'created_at' => $apidata->created_at,
                     'buyer_name' => $apidata->buyer_name,
                     "buyer_id" => $apidata->buyer_id,
