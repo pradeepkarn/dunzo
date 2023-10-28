@@ -41,14 +41,13 @@ class Orders_api
     {
         $arr = [];
         $data = $this->db->show("
-        SELECT orders.id, orders.driver_id, orders.add_on_price AS local_price, orders.jsn AS api_data
+        SELECT orders.id, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
         FROM orders
-        LEFT JOIN pk_user ON pk_user.id = orders.driver_id;   
-        // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
+        LEFT JOIN pk_user ON pk_user.id = orders.driver_id;");
+
+         // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
         // FROM orders
         // LEFT JOIN pk_user ON pk_user.id = orders.driver_id;        
-        ");
-
         // Check if data is not empty
         if (!empty($data)) {
             // Loop through the data and decode the JSON values
@@ -62,6 +61,8 @@ class Orders_api
                     "buyer_id" => $apidata->buyer_id,
                     "buyer_lat" => $apidata->buyer_lat,
                     "buyer_lon" => $apidata->buyer_lon,
+                    "rest_name" => $apidata->rest_name,
+                    "rest_address" => $apidata->rest_address,
                     "rest_lat" => $apidata->rest_lat,
                     "rest_lon" => $apidata->rest_lon,
                     "distance_unit" => $apidata->distance_unit,
