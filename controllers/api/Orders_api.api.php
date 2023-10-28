@@ -45,7 +45,7 @@ class Orders_api
         FROM orders
         LEFT JOIN pk_user ON pk_user.id = orders.driver_id;");
 
-         // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
+        // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
         // FROM orders
         // LEFT JOIN pk_user ON pk_user.id = orders.driver_id;        
         // Check if data is not empty
@@ -73,14 +73,14 @@ class Orders_api
                     "logo" => null,
                 );
                 $d['api_data'] = $dat;
-                $d['status_codes'] = obj(STATUS_CODES);
                 $arr[] = $d;
             }
         }
-
+        $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
     }
-    function update_location($req=null)  {
+    function update_location($req = null)
+    {
         $req = obj($req);
         $rules = [
             'token' => 'required|string',
@@ -104,8 +104,7 @@ class Orders_api
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
-        }
-        else {
+        } else {
             msg_set('Location not updated, user not found');
             $api['success'] = false;
             $api['data'] = null;
