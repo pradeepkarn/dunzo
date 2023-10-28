@@ -164,7 +164,7 @@ class Orders_api
                 $db->tableName = 'orders';
                 $db->insertData['driver_id'] = $user['id'];
                 $db->insertData['delivery_status'] = $data->delivery_status;
-                $db->findOne(['unique'=>$data->orderid]);
+                $db->findOne(['unique_id'=>$data->orderid]);
                 $db->update();
                 $pdo->commit();
                 msg_set("Assigned");
