@@ -9,6 +9,7 @@ class Orders_api
     }
     function fetch_orders($req = null)
     {
+        header("Content-type:application/json");
         $req = obj($req);
         if (!isset($req->sts)) {
             msg_set('Provide orders status');
