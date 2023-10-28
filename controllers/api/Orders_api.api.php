@@ -73,7 +73,7 @@ class Orders_api
                     "logo" => null,
                 );
                 $d['api_data'] = $dat;
-                $d['status_codes'] = STATUS_CODES;
+                $d['status_codes'] = obj(STATUS_CODES);
                 $arr[] = $d;
             }
         }
