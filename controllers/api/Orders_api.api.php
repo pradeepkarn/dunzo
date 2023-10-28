@@ -56,7 +56,7 @@ class Orders_api
         SELECT orders.id, orders.delivery_status, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
         FROM orders
         LEFT JOIN pk_user ON pk_user.id = orders.driver_id 
-        where orders.delivery_status IN ($statusString)
+        where orders.driver_id = '0' AND orders.delivery_status IN ($statusString)
         ;");
         if (!empty($data)) {
             // Loop through the data and decode the JSON values
