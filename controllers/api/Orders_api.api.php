@@ -20,7 +20,7 @@ class Orders_api
             exit;
         }
 
-        $ord_list = $this->order_list($order_group = "petrol", $ord = "DESC", $limit = 100, $active = 1);
+        $ord_list = $this->order_list($status=$req->sts);
         if ($ord_list) {
             msg_set('Orders found');
             $api['success'] = true;
@@ -37,14 +37,14 @@ class Orders_api
             exit;
         }
     }
-    function order_list()
+    function order_list($status=0)
     {
         $arr = [];
         $data = $this->db->show("
         SELECT orders.id, orders.delivery_status, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
         FROM orders
         LEFT JOIN pk_user ON pk_user.id = orders.driver_id 
-        where orders.delivery_status = '0' 
+        where orders.delivery_status = '$status' 
         ;");
 
         // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
