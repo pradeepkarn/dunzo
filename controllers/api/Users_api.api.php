@@ -171,8 +171,8 @@ class Users_api
             exit;
         }else{
             msg_set("User not found, invalid token");
-            $api['success'] = true;
-            $api['data'] = $user;
+            $api['success'] = false;
+            $api['data'] = null;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;

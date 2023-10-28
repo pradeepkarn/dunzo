@@ -107,24 +107,25 @@ class Orders_api
         $ok = true;
         $req = obj($req);
         $data  = json_decode(file_get_contents('php://input'));
-        if (isset($req->ug)) {
-            if (!in_array($req->ug, USER_GROUP_LIST)) {
-                $ok = false;
-                msg_set("Invalid account group");
-            }
-        } else {
-            $ok = false;
-            msg_set("No user group provided");
-        }
-        if (!$ok) {
-            $api['success'] = false;
-            $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
-            echo json_encode($api);
-            exit;
-        }
+        // if (isset($req->ug)) {
+        //     if (!in_array($req->ug, USER_GROUP_LIST)) {
+        //         $ok = false;
+        //         msg_set("Invalid account group");
+        //     }
+        // } else {
+        //     $ok = false;
+        //     msg_set("No user group provided");
+        // }
+        // if (!$ok) {
+        //     $api['success'] = false;
+        //     $api['data'] = null;
+        //     $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+        //     echo json_encode($api);
+        //     exit;
+        // }
         $rules = [
-            'token' => 'required|string'
+            'token' => 'required|string',
+            'orderid' => 'required|string'
         ];
 
         $pass = validateData(data: arr($data), rules: $rules);
@@ -139,7 +140,7 @@ class Orders_api
         $user = (new Users_api)->get_user_by_token($data->token);
 
         if ($user) {
-            if ($user['user_group'] != $req->ug) {
+            if ($user['user_group'] != 'driver') {
                 $ok = false;
                 msg_set("Invalid login portal");
                 $api['success'] = false;
@@ -148,22 +149,43 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             }
-
-
-            
-
-
-
-            msg_set("User found");
-            $api['success'] = true;
-            $api['data'] = $user;
-            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
-            echo json_encode($api);
-            exit;
+            if (!isset($data->delivery_status)) {
+                msg_set("Provide delivery status");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            $db = $this->db;
+            $pdo = $db->conn;
+            $pdo->beginTransaction();
+            try {
+                $db->tableName = 'orders';
+                $db->insertData['driver_id'] = $user['id'];
+                $db->insertData['delivery_status'] = $data->delivery_status;
+                $db->get(['unique'=>$data->order_id]);
+                $db->update();
+                $pdo->commit();
+                msg_set("Assigned");
+                $api['success'] = true;
+                $api['data'] = [];
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            } catch (PDOException $th) {
+                msg_set("Not Assigned");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                $pdo->rollBack();
+                exit;
+            }
         } else {
             msg_set("User not found, invalid token");
-            $api['success'] = true;
-            $api['data'] = $user;
+            $api['success'] = false;
+            $api['data'] = null;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
