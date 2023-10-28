@@ -43,7 +43,9 @@ class Orders_api
         $data = $this->db->show("
         SELECT orders.id, orders.delivery_status, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
         FROM orders
-        LEFT JOIN pk_user ON pk_user.id = orders.driver_id;");
+        LEFT JOIN pk_user ON pk_user.id = orders.driver_id 
+        where orders.delivery_status = '0' 
+        ;");
 
         // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
         // FROM orders
