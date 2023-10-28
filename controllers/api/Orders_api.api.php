@@ -53,7 +53,7 @@ class Orders_api
             // Loop through the data and decode the JSON values
             foreach ($data as $d) {
                 $d['id'] = intval($d['id']); // true parameter for associative array
-                $d['delivery_status_text']= getStatusText($statusCode = $d['delivery_status']);
+                $d['delivery_status_text'] = getStatusText($d['delivery_status']);
                 $apidata = json_decode($d['api_data']);
                 $dat = array(
                     // 'id' => $apidata->id,
