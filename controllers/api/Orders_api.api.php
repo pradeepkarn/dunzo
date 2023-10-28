@@ -58,11 +58,6 @@ class Orders_api
         LEFT JOIN pk_user ON pk_user.id = orders.driver_id 
         where orders.delivery_status IN ($statusString)
         ;");
-
-        // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
-        // FROM orders
-        // LEFT JOIN pk_user ON pk_user.id = orders.driver_id;        
-        // Check if data is not empty
         if (!empty($data)) {
             // Loop through the data and decode the JSON values
             foreach ($data as $d) {
@@ -101,31 +96,60 @@ class Orders_api
         // $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
     }
-    function accept_order($req = null)
+    function order_list_by_driver($driver_id)
+    {
+        $arr = [];
+        $data = $this->db->show("
+        SELECT orders.id, orders.delivery_status, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
+        FROM orders
+        LEFT JOIN pk_user ON pk_user.id = orders.driver_id 
+        where orders.driver_id = '$driver_id');");
+        if (!empty($data)) {
+            // Loop through the data and decode the JSON values
+            foreach ($data as $d) {
+                $d['id'] = intval($d['id']); // true parameter for associative array
+                $d['delivery_status_text'] = getStatusText($d['delivery_status']);
+                $apidata = json_decode($d['api_data']);
+                $dat = array(
+                    // 'id' => $apidata->id,
+                    'orderid' => $apidata->orderid,
+                    'is_prepaid' => strtolower($apidata->payment_method) == 'cod' ? false : true,
+                    'amount' => strtolower($apidata->payment_method) == 'cod' ? $apidata->amount : "0",
+                    'created_at' => $apidata->created_at,
+                    'buyer_name' => $apidata->buyer_name,
+                    "buyer_id" => $apidata->buyer_id,
+                    "buyer_lat" => $apidata->buyer_lat,
+                    "buyer_lon" => $apidata->buyer_lon,
+                    "rest_id" => $apidata->rest_id,
+                    'isd_code' => $apidata->isd_code,
+                    'mobile' => $apidata->mobile,
+                    'address' => $apidata->landmark,
+                    'city' => $apidata->city,
+                    'state' => $apidata->state,
+                    'country' => $apidata->country,
+                    "rest_name" => $apidata->rest_name,
+                    "rest_address" => $apidata->rest_address,
+                    "rest_lat" => $apidata->rest_lat,
+                    "rest_lon" => $apidata->rest_lon,
+                    "distance_unit" => $apidata->distance_unit,
+                    "user_to_rest" => $apidata->user_to_rest,
+                    "logo" => null,
+                );
+                $d['api_data'] = $dat;
+                $arr[] = $d;
+            }
+        }
+        return $arr;
+    }
+    function order_history($req = null)
     {
         header('Content-Type: application/json');
         $ok = true;
         $req = obj($req);
         $data  = json_decode(file_get_contents('php://input'));
-        // if (isset($req->ug)) {
-        //     if (!in_array($req->ug, USER_GROUP_LIST)) {
-        //         $ok = false;
-        //         msg_set("Invalid account group");
-        //     }
-        // } else {
-        //     $ok = false;
-        //     msg_set("No user group provided");
-        // }
-        // if (!$ok) {
-        //     $api['success'] = false;
-        //     $api['data'] = null;
-        //     $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
-        //     echo json_encode($api);
-        //     exit;
-        // }
+
         $rules = [
-            'token' => 'required|string',
-            'orderid' => 'required|string'
+            'token' => 'required|string'
         ];
 
         $pass = validateData(data: arr($data), rules: $rules);
@@ -156,15 +180,80 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             }
+            try {
+                $dt = $this->order_list_by_driver($driver_id = $user['id']);
+                msg_set("Orders found");
+                $api['success'] = count($dt) ? true : false;
+                $api['data'] = count($dt) ? $dt : null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            } catch (PDOException $th) {
+                msg_set("Not Assigned");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+        } else {
+            msg_set("User not found, invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
+    function accept_order($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+
+        $rules = [
+            'token' => 'required|string',
+            'orderid' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = (new Users_api)->get_user_by_token($data->token);
+        if ($user) {
+            if ($user['user_group'] != 'driver') {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            // if (!isset($data->delivery_status)) {
+            //     msg_set("Provide delivery status");
+            //     $api['success'] = false;
+            //     $api['data'] = null;
+            //     $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            //     echo json_encode($api);
+            //     exit;
+            // }
             $db = $this->db;
             $pdo = $db->conn;
             $pdo->beginTransaction();
             try {
                 $db->tableName = 'orders';
                 $db->insertData['driver_id'] = $user['id'];
-                $db->insertData['delivery_status'] = $data->delivery_status;
-                $db->findOne(['unique_id'=>$data->orderid]);
-                $rply = $db->update();
+                // $db->insertData['delivery_status'] = $data->delivery_status;
+                $db->findOne(['unique_id' => $data->orderid]);
+                $db->update();
                 $pdo->commit();
                 msg_set("Assigned");
                 $api['success'] = true;
