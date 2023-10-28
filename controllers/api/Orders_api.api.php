@@ -10,8 +10,9 @@ class Orders_api
     function fetch_orders($req = null)
     {
         header("Content-type:application/json");
-        $req = obj($req);
-        if (!isset($req->sts)) {
+        // $req = obj($req);
+        $req = obj($_GET);
+        if (!isset($req->status)) {
             msg_set('Provide orders status');
             $api['success'] = false;
             $api['data'] = null;
@@ -19,8 +20,9 @@ class Orders_api
             echo json_encode($api);
             exit;
         }
-
-        $ord_list = $this->order_list($status=$req->sts);
+        $req->status = urldecode($req->status);
+        $req->status = json_decode($req->status,true);
+        $ord_list = $this->order_list($status=$req->status);
         if ($ord_list) {
             msg_set('Orders found');
             $api['success'] = true;
@@ -37,14 +39,16 @@ class Orders_api
             exit;
         }
     }
-    function order_list($status=0)
+    function order_list($status=[0])
     {
         $arr = [];
+        $statusString = implode(',', $status);
+        // echo $statusString;
         $data = $this->db->show("
         SELECT orders.id, orders.delivery_status, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
         FROM orders
         LEFT JOIN pk_user ON pk_user.id = orders.driver_id 
-        where orders.delivery_status = '$status' 
+        where orders.delivery_status IN ($statusString)
         ;");
 
         // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
