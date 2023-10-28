@@ -66,7 +66,6 @@ class Orders_api
                     "rest_id" => $apidata->rest_id,
                     'isd_code' => $apidata->isd_code,
                     'mobile' => $apidata->mobile,
-                    'locality' => $apidata->locality,
                     'address' => $apidata->landmark,
                     'city' => $apidata->city,
                     'state' => $apidata->state,
