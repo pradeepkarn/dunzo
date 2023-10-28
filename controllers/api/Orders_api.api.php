@@ -41,9 +41,12 @@ class Orders_api
     {
         $arr = [];
         $data = $this->db->show("
-        SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
+        SELECT orders.id, orders.driver_id, orders.add_on_price AS local_price, orders.jsn AS api_data
         FROM orders
-        LEFT JOIN pk_user ON pk_user.id = orders.driver_id;        
+        LEFT JOIN pk_user ON pk_user.id = orders.driver_id;   
+        // SELECT orders.id, orders.driver_id, pk_user.lat AS driver_lat, pk_user.lon AS driver_lon, orders.add_on_price AS local_price, orders.jsn AS api_data
+        // FROM orders
+        // LEFT JOIN pk_user ON pk_user.id = orders.driver_id;        
         ");
 
         // Check if data is not empty
@@ -53,9 +56,9 @@ class Orders_api
                 $d['id'] = intval($d['id']); // true parameter for associative array
                 $apidata = json_decode($d['api_data']);
                 $dat = array(
-                    'id' => $apidata->id,
+                    // 'id' => $apidata->id,
                     'orderid' => $apidata->orderid,
-                    'buyer' => $apidata->buyer,
+                    'buyer_name' => $apidata->buyer_name,
                     "buyer_id" => $apidata->buyer_id,
                     "buyer_lat" => $apidata->buyer_lat,
                     "buyer_lon" => $apidata->buyer_lon,
@@ -63,6 +66,7 @@ class Orders_api
                     "rest_lon" => $apidata->rest_lon,
                     "distance_unit" => $apidata->distance_unit,
                     "user_to_rest" => $apidata->user_to_rest,
+                    "logo" => null,
                 );
                 $d['api_data'] = $dat;
                 $arr[] = $d;
