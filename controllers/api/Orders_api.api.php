@@ -177,7 +177,7 @@ class Orders_api
             
             try {
                 $dt = $this->order_list_by_driver($driver_id = $user['id']);
-                msg_set("Orders found");
+                msg_set(count($dt) ? "Orders found": "Orders not found");
                 $api['success'] = count($dt) ? true : false;
                 $api['data'] = count($dt) ? $dt : null;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
