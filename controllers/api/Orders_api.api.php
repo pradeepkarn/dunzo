@@ -165,7 +165,7 @@ class Orders_api
                 $db->insertData['driver_id'] = $user['id'];
                 $db->insertData['delivery_status'] = $data->delivery_status;
                 $db->findOne(['unique_id'=>$data->orderid]);
-                $db->update();
+                $rply = $db->update();
                 $pdo->commit();
                 msg_set("Assigned");
                 $api['success'] = true;
@@ -174,7 +174,7 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             } catch (PDOException $th) {
-                echo $th;
+                // echo $th;
                 msg_set("Not Assigned");
                 $api['success'] = false;
                 $api['data'] = null;
