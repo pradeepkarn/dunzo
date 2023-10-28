@@ -174,6 +174,7 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             } catch (PDOException $th) {
+                echo $th;
                 msg_set("Not Assigned");
                 $api['success'] = false;
                 $api['data'] = null;
