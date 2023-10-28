@@ -61,6 +61,7 @@ class Orders_api
                     "buyer_id" => $apidata->buyer_id,
                     "buyer_lat" => $apidata->buyer_lat,
                     "buyer_lon" => $apidata->buyer_lon,
+                    "rest_id" => $apidata->rest_id,
                     "rest_name" => $apidata->rest_name,
                     "rest_address" => $apidata->rest_address,
                     "rest_lat" => $apidata->rest_lat,
