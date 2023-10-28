@@ -17,7 +17,7 @@ const STATUS_CODES = array(
     3 => 'Picked Up',
     4 => 'Delivered',
     5 => 'Cancelled',
-    6 => 'Return Order'
+    6 => 'Returned'
   );
 const ADMIN_ROLES = array(
     'subscriber'=>'Subscriber',
