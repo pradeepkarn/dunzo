@@ -128,7 +128,7 @@ function pkAjax($button, $url, $data, $response, $event = 'click', $method = "po
   }
   echo $ajax;
 }
-function send_to_server($button, $data, $callback="commonCallbackHandler", $event = 'click')
+function send_to_server($button, $data, $callback = "commonCallbackHandler", $event = 'click')
 {
   $ajax = "<script>
   $(document).ready(function () {
@@ -876,7 +876,7 @@ function validateData($data, $rules)
           if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
             $errors[] = str_replace("_", " ", ucfirst($field)) . ' is required';
           } else {
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'csv','pdf'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'csv', 'pdf'];
             $extension = pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION);
             if (!in_array($extension, $allowedExtensions)) {
               $errors[] = 'Only files with extensions ' . implode(', ', $allowedExtensions) . ' are allowed for ' . $field;
@@ -1438,7 +1438,7 @@ function lineBreakBySemicolon($inputString)
 }
 function calculateDistance($startLat, $startLon, $endLat, $endLon)
 {
-  if ($startLat=='' || $startLon=='' || $endLat =='' || $endLon == '') {
+  if ($startLat == '' || $startLon == '' || $endLat == '' || $endLon == '') {
     return null;
   }
   $accessToken = MAPBOX_ACCESS_TOKEN;
@@ -1460,5 +1460,22 @@ function calculateDistance($startLat, $startLon, $endLat, $endLon)
     return $data['routes'][0]['distance']; // meters
   } else {
     return null;
+  }
+}
+function getStatusText($statusCode)
+{
+  $statusCodes = array(
+    0 => 'New Order',
+    1 => 'Order Confirmed',
+    2 => 'Driver Assigned',
+    3 => 'Picked Up',
+    4 => 'Delivered',
+    5 => 'Cancelled',
+    6 => 'Return Order'
+  );
+  if (array_key_exists($statusCode, $statusCodes)) {
+    return $statusCodes[$statusCode];
+  } else {
+    return "Status code not found";
   }
 }
