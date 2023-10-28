@@ -21,7 +21,7 @@ class Orders_api
             exit;
         }
         $req->status = urldecode($req->status);
-        $req->status = json_decode($req->status,true);
+        $req->status = json_decode($req->status, true);
         if (!is_array($req->status)) {
             msg_set('Invalid status format');
             $api['success'] = false;
@@ -30,7 +30,7 @@ class Orders_api
             echo json_encode($api);
             exit;
         }
-        $ord_list = $this->order_list($status=$req->status);
+        $ord_list = $this->order_list($status = $req->status);
         if ($ord_list) {
             msg_set('Orders found');
             $api['success'] = true;
@@ -47,7 +47,7 @@ class Orders_api
             exit;
         }
     }
-    function order_list($status=[0])
+    function order_list($status = [0])
     {
         $arr = [];
         $statusString = implode(',', $status);
@@ -72,8 +72,8 @@ class Orders_api
                 $dat = array(
                     // 'id' => $apidata->id,
                     'orderid' => $apidata->orderid,
-                    'is_prepaid' => strtolower($apidata->payment_method)=='cod'?false:true,
-                    'amount' => strtolower($apidata->payment_method)=='cod'?$apidata->amount:0,
+                    'is_prepaid' => strtolower($apidata->payment_method) == 'cod' ? false : true,
+                    'amount' => strtolower($apidata->payment_method) == 'cod' ? $apidata->amount : "0",
                     'created_at' => $apidata->created_at,
                     'buyer_name' => $apidata->buyer_name,
                     "buyer_id" => $apidata->buyer_id,
@@ -100,6 +100,74 @@ class Orders_api
         }
         // $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
+    }
+    function accept_order($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+        if (isset($req->ug)) {
+            if (!in_array($req->ug, USER_GROUP_LIST)) {
+                $ok = false;
+                msg_set("Invalid account group");
+            }
+        } else {
+            $ok = false;
+            msg_set("No user group provided");
+        }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $rules = [
+            'token' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = (new Users_api)->get_user_by_token($data->token);
+
+        if ($user) {
+            if ($user['user_group'] != $req->ug) {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+
+
+            
+
+
+
+            msg_set("User found");
+            $api['success'] = true;
+            $api['data'] = $user;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        } else {
+            msg_set("User not found, invalid token");
+            $api['success'] = true;
+            $api['data'] = $user;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
     }
     function update_location($req = null)
     {
