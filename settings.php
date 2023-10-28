@@ -10,7 +10,15 @@ const USER_ROLES = array(
     'editor'=>'Editor', 
     'admin'=>'Admin'
 );
-
+const STATUS_CODES = array(
+    0 => 'New Order',
+    1 => 'Order Confirmed',
+    2 => 'Driver Assigned',
+    3 => 'Picked Up',
+    4 => 'Delivered',
+    5 => 'Cancelled',
+    6 => 'Return Order'
+  );
 const ADMIN_ROLES = array(
     'subscriber'=>'Subscriber',
     'author'=>'Author',

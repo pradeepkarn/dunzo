@@ -1464,15 +1464,7 @@ function calculateDistance($startLat, $startLon, $endLat, $endLon)
 }
 function getStatusText($statusCode)
 {
-  $statusCodes = array(
-    0 => 'New Order',
-    1 => 'Order Confirmed',
-    2 => 'Driver Assigned',
-    3 => 'Picked Up',
-    4 => 'Delivered',
-    5 => 'Cancelled',
-    6 => 'Return Order'
-  );
+  $statusCodes = STATUS_CODES;
   if (array_key_exists($statusCode, $statusCodes)) {
     return $statusCodes[$statusCode];
   } else {
