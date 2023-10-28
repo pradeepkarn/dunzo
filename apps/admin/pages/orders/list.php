@@ -72,7 +72,7 @@ $req->fg = $ug;
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div>
                                                         <select class="<?php echo $driver_id ? 'bg-success text-white' : null; ?> form-control" name="driver_id">
-                                                            <option value="">--Driver--</option>
+                                                            <option value="0">--Driver--</option>
                                                             <?php
                                                             foreach ($drivers as $drv) {
                                                                 $drv = obj($drv);
