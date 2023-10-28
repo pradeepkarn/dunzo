@@ -54,11 +54,11 @@ class Orders_api
             foreach ($data as $d) {
                 $d['id'] = intval($d['id']); // true parameter for associative array
                 $d['delivery_status_text'] = getStatusText($d['delivery_status']);
+                $d['is_prepaid'] = false;
                 $apidata = json_decode($d['api_data']);
                 $dat = array(
                     // 'id' => $apidata->id,
                     'orderid' => $apidata->orderid,
-                    'is_prepaid' => false,
                     'created_at' => $apidata->created_at,
                     'buyer_name' => $apidata->buyer_name,
                     "buyer_id" => $apidata->buyer_id,
