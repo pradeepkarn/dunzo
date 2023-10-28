@@ -189,7 +189,7 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             } catch (PDOException $th) {
-                msg_set("Not Assigned");
+                msg_set("Unable to fetch");
                 $api['success'] = false;
                 $api['data'] = null;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
