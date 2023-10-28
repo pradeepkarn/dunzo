@@ -41,7 +41,7 @@ class Orders_api
     {
         $arr = [];
         $data = $this->db->show("
-        SELECT orders.id, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
+        SELECT orders.id, orders.status, orders.driver_id, orders.add_on_price, orders.jsn AS api_data
         FROM orders
         LEFT JOIN pk_user ON pk_user.id = orders.driver_id;");
 
