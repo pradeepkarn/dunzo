@@ -409,7 +409,6 @@ class Orders_api
             }
             try {
                 $db->tableName = 'orders';
-                $db->insertData['driver_id'] = $user['id'];
                 $db->insertData['delivery_status'] = $req->delivery_status;
                 $db->insertData['cancel_info'] = $req->cancel_info??null;
                 $db->findOne(['unique_id' => $data->orderid,'driver_id'=>$user['id']]);
