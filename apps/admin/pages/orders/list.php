@@ -62,7 +62,7 @@ $req->fg = $ug;
                                         <th><?php echo $pv->orderid; ?></th>
                                         <th>
                                             <?php //echo getStatusText($statusCode = $delivery_status); ?>
-                                            <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateAddOnPrice'); ?>">
+                                            <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateOrderStatus'); ?>">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div>
                                                         <select class="<?php echo $delivery_status =='2' ? 'bg-success text-white' : null; echo $delivery_status =='1' ? 'bg-info text-dark' : null; echo $delivery_status =='3' ? 'bg-danger text-dark' : null; ?> form-control" name="driver_id">
@@ -87,7 +87,7 @@ $req->fg = $ug;
                                         <th><?php echo $pv->user_to_rest . " " . $pv->distance_unit; ?></th>
 
                                         <th>
-                                            <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateAddOnPrice'); ?>">
+                                            <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateOrderAddOnPrice'); ?>">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div>
                                                         <select class="<?php echo $driver_id ? 'bg-success text-white' : null; ?> form-control" name="driver_id">

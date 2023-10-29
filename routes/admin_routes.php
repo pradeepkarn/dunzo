@@ -89,7 +89,8 @@ $admin_routes = [
     '/admin/account/{ug}/edit/{id}/save-by-ajax' => 'Admin_user_ctrl@update@name.userUpdateAjax',
     // fuels
     '/admin/orders/{fg}/list' => 'Orders_api_ctrl@list@name.orderListApi',
-    '/admin/orders/update-addon-price-ajax' => 'Orders_api_ctrl@update_addon_price@name.updateAddOnPrice',
+    '/admin/orders/update-addon-price-ajax' => 'Orders_api_ctrl@update_addon_price@name.updateOrderAddOnPrice',
+    '/admin/orders/update-addon-price-ajax' => 'Orders_api_ctrl@update_status@name.updateOrderStatus',
     // fuels
     // '/admin/fuel/{fg}/create' => 'Admin_fuel_ctrl@create@name.fuelCreate',
     // '/admin/fuel/{fg}/create/save-by-ajax' => 'Admin_fuel_ctrl@save@name.fuelStoreAjax',
