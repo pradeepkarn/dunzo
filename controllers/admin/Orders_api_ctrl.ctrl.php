@@ -189,7 +189,7 @@ class Orders_api_ctrl
         if ($driver_id!="0") {
             $ruuning = $this->db->showOne("select * from orders where driver_id = '{$driver_id}' and delivery_status IN (0,1,2)");
             if ($ruuning['driver_id']) {
-                msg_set("This  $d->driver_id driver has already a running order");
+                msg_set("Driver already assigned");
             }else{
                 $this->db->insertData['driver_id'] = $driver_id;
             }
