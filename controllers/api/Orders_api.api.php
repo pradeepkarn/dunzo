@@ -411,11 +411,16 @@ class Orders_api
                 $db->tableName = 'orders';
                 $db->insertData['delivery_status'] = $req->delivery_status;
                 $db->insertData['cancel_info'] = $data->cancel_info??null;
-                $db->findOne(['unique_id' => $data->orderid,'driver_id'=>$user['id']]);
-                $db->update();
-                $pdo->commit();
-                msg_set("Order is changed to $status");
-                $api['success'] = true;
+                $old = $db->findOne(['unique_id' => $data->orderid,'driver_id'=>$user['id']]);
+                if($old['delivery_status']!=$req->delivery_status){
+                    $db->update();
+                    $pdo->commit();
+                    msg_set("Order is changed to $status");
+                    $api['success'] = true;
+                }else{
+                    msg_set("Already order is $status");
+                    $api['success'] = true;
+                }
                 $api['data'] = [];
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
