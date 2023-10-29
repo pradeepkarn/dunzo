@@ -60,7 +60,33 @@ $req->fg = $ug;
 
                                     <tr>
                                         <th><?php echo $pv->orderid; ?></th>
-                                        <th><?php echo getStatusText($statusCode = $delivery_status); ?></th>
+                                        <th>
+                                            <?php //echo getStatusText($statusCode = $delivery_status); ?>
+                                            <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateAddOnPrice'); ?>">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <div>
+                                                        <select class="<?php echo $driver_id ? 'bg-success text-white' : null; ?> form-control" name="driver_id">
+                                                            <option value="0">--Driver--</option>
+                                                            <?php
+                                                            foreach (STATUS_CODES as $key => $sts) {
+                                                                $drv = obj($drv);
+                                                            ?>
+                                                                <option <?php echo $key == $delivery_status ? 'selected' : null; ?> value="<?php echo $key; ?>"><?php echo $sts; ?></option>
+                                                            <?php }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <input type="hidden" name="orderid" value="<?php echo $pv->orderid; ?>">
+                                                        <input type="text" name="add_on_price" value="<?php echo $add_on_price; ?>" class="form-control">
+                                                    </div>
+                                                    <div>
+                                                        <button type="button" id="<?php echo $btnid; ?>" class="btn btn-sm btn-primary">Set</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </th>
                                         <!-- <th><?php //echo $pv->driver_assigned ? $pv->driver : 'NA'; 
                                                     ?></th> -->
                                         <th><?php echo $pv->buyer; ?></th>
