@@ -58,8 +58,8 @@ class Fuels_api
             exit;
         }
     }
-    function fuel_list($driverid)
+    function fuel_list($driver_id)
     {
-        return $this->db->filter("select id, volume, unit, fuel_group as fuel_type, balance from fuels where user_id = '$driverid'");
+        return $this->db->show("select id, volume, unit, fuel_group as fuel_type, balance, created_at from fuels where user_id = '$driver_id'");
     }
 }
