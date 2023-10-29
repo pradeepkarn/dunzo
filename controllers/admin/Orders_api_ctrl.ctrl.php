@@ -207,6 +207,13 @@ class Orders_api_ctrl
                 echo json_encode($api);
                 exit;
             }
+        }else{
+            msg_set('Orders not found');
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
         }
     }
     function update_status($req = null)
