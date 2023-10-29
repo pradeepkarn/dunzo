@@ -65,8 +65,8 @@ $req->fg = $ug;
                                             <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateAddOnPrice'); ?>">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div>
-                                                        <select class="<?php echo $driver_id ? 'bg-success text-white' : null; ?> form-control" name="driver_id">
-                                                            <option value="0">--Driver--</option>
+                                                        <select class="<?php echo $delivery_status =='2' ? 'bg-success text-white' : null; echo $delivery_status =='1' ? 'bg-info text-dark' : null; echo $delivery_status =='3' ? 'bg-dark text-dark' : null; ?> form-control" name="driver_id">
+                                                            <option value="0">--Status--</option>
                                                             <?php
                                                             foreach (STATUS_CODES as $key => $sts) {
                                                                 $drv = obj($drv);
