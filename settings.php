@@ -11,7 +11,7 @@ const USER_ROLES = array(
     'admin'=>'Admin'
 );
 const STATUS_CODES = array(
-    0 => 'New ordered',
+    0 => 'New order',
     1 => 'Picked Up',
     2 => 'Delivered',
     3 => 'Cancelled'
