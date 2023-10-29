@@ -42,8 +42,10 @@ $req->fg = $ug;
 
                                 foreach ($fl as $key => $pv) :
                                     $pv = obj($pv['api_data']);
+
                                     $btnid = uniqid("btn{$pv->orderid}");
                                     $formid = uniqid("form{$pv->orderid}");
+
                                     $ord = $db->showOne("select add_on_price,driver_id, delivery_status from orders where orders.unique_id = '$pv->orderid'");
                                     $add_on_price = $ord['add_on_price'];
                                     $driver_id = $ord['driver_id'];
@@ -61,11 +63,14 @@ $req->fg = $ug;
                                     <tr>
                                         <th><?php echo $pv->orderid; ?></th>
                                         <th>
-                                            <?php //echo getStatusText($statusCode = $delivery_status); ?>
-                                            <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('updateOrderStatus'); ?>">
+                                            <?php //echo getStatusText($statusCode = $delivery_status); 
+                                            ?>
+                                            <form id="<?php echo $formid; ?>status" method="post" action="<?php echo BASEURI . route('updateOrderStatus'); ?>">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <div>
-                                                        <select class="<?php echo $delivery_status =='2' ? 'bg-success text-white' : null; echo $delivery_status =='1' ? 'bg-info text-dark' : null; echo $delivery_status =='3' ? 'bg-danger text-dark' : null; ?> form-control" name="driver_id">
+                                                        <select id="<?php echo $btnid; ?>select" class="<?php echo $delivery_status == '2' ? 'bg-success text-white' : null;
+                                                                        echo $delivery_status == '1' ? 'bg-info text-dark' : null;
+                                                                        echo $delivery_status == '3' ? 'bg-danger text-dark' : null; ?> form-control" name="delivery_status">
                                                             <option value="0">--Status--</option>
                                                             <?php
                                                             foreach (STATUS_CODES as $key => $sts) {
@@ -79,6 +84,7 @@ $req->fg = $ug;
                                                     </div>
                                                 </div>
                                             </form>
+                                            <?php send_to_server(button:"#{$btnid}select", data:"#{$formid}status",event:"change"); ?>
                                         </th>
                                         <!-- <th><?php //echo $pv->driver_assigned ? $pv->driver : 'NA'; 
                                                     ?></th> -->

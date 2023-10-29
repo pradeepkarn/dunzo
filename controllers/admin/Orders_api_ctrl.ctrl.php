@@ -206,6 +206,42 @@ class Orders_api_ctrl
         }
         
     }
+    function update_status ($req = null){
+        $rules = [
+            'orderid' => 'required|string',
+        ];
+        $pass = validateData(data: $_POST, rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $d = obj($_POST);
+        $this->db->tableName = 'orders';
+        $this->db->insertData['delivery_status'] = floatval($d->delivery_status??0);
+        $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
+        if ($arready) {
+            $this->db->tableName = 'orders';
+            $this->db->pk($arready['id']);
+            if ($this->db->update()) {
+                msg_set('Orders updated');
+                $api['success'] = true;
+                $api['data'] = [];
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }else{
+                msg_set('Orders not updated');
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+        }
+    }
     function order_search_list($order_group = "petrol", $keyword = "", $ord = "DESC", $limit = 5, $active = 1)
     {
         return [];

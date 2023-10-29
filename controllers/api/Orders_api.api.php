@@ -259,6 +259,7 @@ class Orders_api
             exit;
         }
     }
+    
     function accept_order($req = null)
     {
         header('Content-Type: application/json');
