@@ -5,7 +5,8 @@ $api_routes = [
     "/api/v1/account/login-via-token/{ug}" => 'Users_api@login_via_token@name.loginAccountViaTokenApi',
     "/api/v1/orders/list" => 'Orders_api@fetch_orders@name.fetchOrdersApi',
     "/api/v1/orders/driver/accept" => 'Orders_api@accept_order@name.acceptOrderApi',
-    "/api/v1/orders/driver/history" => 'Orders_api@order_history@name.orderHIstoryApi',
+    "/api/v1/orders/driver/history" => 'Orders_api@order_history@name.orderHistoryApi',
+    "/api/v1/orders/driver/running" => 'Orders_api@running_orders@name.orderRunningyApi',
     "/api/v1/account/update/location" => 'Orders_api@update_location@name.updateLocationApi',
 ];
 
