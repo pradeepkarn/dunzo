@@ -201,7 +201,7 @@ class Orders_api
             exit;
         }
     }
-    function driver_orders_by_status($req = null)
+    function running_orders($req = null)
     {
         header('Content-Type: application/json');
         $ok = true;
@@ -237,7 +237,7 @@ class Orders_api
                 $dt = $this->order_list_by_driver($driver_id = $user['id'],"1");
                 msg_set(count($dt) ? "Orders found": "Orders not found");
                 $api['success'] = count($dt) ? true : false;
-                $api['data'] = count($dt) ? $dt : null;
+                $api['data'] = count($dt) ? $dt[0] : null;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;
