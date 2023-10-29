@@ -75,14 +75,7 @@ $req->fg = $ug;
                                                             <?php }
                                                             ?>
                                                         </select>
-                                                    </div>
-
-                                                    <div>
                                                         <input type="hidden" name="orderid" value="<?php echo $pv->orderid; ?>">
-                                                        <input type="text" name="add_on_price" value="<?php echo $add_on_price; ?>" class="form-control">
-                                                    </div>
-                                                    <div>
-                                                        <button type="button" id="<?php echo $btnid; ?>" class="btn btn-sm btn-primary">Set</button>
                                                     </div>
                                                 </div>
                                             </form>
