@@ -96,7 +96,7 @@ class Orders_api
         // $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
     }
-    function order_list_by_driver($driver_id,$status="4,5")
+    function order_list_by_driver($driver_id,$status="0,1")
     {
         $arr = [];
         $data = $this->db->show("
@@ -234,7 +234,7 @@ class Orders_api
             }
             
             try {
-                $dt = $this->order_list_by_driver($driver_id = $user['id'],"1");
+                $dt = $this->order_list_by_driver($driver_id = $user['id'],"0,1");
                 msg_set(count($dt) ? "Orders found": "Orders not found");
                 $api['success'] = count($dt) ? true : false;
                 $api['data'] = count($dt) ? $dt[0] : null;
