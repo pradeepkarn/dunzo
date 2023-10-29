@@ -345,6 +345,99 @@ class Orders_api
             exit;
         }
     }
+    function status_update_order($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+
+        $rules = [
+            'token' => 'required|string',
+            'orderid' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = (new Users_api)->get_user_by_token($data->token);
+        if ($user) {
+            if ($user['user_group'] != 'driver') {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            if (!isset($req->delivery_status)) {
+                msg_set("Invalid link");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            if (!in_array($req->delivery_status, array_flip(STATUS_CODES))) {
+                msg_set("Invalid status code");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            $status = getStatusText($req->delivery_status);
+            $db = $this->db;
+            $pdo = $db->conn;
+            $pdo->beginTransaction();
+            $ruuning = $db->showOne("select * from orders where driver_id = '{$user['id']}' and delivery_status IN (0,1)");
+            if (!$ruuning) {
+                msg_set("You have no any running order");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                $pdo->rollBack();
+                exit;
+            }
+            try {
+                $db->tableName = 'orders';
+                $db->insertData['driver_id'] = $user['id'];
+                $db->insertData['delivery_status'] = $req->delivery_status;
+                $db->findOne(['unique_id' => $data->orderid,'driver_id'=>$user['id']]);
+                $db->update();
+                $pdo->commit();
+                msg_set("Order is changed to $status");
+                $api['success'] = true;
+                $api['data'] = [];
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            } catch (PDOException $th) {
+                msg_set("Order is not changed to $status");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                $pdo->rollBack();
+                exit;
+            }
+        } else {
+            msg_set("User not found, invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
     function update_location($req = null)
     {
         $req = obj($req);
