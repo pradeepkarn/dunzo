@@ -171,6 +171,7 @@ class Orders_api_ctrl
         $rules = [
             'orderid' => 'required|string',
         ];
+        
         $pass = validateData(data: $_POST, rules: $rules);
         if (!$pass) {
             $api['success'] = false;
@@ -180,17 +181,20 @@ class Orders_api_ctrl
             exit;
         }
         $d = obj($_POST);
+        $driver_id = $d->driver_id??"0";
         $this->db->tableName = 'orders';
         $this->db->insertData['add_on_price'] = floatval($d->add_on_price ?? 0);
-        $ruuning = $this->db->showOne("select * from orders where driver_id = '{$d->driver_id}' and delivery_status IN (0,1,2)");
-        if (isset($d->driver_id) && $ruuning) {
-            if (strval($d->driver_id)!==strval($ruuning['driver_id'])) {
-                $this->db->insertData['driver_id'] = $d->driver_id ?? 0;
-            }else{
+        
+        
+        if ($driver_id!="0") {
+            $ruuning = $this->db->showOne("select * from orders where driver_id = '{$driver_id}' and delivery_status IN (0,1,2)");
+            if ($ruuning['driver_id']) {
                 msg_set("This  $d->driver_id driver has already a running order");
+            }else{
+                $this->db->insertData['driver_id'] = $driver_id;
             }
         }else{
-            $this->db->insertData['driver_id'] = $d->driver_id ?? 0;
+            $this->db->insertData['driver_id'] = "0";
         }
         $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
         if ($arready) {
