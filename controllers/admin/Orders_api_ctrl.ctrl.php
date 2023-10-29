@@ -182,7 +182,7 @@ class Orders_api_ctrl
         $d = obj($_POST);
         $this->db->tableName = 'orders';
         $this->db->insertData['add_on_price'] = floatval($d->add_on_price ?? 0);
-        $ruuning = $this->db->showOne("select * from orders where driver_id = '{$d->driver_id}' and status IN (0,1,2)");
+        $ruuning = $this->db->showOne("select * from orders where driver_id = '{$d->driver_id}' and delivery_status IN (0,1,2)");
         if (isset($d->driver_id) && $ruuning) {
             msg_set("This driver has already a running order");
         }else{
