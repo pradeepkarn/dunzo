@@ -303,6 +303,16 @@ class Orders_api
             $db = $this->db;
             $pdo = $db->conn;
             $pdo->beginTransaction();
+            $ruuning = $db->showOne("select * from orders where driver_id = '{$user['id']}' and status IN (0,1,2)");
+            if ($ruuning) {
+                msg_set("You have a running order, complete first");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                $pdo->rollBack();
+                exit;
+            }
             try {
                 $db->tableName = 'orders';
                 $db->insertData['driver_id'] = $user['id'];

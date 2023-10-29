@@ -162,10 +162,9 @@ class Orders_api_ctrl
                     $this->db->insertData = null;
                 }, $data);
             } catch (\Throwable $th) {
-                
             }
         }
-        return json_decode($response,true);
+        return json_decode($response, true);
     }
     function update_addon_price($req = null)
     {
@@ -182,8 +181,13 @@ class Orders_api_ctrl
         }
         $d = obj($_POST);
         $this->db->tableName = 'orders';
-        $this->db->insertData['add_on_price'] = floatval($d->add_on_price??0);
-        $this->db->insertData['driver_id'] = $d->driver_id??null;
+        $this->db->insertData['add_on_price'] = floatval($d->add_on_price ?? 0);
+        $ruuning = $this->db->showOne("select * from orders where driver_id = '{$d->driver_id}' and status IN (0,1,2)");
+        if (isset($d->driver_id) && $ruuning) {
+            msg_set("This driver has already a running order");
+        }else{
+            $this->db->insertData['driver_id'] = $d->driver_id ?? 0;
+        }
         $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
         if ($arready) {
             $this->db->tableName = 'orders';
@@ -195,7 +199,7 @@ class Orders_api_ctrl
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;
-            }else{
+            } else {
                 msg_set('Orders not updated');
                 $api['success'] = false;
                 $api['data'] = null;
@@ -204,9 +208,9 @@ class Orders_api_ctrl
                 exit;
             }
         }
-        
     }
-    function update_status ($req = null){
+    function update_status($req = null)
+    {
         $rules = [
             'orderid' => 'required|string',
         ];
@@ -220,7 +224,7 @@ class Orders_api_ctrl
         }
         $d = obj($_POST);
         $this->db->tableName = 'orders';
-        $this->db->insertData['delivery_status'] = floatval($d->delivery_status??0);
+        $this->db->insertData['delivery_status'] = floatval($d->delivery_status ?? 0);
         $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
         if ($arready) {
             $this->db->tableName = 'orders';
@@ -232,7 +236,7 @@ class Orders_api_ctrl
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;
-            }else{
+            } else {
                 msg_set('Orders not updated');
                 $api['success'] = false;
                 $api['data'] = null;
