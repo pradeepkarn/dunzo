@@ -187,7 +187,7 @@ class Orders_api_ctrl
             if ($d->driver_id!=$ruuning['driver_id']) {
                 $this->db->insertData['driver_id'] = $d->driver_id ?? 0;
             }else{
-                msg_set("This driver has already a running order");
+                msg_set("This  $d->driver_id driver has already a running order");
             }
         }else{
             $this->db->insertData['driver_id'] = $d->driver_id ?? 0;
