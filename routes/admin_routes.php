@@ -87,7 +87,7 @@ $admin_routes = [
     '/admin/account/{ug}/restore/{id}' => 'Admin_user_ctrl@restore@name.userRestore',
     '/admin/account/{ug}/delete/{id}' => 'Admin_user_ctrl@delete_trash@name.userDelete',
     '/admin/account/{ug}/edit/{id}/save-by-ajax' => 'Admin_user_ctrl@update@name.userUpdateAjax',
-    // fuels
+    // for admin side api
     '/admin/orders/{fg}/list' => 'Orders_api_ctrl@list@name.orderListApi',
     '/admin/orders/update-addon-price-ajax' => 'Orders_api_ctrl@update_addon_price@name.updateOrderAddOnPrice',
     '/admin/orders/update-delivery-status-ajax' => 'Orders_api_ctrl@update_status@name.updateOrderStatus',

@@ -166,12 +166,45 @@ class Orders_api_ctrl
         }
         return json_decode($response, true);
     }
+    function update_on_purchase_event_from_client($req = null)
+    {
+        header("Content-Type: application/json");
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+        $rules = [
+            'single_order' => 'required|string'
+        ];
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+
+        $headers = getallheaders();
+        print_r($headers);
+
+        return;
+        if (isset($API_KEY) && hash_equals(REST_API_ENDPOINT, $data->API_KEY)) {
+            $headers = getallheaders();
+            print_r($headers);
+        } else {
+            msg_set("Invalid sitekey");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
     function update_addon_price($req = null)
     {
         $rules = [
             'orderid' => 'required|string',
         ];
-        
+
         $pass = validateData(data: $_POST, rules: $rules);
         if (!$pass) {
             $api['success'] = false;
@@ -181,19 +214,19 @@ class Orders_api_ctrl
             exit;
         }
         $d = obj($_POST);
-        $driver_id = $d->driver_id??"0";
+        $driver_id = $d->driver_id ?? "0";
         $this->db->tableName = 'orders';
         $this->db->insertData['add_on_price'] = floatval($d->add_on_price ?? 0);
-        
-        
-        if ($driver_id!="0") {
+
+
+        if ($driver_id != "0") {
             $ruuning = $this->db->showOne("select * from orders where driver_id = '{$driver_id}' and delivery_status IN (0,1)");
             if ($ruuning) {
                 msg_set("Driver already assigned");
-            }else{
+            } else {
                 $this->db->insertData['driver_id'] = $driver_id;
             }
-        }else{
+        } else {
             $this->db->insertData['driver_id'] = "0";
         }
         $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
@@ -215,7 +248,7 @@ class Orders_api_ctrl
                 echo json_encode($api);
                 exit;
             }
-        }else{
+        } else {
             msg_set('Orders not found');
             $api['success'] = false;
             $api['data'] = null;
