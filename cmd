@@ -16,7 +16,7 @@ import("settings.php");
 define("direct_access", 1);
 ############################################################################
 
-
+echo time() - 24*60*60*2;
 
 exit;
 function updateProgressBar($current, $total)
