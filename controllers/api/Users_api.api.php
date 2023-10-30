@@ -63,12 +63,12 @@ class Users_api
             $arr = null;
         }
 
-        if (!$user) {
-            $arr['mobile'] = $data->credit;
-            $arr['password'] = md5($data->password);
-            $user = $this->db->findOne($arr);
-            $arr = null;
-        }
+        // if (!$user) {
+        //     $arr['mobile'] = $data->credit;
+        //     $arr['password'] = md5($data->password);
+        //     $user = $this->db->findOne($arr);
+        //     $arr = null;
+        // }
 
         if ($user) {
             if ($user['user_group'] != $req->ug) {
@@ -241,6 +241,7 @@ class Users_api
         $username = generate_clean_username($request->username );
         $username_exists = $this->db->get(['username' => $username]);
         $email_exists = $this->db->get(['email' => $request->email]);
+        // $mobile_exists = $this->db->get(['mobile' => $request->mobile]);
         if ($username_exists) {
             $_SESSION['msg'][] = 'Usernam not availble please try with another username';
             $ok = false;
@@ -249,6 +250,10 @@ class Users_api
             $_SESSION['msg'][] = 'Email is already exists';
             $ok = false;
         }
+        // if ($mobile_exists) {
+        //     $_SESSION['msg'][] = 'Mobile is registered';
+        //     $ok = false;
+        // }
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
@@ -344,15 +349,15 @@ class Users_api
             'password' => 'required|string'
         ];
         if ($req->ug == 'driver') {
-            $rules_driver = [
-                'dl_doc' => 'required|file',
-                'nid_doc' => 'required|file',
-                'vhcl_doc' => 'required|file',
-                'dl_no' => 'required|string',
-                'nid_no' => 'required|string',
-                'vhcl_no' => 'required|string',
-            ];
-            $rules = array_merge($rules, $rules_driver);
+            // $rules_driver = [
+            //     'dl_doc' => 'required|file',
+            //     'nid_doc' => 'required|file',
+            //     'vhcl_doc' => 'required|file',
+            //     'dl_no' => 'required|string',
+            //     'nid_no' => 'required|string',
+            //     'vhcl_no' => 'required|string',
+            // ];
+            // $rules = array_merge($rules, $rules_driver);
         }
         $pass = validateData(data: $data, rules: $rules);
         if (!$pass) {
@@ -417,10 +422,11 @@ class Users_api
             $this->db->tableName = 'pk_user';
             $this->db->insertData = $arr;
             try {
-                $userid = $this->db->create();
-                $filearr = $this->upload_files($userid, $request);
+                $this->db->pk($user->id);
+                $this->db->update();
+                $filearr = $this->upload_files($user->id, $request);
                 if ($filearr) {
-                    $this->db->pk($userid);
+                    $this->db->pk($user->id);
                     $this->db->insertData = $filearr;
                     $this->db->update();
                 }
