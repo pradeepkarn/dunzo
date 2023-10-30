@@ -184,7 +184,6 @@ class Orders_api
             FROM orders 
             WHERE orders.driver_id = '$driver_id' 
             AND orders.created_at BETWEEN '$from' AND '$to';";
-            echo $sql;
         }else{
             $sql = "SELECT orders.unique_id as orderid, orders.delivery_status 
             FROM orders 
