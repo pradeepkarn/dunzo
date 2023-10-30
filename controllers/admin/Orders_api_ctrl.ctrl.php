@@ -134,7 +134,9 @@ class Orders_api_ctrl
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_HTTPHEADER => array(
-                "api_key: {$RESTAURANT_API_KEY}jh"
+                "api_key: $RESTAURANT_API_KEY hjgjgjgjg",
+                'Content-Type: application/json',
+                'Cookie: PHPSESSID=h2otnfm4qconqaidl8c2ro7ghl; lang=en'
             ),
         ));
 
