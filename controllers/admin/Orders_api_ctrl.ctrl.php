@@ -170,11 +170,11 @@ class Orders_api_ctrl
     {
         header("Content-Type: application/json");
         $headers = getallheaders();
-        $api_key = $headers['api_key']??null;
+        $api_key = $headers['api_key'] ?? null;
         $req = obj($req);
         $data  = json_decode(file_get_contents('php://input'));
         $rules = [
-            'single_order' => 'required|string'
+            'success' => 'required|bool'
         ];
         $pass = validateData(data: arr($data), rules: $rules);
         if (!$pass) {
@@ -184,8 +184,12 @@ class Orders_api_ctrl
             echo json_encode($api);
             exit;
         }
+
         if (hash_equals(RESTAURANT_API_KEY, $api_key)) {
-           echo "working";
+            if (isset($data->data)) {
+                $res = $data->data;
+                print_r($res);
+            }
         } else {
             msg_set("Invalid sitekey");
             $api['success'] = false;
