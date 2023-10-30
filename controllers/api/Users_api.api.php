@@ -424,7 +424,7 @@ class Users_api
             try {
                 $this->db->pk($user->id);
                 $this->db->update();
-                $request->username = $user->usernam;
+                $request->username = $user->username;
                 $filearr = $this->upload_files($user->id, $request);
                 if ($filearr) {
                     $this->db->pk($user->id);
