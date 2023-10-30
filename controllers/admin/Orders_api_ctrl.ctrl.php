@@ -143,26 +143,30 @@ class Orders_api_ctrl
         if (isset($response)) {
             $res = json_decode($response, true);
             try {
-                $data = $res['data'];
-                array_map(function ($d) {
-                    $d = obj($d);
-                    $this->db->tableName = 'orders';
-                    $this->db->insertData['unique_id'] = $d->orderid;
-                    $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
-                    if ($arready) {
-                        $this->db->tableName = 'orders';
-                        $single = $this->db->pk($arready['id']);
-                        $d->add_on_price = $single['add_on_price'];
-                        $this->db->insertData['jsn'] = json_encode($d);
-                        $this->db->update();
-                    } else {
-                        $d->add_on_price = 0;
-                        $this->db->create();
-                    }
-                    $this->db->insertData = null;
-                }, $data);
+                $this->format_and_save($data = $res['data']);
             } catch (PDOException $th) {
             }
+            // try {
+            //     $data = $res['data'];
+            //     array_map(function ($d) {
+            //         $d = obj($d);
+            //         $this->db->tableName = 'orders';
+            //         $this->db->insertData['unique_id'] = $d->orderid;
+            //         $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
+            //         if ($arready) {
+            //             $this->db->tableName = 'orders';
+            //             $single = $this->db->pk($arready['id']);
+            //             $d->add_on_price = $single['add_on_price'];
+            //             $this->db->insertData['jsn'] = json_encode($d);
+            //             $this->db->update();
+            //         } else {
+            //             $d->add_on_price = 0;
+            //             $this->db->create();
+            //         }
+            //         $this->db->insertData = null;
+            //     }, $data);
+            // } catch (PDOException $th) {
+            // }
         }
         return json_decode($response, true);
     }
@@ -178,10 +182,19 @@ class Orders_api_ctrl
                 $single = $this->db->pk($arready['id']);
                 $d->add_on_price = $single['add_on_price'];
                 $this->db->insertData['jsn'] = json_encode($d);
-                $this->db->update();
+                if ($this->db->update()) {
+                    msg_set("order Updated");
+                } else {
+                    msg_set('Not updated');
+                }
             } else {
                 $d->add_on_price = 0;
-                $this->db->create();
+                $this->db->insertData['jsn'] = json_encode($d);
+                if ($this->db->create()) {
+                    msg_set("order created");
+                } else {
+                    msg_set('Not created');
+                }
             }
             $this->db->insertData = null;
         }, $data);
