@@ -534,6 +534,7 @@ class Users_api
             }
             
             try {
+                $data->is_online = $data->is_online=="true"?1:0;
                 $this->db->tableName = 'pk_user';
                 $this->db->pk($user['id']);
                 $this->db->insertData['is_online'] = $data->is_online;
