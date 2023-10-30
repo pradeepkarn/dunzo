@@ -402,7 +402,7 @@ class Users_api
             echo json_encode($api);
             exit;
         }
-        if (isset($request->email)) {
+        if (isset($user)) {
             $arr = null;
             // $arr['user_group'] = $req->ug;
             // $arr['email'] = $request->email;
