@@ -62,6 +62,7 @@ class Fuels_api
     {
         $arr = [];
         $arr['net_volume'] = 0;
+        $arr['unit'] = 'litre';
         $data = $this->db->show("select id, volume, unit, fuel_group as fuel_type, balance, created_at from fuels where user_id = '$driver_id'");
         foreach ($data as $key => $d) {
             $d['balance'] = strval($d['balance'])=="1"?"added":"deducted";
