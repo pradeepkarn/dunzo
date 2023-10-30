@@ -184,7 +184,7 @@ class Orders_api_ctrl
             echo json_encode($api);
             exit;
         }
-        if (hash_equals(REST_API_ENDPOINT, $api_key)) {
+        if (hash_equals(RESTAURANT_API_KEY, $api_key)) {
            echo "working";
         } else {
             msg_set("Invalid sitekey");
