@@ -134,7 +134,7 @@ class Orders_api_ctrl
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'GET',
             CURLOPT_HTTPHEADER => array(
-                "API_KEY: $RESTAURANT_API_KEY"
+                "api_key: $RESTAURANT_API_KEY"
             ),
         ));
 
