@@ -161,10 +161,30 @@ class Orders_api_ctrl
                     }
                     $this->db->insertData = null;
                 }, $data);
-            } catch (\Throwable $th) {
+            } catch (PDOException $th) {
             }
         }
         return json_decode($response, true);
+    }
+    function format_and_save(array $data)
+    {
+        array_map(function ($d) {
+            $d = obj($d);
+            $this->db->tableName = 'orders';
+            $this->db->insertData['unique_id'] = $d->orderid;
+            $arready = $this->db->showOne("select id from orders where unique_id = '$d->orderid'");
+            if ($arready) {
+                $this->db->tableName = 'orders';
+                $single = $this->db->pk($arready['id']);
+                $d->add_on_price = $single['add_on_price'];
+                $this->db->insertData['jsn'] = json_encode($d);
+                $this->db->update();
+            } else {
+                $d->add_on_price = 0;
+                $this->db->create();
+            }
+            $this->db->insertData = null;
+        }, $data);
     }
     function update_on_purchase_event_from_client($req = null)
     {
@@ -187,8 +207,23 @@ class Orders_api_ctrl
 
         if (hash_equals(RESTAURANT_API_KEY, $api_key)) {
             if (isset($data->data)) {
-                $res = $data->data;
-                print_r($res);
+                try {
+                    $res = json_decode(json_encode($data->data), true);
+                    $this->format_and_save($data = [$res]);
+                    msg_set("data saved");
+                    $api['success'] = false;
+                    $api['data'] = null;
+                    $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                    echo json_encode($api);
+                    exit;
+                } catch (PDOException $th) {
+                    msg_set("data saving error");
+                    $api['success'] = false;
+                    $api['data'] = null;
+                    $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                    echo json_encode($api);
+                    exit;
+                }
             }
         } else {
             msg_set("Invalid sitekey");

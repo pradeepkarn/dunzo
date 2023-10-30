@@ -829,7 +829,7 @@ function validateData($data, $rules)
       switch ($ruleName) {
         case 'bool':
           if (isset($data[$field]) && !filter_var($data[$field], FILTER_VALIDATE_BOOLEAN)) {
-            $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be a boolean';
+            $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be a boolean (true or false)';
           }
           break;
         case 'integer':
