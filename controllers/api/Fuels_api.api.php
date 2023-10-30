@@ -62,10 +62,10 @@ class Fuels_api
     {
         $arr = [];
         $data = $this->db->show("select id, volume, unit, fuel_group as fuel_type, balance, created_at from fuels where user_id = '$driver_id'");
-        array_map(function($d){
+        foreach ($data as $key => $d) {
             $d['balance'] = strval($d['balance'])=="1"?"added":"deducted";
             $arr[] = $d;
-        },$data);
+        }
         return $arr;
     }
 }
