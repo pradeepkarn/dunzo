@@ -409,12 +409,12 @@ class Users_api
             // $arr['username'] = $username;
             $arr['first_name'] = $request->first_name??$user->first_name;
             $arr['last_name'] = $request->last_name ?? $user->last_name;
-            $arr['isd_code'] = intval($request?->isd_code) ?? $user->isd_code;
-            $arr['mobile'] = intval($request?->mobile) ?? $user->mobile;
+            // $arr['isd_code'] = intval($request?->isd_code) ?? $user->isd_code;
+            // $arr['mobile'] = intval($request?->mobile) ?? $user->mobile;
             $arr['password'] = md5($request->password)??$user->password;
-            $arr['nid_no'] = sanitize_remove_tags($request->nid_no ?? $user->nid_no);
-            $arr['dl_no'] = sanitize_remove_tags($request->dl_no ?? $user->dl_no);
-            $arr['vhcl_no'] = sanitize_remove_tags($request->vhcl_no ?? $user->vhcl_no);
+            // $arr['nid_no'] = sanitize_remove_tags($request->nid_no ?? $user->nid_no);
+            // $arr['dl_no'] = sanitize_remove_tags($request->dl_no ?? $user->dl_no);
+            // $arr['vhcl_no'] = sanitize_remove_tags($request->vhcl_no ?? $user->vhcl_no);
             if (isset($request->bio)) {
                 $arr['bio'] = $request->bio;
             }
