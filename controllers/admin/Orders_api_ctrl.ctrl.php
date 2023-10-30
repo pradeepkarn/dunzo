@@ -31,6 +31,7 @@ class Orders_api_ctrl
                     'id' => $apidata->id,
                     'orderid' => $apidata->orderid,
                     'buyer' => $apidata->buyer,
+                    'buyer_name' => $apidata->buyer_name,
                     "buyer_id" => $apidata->buyer_id,
                     "buyer_lat" => $apidata->buyer_lat,
                     "buyer_lon" => $apidata->buyer_lon,
