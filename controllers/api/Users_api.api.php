@@ -92,7 +92,7 @@ class Users_api
                 $this->db->pk($user['id']);
                 $this->db->update();
                 $user = $this->get_user_by_id($id = $user['id']);
-                msg_set("User found, token refreshed");
+                msg_set("Login success, token refreshed");
                 $api['success'] = true;
                 $api['data'] = $user;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
@@ -100,7 +100,7 @@ class Users_api
                 exit;
             } else {
                 $user = $this->get_user_by_id($id = $user['id']);
-                msg_set("User found");
+                msg_set("Login success");
                 $api['success'] = true;
                 $api['data'] = $user;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
@@ -108,7 +108,7 @@ class Users_api
                 exit;
             }
         } else {
-            msg_set("User not found");
+            msg_set("Invalid credential");
             $api['success'] = false;
             $api['data'] = null;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
@@ -163,14 +163,14 @@ class Users_api
                 echo json_encode($api);
                 exit;
             }
-            msg_set("User found");
+            msg_set("Login success");
             $api['success'] = true;
             $api['data'] = $user;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
         }else{
-            msg_set("User not found, invalid token");
+            msg_set("Invalid token");
             $api['success'] = false;
             $api['data'] = null;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
