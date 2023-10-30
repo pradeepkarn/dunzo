@@ -11,9 +11,9 @@ class Orders_api
     {
         header("Content-type:application/json");
         $hdrs = (object)getallheaders();
-        $token = $hdrs->token??null;
-        $driver_lat = $hdrs->driver_lat??null;
-        $driver_lon = $hdrs->driver_lon??null;
+        $token = $hdrs->token ?? null;
+        $driver_lat = $hdrs->driver_lat ?? null;
+        $driver_lon = $hdrs->driver_lon ?? null;
         $user = (new Users_api)->get_user_by_token($token);
         if (!$user) {
             msg_set('User token is invalid');
@@ -23,7 +23,7 @@ class Orders_api
             echo json_encode($api);
             exit;
         }
-        if ($driver_lat==null || $driver_lon==null) {
+        if ($driver_lat == null || $driver_lon == null) {
             msg_set('Driver latitude and logitude are required');
             $api['success'] = false;
             $api['data'] = null;
@@ -31,7 +31,7 @@ class Orders_api
             echo json_encode($api);
             exit;
         }
-        if ($user['is_online']==0) {
+        if ($user['is_online'] == 0) {
             msg_set('You are currently offline');
             $api['success'] = false;
             $api['data'] = null;
@@ -124,7 +124,7 @@ class Orders_api
         // $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
     }
-    function order_list_by_driver($driver_id,$status="0,1")
+    function order_list_by_driver($driver_id, $status = "0,1")
     {
         $arr = [];
         $data = $this->db->show("
@@ -171,6 +171,40 @@ class Orders_api
         }
         return $arr;
     }
+    function task_analysis_driver($driver_id)
+    {
+        $statusCount = [
+            "neworder" => 0,
+            "completed" => 0,
+            "cancelled" => 0,
+            "pickedup" => 0
+        ];
+
+        $data = $this->db->show("SELECT orders.orderid, orders.delivery_status FROM orders WHERE orders.driver_id = '$driver_id'");
+
+        if (!empty($data)) {
+            foreach ($data as $d) {
+                $d['orderid'] = intval($d['orderid']);
+                switch ($d['delivery_status']) {
+                    case "0":
+                        $statusCount["neworder"]++;
+                        break;
+                    case "2":
+                        $statusCount["completed"]++;
+                        break;
+                    case "3":
+                        $statusCount["cancelled"]++;
+                        break;
+                    case "1":
+                        $statusCount["pickedup"]++;
+                        break;
+                }
+            }
+        }
+
+        return $statusCount;
+    }
+
     function order_history($req = null)
     {
         header('Content-Type: application/json');
@@ -202,10 +236,10 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             }
-            
+
             try {
-                $dt = $this->order_list_by_driver($driver_id = $user['id'],"2,3");
-                msg_set(count($dt) ? "Orders found": "Orders not found");
+                $dt = $this->order_list_by_driver($driver_id = $user['id'], "2,3");
+                msg_set(count($dt) ? "Orders found" : "Orders not found");
                 $api['success'] = count($dt) ? true : false;
                 $api['data'] = count($dt) ? $dt : null;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
@@ -213,6 +247,62 @@ class Orders_api
                 exit;
             } catch (PDOException $th) {
                 // echo $th;
+                msg_set("Unable to fetch");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+        } else {
+            msg_set("User not found, invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
+    function task_history($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+
+        $rules = [
+            'token' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = (new Users_api)->get_user_by_token($data->token);
+        if ($user) {
+            if ($user['user_group'] != 'driver') {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            try {
+                $dt = $this->task_analysis_driver($driver_id = $user['id']);
+                msg_set(count($dt) ? "Data found" : "Data not found");
+                $api['success'] = count($dt) ? true : false;
+                $api['data'] = count($dt) ? $dt : null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            } catch (PDOException $th) {
                 msg_set("Unable to fetch");
                 $api['success'] = false;
                 $api['data'] = null;
@@ -259,10 +349,10 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             }
-            
+
             try {
-                $dt = $this->order_list_by_driver($driver_id = $user['id'],"0,1");
-                msg_set(count($dt) ? "Orders found": "Orders not found");
+                $dt = $this->order_list_by_driver($driver_id = $user['id'], "0,1");
+                msg_set(count($dt) ? "Orders found" : "Orders not found");
                 $api['success'] = count($dt) ? true : false;
                 $api['data'] = count($dt) ? $dt[0] : null;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
@@ -286,7 +376,7 @@ class Orders_api
             exit;
         }
     }
-    
+
     function accept_order($req = null)
     {
         header('Content-Type: application/json');
@@ -437,14 +527,14 @@ class Orders_api
             try {
                 $db->tableName = 'orders';
                 $db->insertData['delivery_status'] = $req->delivery_status;
-                $db->insertData['cancel_info'] = $data->cancel_info??null;
-                $old = $db->findOne(['unique_id' => $data->orderid,'driver_id'=>$user['id']]);
-                if($old['delivery_status']!=$req->delivery_status){
+                $db->insertData['cancel_info'] = $data->cancel_info ?? null;
+                $old = $db->findOne(['unique_id' => $data->orderid, 'driver_id' => $user['id']]);
+                if ($old['delivery_status'] != $req->delivery_status) {
                     $db->update();
                     $pdo->commit();
                     msg_set("Order is changed to $status");
                     $api['success'] = true;
-                }else{
+                } else {
                     msg_set("Already order is $status");
                     $api['success'] = true;
                 }
