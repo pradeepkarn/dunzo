@@ -169,6 +169,8 @@ class Orders_api_ctrl
     function update_on_purchase_event_from_client($req = null)
     {
         header("Content-Type: application/json");
+        $headers = getallheaders();
+        $api_key = $headers['api_key']??null;
         $req = obj($req);
         $data  = json_decode(file_get_contents('php://input'));
         $rules = [
@@ -182,14 +184,8 @@ class Orders_api_ctrl
             echo json_encode($api);
             exit;
         }
-
-        $headers = getallheaders();
-        print_r($headers);
-
-        return;
-        if (isset($API_KEY) && hash_equals(REST_API_ENDPOINT, $data->API_KEY)) {
-            $headers = getallheaders();
-            print_r($headers);
+        if (isset($API_KEY) && hash_equals(REST_API_ENDPOINT, $api_key)) {
+           echo "working";
         } else {
             msg_set("Invalid sitekey");
             $api['success'] = false;
