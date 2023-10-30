@@ -32,7 +32,7 @@ class Orders_api
             exit;
         }
         if ($user['is_online']==0) {
-            msg_set('Your status is offline');
+            msg_set('You are currently offline');
             $api['success'] = false;
             $api['data'] = null;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
