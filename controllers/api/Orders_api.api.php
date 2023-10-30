@@ -303,6 +303,7 @@ class Orders_api
                 echo json_encode($api);
                 exit;
             } catch (PDOException $th) {
+                echo $th;
                 msg_set("Unable to fetch");
                 $api['success'] = false;
                 $api['data'] = null;
