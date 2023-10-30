@@ -10,7 +10,35 @@ class Orders_api
     function fetch_orders($req = null)
     {
         header("Content-type:application/json");
-        // $req = obj($req);
+        $hdrs = (object)getallheaders();
+        $token = $hdrs->token??null;
+        $driver_lat = $hdrs->driver_lat??null;
+        $driver_lon = $hdrs->driver_lon??null;
+        $user = (new Users_api)->get_user_by_token($token);
+        if (!$user) {
+            msg_set('User token is invalid');
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        if ($driver_lat==null || $driver_lon==null) {
+            msg_set('Driver latitude and logitude are required');
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        if ($user['is_online']==0) {
+            msg_set('Your status is offline');
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
         $req = obj($_GET);
         if (!isset($req->status)) {
             msg_set('Provide orders status');
