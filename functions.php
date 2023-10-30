@@ -828,10 +828,10 @@ function validateData($data, $rules)
 
       switch ($ruleName) {
         case 'bool':
-          if (isset($data[$field]) && !filter_var($data[$field], FILTER_VALIDATE_BOOLEAN)) {
-            $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be a boolean (true or false)';
+          if (isset($data[$field]) && $data[$field] !== "true" && $data[$field] !== "false") {
+              $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be a boolean (true or false)';
           }
-          break;
+          break;      
         case 'integer':
           if (isset($data[$field]) && !filter_var($data[$field], FILTER_VALIDATE_INT)) {
             $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be an integer';
