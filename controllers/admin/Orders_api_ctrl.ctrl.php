@@ -211,8 +211,8 @@ class Orders_api_ctrl
                     $res = json_decode(json_encode($data->data), true);
                     $this->format_and_save($data = [$res]);
                     msg_set("data saved");
-                    $api['success'] = false;
-                    $api['data'] = null;
+                    $api['success'] = true;
+                    $api['data'] = [];
                     $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                     echo json_encode($api);
                     exit;
