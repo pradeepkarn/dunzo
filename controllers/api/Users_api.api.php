@@ -310,6 +310,147 @@ class Users_api
             exit;
         }
     }
+    function update_account($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = $_POST;
+        $data['image'] = $_FILES['image'] ?? null;
+        $data['vhcl_doc'] = $_FILES['vhcl_doc'] ?? null;
+        $data['dl_doc'] = $_FILES['dl_doc'] ?? null;
+        $data['nid_doc'] = $_FILES['nid_doc'] ?? null;
+
+        if (isset($req->ug)) {
+            if (!in_array($req->ug, USER_GROUP_LIST)) {
+                $ok = false;
+                msg_set("Invalid account group");
+            }
+        } else {
+            $ok = false;
+            msg_set("No user group provided");
+        }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $rules = [
+            'token' => 'required|string',
+            'image' => 'required|file',
+            'first_name' => 'required|string',
+            'password' => 'required|string'
+        ];
+        if ($req->ug == 'driver') {
+            $rules_driver = [
+                'dl_doc' => 'required|file',
+                'nid_doc' => 'required|file',
+                'vhcl_doc' => 'required|file',
+                'dl_no' => 'required|string',
+                'nid_no' => 'required|string',
+                'vhcl_no' => 'required|string',
+            ];
+            $rules = array_merge($rules, $rules_driver);
+        }
+        $pass = validateData(data: $data, rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+
+        $request = obj($data);
+        $user = $this->get_user_by_token($request->token);
+        if (!$user) {
+            msg_set("Invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = obj($user);
+        // $request->username = $user->username;
+        $this->db = $this->db;
+        $pdo = $this->db->conn;
+        $pdo->beginTransaction();
+        $this->db->tableName = 'pk_user';
+        // $username = generate_clean_username($request->username );
+        // $username_exists = $this->db->get(['username' => $username]);
+        // $email_exists = $this->db->get(['email' => $request->email]);
+        // if ($username_exists) {
+        //     $_SESSION['msg'][] = 'Usernam not availble please try with another username';
+        //     $ok = false;
+        // }
+        // if ($email_exists) {
+        //     $_SESSION['msg'][] = 'Email is already exists';
+        //     $ok = false;
+        // }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        if (isset($request->email)) {
+            $arr = null;
+            // $arr['user_group'] = $req->ug;
+            // $arr['email'] = $request->email;
+            // $arr['username'] = $username;
+            $arr['first_name'] = $request->first_name??$user->first_name;
+            $arr['last_name'] = $request->last_name ?? $user->last_name;
+            $arr['isd_code'] = intval($request?->isd_code) ?? $user->isd_code;
+            $arr['mobile'] = intval($request?->mobile) ?? $user->mobile;
+            $arr['password'] = md5($request->password)??$user->password;
+            $arr['nid_no'] = sanitize_remove_tags($request->nid_no ?? $user->nid_no);
+            $arr['dl_no'] = sanitize_remove_tags($request->dl_no ?? $user->dl_no);
+            $arr['vhcl_no'] = sanitize_remove_tags($request->vhcl_no ?? $user->vhcl_no);
+            if (isset($request->bio)) {
+                $arr['bio'] = $request->bio;
+            }
+            $arr['created_at'] = date('Y-m-d H:i:s');
+            $this->db->tableName = 'pk_user';
+            $this->db->insertData = $arr;
+            try {
+                $userid = $this->db->create();
+                $filearr = $this->upload_files($userid, $request);
+                if ($filearr) {
+                    $this->db->pk($userid);
+                    $this->db->insertData = $filearr;
+                    $this->db->update();
+                }
+                msg_set('Account created');
+                $ok = true;
+                $pdo->commit();
+            } catch (PDOException $th) {
+                $pdo->rollBack();
+                msg_set('Account not created');
+                $ok = false;
+            }
+        } else {
+            $pdo->rollBack();
+            msg_set('Missing required field, uaser not created');
+            $ok = false;
+        }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        } else {
+            $api['success'] = true;
+            $api['data'] = [];
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
 
     function upload_files($postid, $request, $user = null)
     {
@@ -495,7 +636,7 @@ class Users_api
                     'email' => $u->email,
                     'isd_code' => $u->isd_code,
                     'mobile' => $u->mobile,
-                    'is_online' => $u->is_online,
+                    'is_online' => $u->is_online==1?true:false,
                     'token' => $u->app_login_token,
                 );
             }
