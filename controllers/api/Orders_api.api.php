@@ -180,7 +180,7 @@ class Orders_api
             "pickedup" => 0
         ];
 
-        $data = $this->db->show("SELECT orders.orderid, orders.delivery_status FROM orders WHERE orders.driver_id = '$driver_id'");
+        $data = $this->db->show("SELECT orders.unique_id as orderid, orders.delivery_status FROM orders WHERE orders.driver_id = '$driver_id'");
 
         if (!empty($data)) {
             foreach ($data as $d) {
