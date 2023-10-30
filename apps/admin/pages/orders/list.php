@@ -88,7 +88,7 @@ $req->fg = $ug;
                                         </th>
                                         <!-- <th><?php //echo $pv->driver_assigned ? $pv->driver : 'NA'; 
                                                     ?></th> -->
-                                        <th><?php echo $pv->buyer; ?></th>
+                                        <th><?php echo $pv->buyer_name; ?></th>
                                         <th><?php echo $driver_to_rest ?? "NA"; ?></th>
                                         <th><?php echo $pv->user_to_rest . " " . $pv->distance_unit; ?></th>
 
