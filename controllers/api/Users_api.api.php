@@ -500,7 +500,66 @@ class Users_api
         }
         return false;
     }
+    function set_user_online($req=null) {
+        header('Content-Type: application/json');
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
 
+        $rules = [
+            'token' => 'required|string',
+            'is_online' => 'required|bool'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = (new Users_api)->get_user_by_token($data->token);
+        if ($user) {
+            if ($user['user_group'] != 'driver') {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+            
+            try {
+                $this->db->tableName = 'pk_user';
+                $this->db->pk($user['id']);
+                $this->db->insertData['is_online'] = $data->is_online;
+                $rpl = $this->db->update();
+                msg_set($rpl ? "State changed": "State not changed");
+                $api['success'] = $rpl ? true : false;
+                $api['data'] =  $rpl ? [] : null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            } catch (PDOException $th) {
+                // echo $th;
+                msg_set("Unable to change state");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+        } else {
+            msg_set("User not found, invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
     function load_users($req)
     {
         $this->user_list(ord: 'desc', page: $this->get->page, limit: $this->get->limit);

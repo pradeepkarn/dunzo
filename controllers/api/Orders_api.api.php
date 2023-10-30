@@ -204,7 +204,6 @@ class Orders_api
     function running_orders($req = null)
     {
         header('Content-Type: application/json');
-        $ok = true;
         $req = obj($req);
         $data  = json_decode(file_get_contents('php://input'));
 
