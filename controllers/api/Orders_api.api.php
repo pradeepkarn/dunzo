@@ -171,14 +171,25 @@ class Orders_api
         }
         return $arr;
     }
-    function task_analysis_driver($driver_id)
+    function task_analysis_driver($driver_id, $from = null, $to = null)
     {
         $statusCount = [
             "completed" => 0,
             "cancelled" => 0
         ];
-
-        $data = $this->db->show("SELECT orders.unique_id as orderid, orders.delivery_status FROM orders WHERE orders.driver_id = '$driver_id'");
+        if ($from != null && $to != null) {
+            $from = date('Y-d-m H:i:s',$from);
+            $to = date('Y-d-m H:i:s',$to);
+            $sql = "SELECT orders.unique_id as orderid, orders.delivery_status 
+            FROM orders 
+            WHERE orders.driver_id = '$driver_id' 
+            AND orders.created_at BETWEEN '$from' AND '$to';";
+        }else{
+            $sql = "SELECT orders.unique_id as orderid, orders.delivery_status 
+            FROM orders 
+            WHERE orders.driver_id = '$driver_id'";
+        }
+        $data = $this->db->show($sql);
 
         if (!empty($data)) {
             foreach ($data as $d) {
@@ -200,7 +211,6 @@ class Orders_api
     function order_history($req = null)
     {
         header('Content-Type: application/json');
-        $ok = true;
         $req = obj($req);
         $data  = json_decode(file_get_contents('php://input'));
 
@@ -287,7 +297,7 @@ class Orders_api
                 exit;
             }
             try {
-                $dt = $this->task_analysis_driver($driver_id = $user['id']);
+                $dt = $this->task_analysis_driver($driver_id = $user['id'], $data->from ?? null, $data->to ?? null);
                 msg_set(count($dt) ? "Data found" : "Data not found");
                 $api['success'] = count($dt) ? true : false;
                 $api['data'] = count($dt) ? $dt : null;
