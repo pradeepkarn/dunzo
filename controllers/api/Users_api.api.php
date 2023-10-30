@@ -534,12 +534,12 @@ class Users_api
             }
             
             try {
-                $data->is_online = $data->is_online=="true"?1:0;
+                $is_online = $data->is_online=="true"?1:0;
                 $this->db->tableName = 'pk_user';
                 $this->db->pk($user['id']);
-                $this->db->insertData['is_online'] = $data->is_online;
+                $this->db->insertData['is_online'] = $is_online;
                 $rpl = $this->db->update();
-                msg_set($rpl ? "State changed": "State not changed");
+                msg_set($rpl ? "State changed to $data->is_online": "State not changed");
                 $api['success'] = $rpl ? true : false;
                 $api['data'] =  $rpl ? [] : null;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
