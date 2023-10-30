@@ -178,8 +178,8 @@ class Orders_api
             "cancelled" => 0
         ];
         if ($from != null && $to != null) {
-            $from = date('Y-d-m H:i:s',$from);
-            $to = date('Y-d-m H:i:s',$to);
+            $from = date('Y-m-d 00:00:00',$from);
+            $to = date('Y-m-d 23:59:00',$to);
             $sql = "SELECT orders.unique_id as orderid, orders.delivery_status 
             FROM orders 
             WHERE orders.driver_id = '$driver_id' 
