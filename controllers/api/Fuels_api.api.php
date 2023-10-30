@@ -60,6 +60,12 @@ class Fuels_api
     }
     function fuel_list($driver_id)
     {
-        return $this->db->show("select id, volume, unit, fuel_group as fuel_type, balance, created_at from fuels where user_id = '$driver_id'");
+        $arr = [];
+        $data = $this->db->show("select id, volume, unit, fuel_group as fuel_type, balance, created_at from fuels where user_id = '$driver_id'");
+        array_map(function($d){
+            $d['balance'] = strval($d['balance'])=="1"?"added":"deducted";
+            $arr[] = $d;
+        },$data);
+        return $arr;
     }
 }
