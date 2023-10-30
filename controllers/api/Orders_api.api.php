@@ -174,10 +174,8 @@ class Orders_api
     function task_analysis_driver($driver_id)
     {
         $statusCount = [
-            "neworder" => 0,
             "completed" => 0,
-            "cancelled" => 0,
-            "pickedup" => 0
+            "cancelled" => 0
         ];
 
         $data = $this->db->show("SELECT orders.unique_id as orderid, orders.delivery_status FROM orders WHERE orders.driver_id = '$driver_id'");
@@ -186,17 +184,11 @@ class Orders_api
             foreach ($data as $d) {
                 $d['orderid'] = intval($d['orderid']);
                 switch ($d['delivery_status']) {
-                    case "0":
-                        $statusCount["neworder"]++;
-                        break;
                     case "2":
                         $statusCount["completed"]++;
                         break;
                     case "3":
                         $statusCount["cancelled"]++;
-                        break;
-                    case "1":
-                        $statusCount["pickedup"]++;
                         break;
                 }
             }
