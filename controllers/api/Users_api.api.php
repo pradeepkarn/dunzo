@@ -459,7 +459,7 @@ class Users_api
             'email' => 'required|email'
         ];
 
-        $pass = validateData(data: $data, rules: $rules);
+        $pass = validateData(data: arr($data), rules: $rules);
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
