@@ -216,7 +216,7 @@ class Support_admin_ctrl
             'page' => 'supports/edit.php',
             'data' => (object) array(
                 'req' => obj($req),
-                'support_detail' => $this->support_detail(id: $req->id, content_group: $req->cg)
+                'support_detail' => $this->support_detail(id: $req->id)
             )
         );
         $this->render_main($context);
