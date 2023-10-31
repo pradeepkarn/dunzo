@@ -193,7 +193,7 @@ class Orders_api
                     FROM orders 
                     WHERE orders.driver_id = '$driver_id'";
         }
-        $data = $this->db->show($sql);        
+        $data = $this->db->show($sql);
 
         if (!empty($data)) {
             foreach ($data as $d) {
@@ -561,6 +561,66 @@ class Orders_api
             }
         } else {
             msg_set("User not found, invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
+    function create_ticket($req = null)
+    {
+        header('Content-Type: application/json');
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+
+        $rules = [
+            'token' => 'required|string',
+            'message' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = (new Users_api)->get_user_by_token($data->token);
+        if ($user) {
+            if ($user['user_group'] != 'driver') {
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+        } else {
+            msg_set("Invalid login token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        try {
+            $this->db->tableName = "supports";
+            $this->db->insertData['message'] = $data->message;
+            $this->db->insertData['unique_id'] = $data->orderid??null;
+            $this->db->insertData['user_id'] = $user['user_id'];
+            $this->db->insertData['is_approved'] = "0";
+            $id = $this->db->create();
+            msg_set("Ticket created");
+            $api['success'] = false;
+            $api['data'] = (new Support_admin_ctrl)->support_detail($id);
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        } catch (PDOException $th) {
+            msg_set("Ticket not submitted");
             $api['success'] = false;
             $api['data'] = null;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");

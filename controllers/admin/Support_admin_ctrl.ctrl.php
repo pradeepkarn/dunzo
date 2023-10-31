@@ -376,17 +376,21 @@ class Support_admin_ctrl
     }
     public function support_search_list($content_group = 'open', $keyword = "", $ord = "DESC", $limit = 5, $active = 1)
     {
-        $cntobj = new Model('supports');
-        $search_arr['name'] = $keyword;
-        $search_arr['email'] = $keyword;
-        $search_arr['message'] = $keyword;
-        $search_arr['content_id'] = $keyword;
-        return $cntobj->search(
-            assoc_arr: $search_arr,
-            ord: $ord,
-            limit: $limit,
-            whr_arr: array('content_group' => $content_group, 'is_active' => $active)
-        );
+        $cntobj = new Dbobjects;
+        $sql = "SELECT supports.id, supports.user_id, supports.unique_id, supports.content_id, supports.content_group, supports.is_active, supports.is_approved, supports.created_at, supports.message, pk_user.first_name as name, pk_user.last_name, pk_user.isd_code, pk_user.mobile, pk_user.email
+        FROM supports 
+        LEFT JOIN pk_user ON COALESCE(supports.user_id, 0) = COALESCE(pk_user.id, 0)
+        WHERE supports.is_active = $active 
+        AND supports.content_group = '$content_group' 
+        AND (
+            supports.message LIKE '%$keyword%' 
+             OR supports.unique_id LIKE '%$keyword%' 
+             OR pk_user.first_name LIKE '%$keyword%' 
+             OR pk_user.last_name LIKE '%$keyword%' 
+             OR pk_user.email LIKE '%$keyword%')
+        ORDER BY supports.id $ord 
+        LIMIT $limit";
+        return $cntobj->show($sql);
     }
     public function support_list($content_group = "open", $ord = "DESC", $limit = 5, $active = 1)
     {
@@ -399,19 +403,17 @@ class Support_admin_ctrl
         LIMIT $limit
         ";
         return $cntobj->show($sql);
-        
     }
-    // return $cntobj->filter_index(array('content_group' => $content_group, 'is_active' => $active), $ord, $limit);
     // support detail
     public function support_detail($id, $content_group = 'open')
     {
-        $cntobj = new Model('supports');
-        $exists = $cntobj->exists(array('content_group' => $content_group, 'id' => $id));
-        if ($exists) {
-            return $cntobj->show($id);
-        } else {
-            return false;
-        }
+        $cntobj = new Dbobjects;
+        $sql = "SELECT supports.id, supports.user_id, supports.unique_id, supports.content_id, supports.content_group, supports.is_active, supports.is_approved, supports.created_at, supports.message, pk_user.first_name as name, pk_user.isd_code, pk_user.mobile, pk_user.email
+        FROM supports 
+        LEFT JOIN pk_user ON COALESCE(supports.user_id, 0) = COALESCE(pk_user.id, 0)
+        WHERE supports.id = '$id' AND supports.content_group = '$content_group'
+        ";
+        return $cntobj->showOne($sql);
     }
     public function render_main($context = null)
     {

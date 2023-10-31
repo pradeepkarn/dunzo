@@ -19,5 +19,7 @@ $api_routes = [
     "/api/v1/account/update/location" => 'Orders_api@update_location@name.updateLocationApi',
 
     '/api/orders/update-single-order' => 'Orders_api_ctrl@update_on_purchase_event_from_client@name.updateSingleOrder',
+   
+    '/api/supports/create/ticket/{ug}' => 'Orders_api_ctrl@create_ticket@name.supportCreateTicketApi',
 ];
 
