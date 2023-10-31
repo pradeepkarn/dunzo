@@ -91,16 +91,17 @@ $admin_routes = [
     '/admin/orders/{fg}/list' => 'Orders_api_ctrl@list@name.orderListApi',
     '/admin/orders/update-addon-price-ajax' => 'Orders_api_ctrl@update_addon_price@name.updateOrderAddOnPrice',
     '/admin/orders/update-delivery-status-ajax' => 'Orders_api_ctrl@update_status@name.updateOrderStatus',
-    // fuels
-    // '/admin/fuel/{fg}/create' => 'Admin_fuel_ctrl@create@name.fuelCreate',
-    // '/admin/fuel/{fg}/create/save-by-ajax' => 'Admin_fuel_ctrl@save@name.fuelStoreAjax',
-    // '/admin/fuel/{fg}/list' => 'Admin_fuel_ctrl@list@name.fuelList',
-    // '/admin/fuel/{fg}/trash-list' => 'Admin_fuel_ctrl@trash_list@name.fuelTrashList',
-    // '/admin/fuel/{fg}/edit/{id}' => 'Admin_fuel_ctrl@edit@name.fuelEdit',
-    // '/admin/fuel/{fg}/trash/{id}' => 'Admin_fuel_ctrl@move_to_trash@name.fuelTrash',
-    // '/admin/fuel/{fg}/restore/{id}' => 'Admin_fuel_ctrl@restore@name.fuelRestore',
-    // '/admin/fuel/{fg}/delete/{id}' => 'Admin_fuel_ctrl@delete_trash@name.fuelDelete',
-    // '/admin/fuel/{fg}/edit/{id}/save-by-ajax' => 'Admin_fuel_ctrl@update@name.fuelUpdateAjax',
+    // support
+    '/admin/supports/{cg}/create' => 'Support_admin_ctrl@create@name.supportCreate',
+    '/admin/supports/{cg}/list' => 'Support_admin_ctrl@list@name.supportList',
+    '/admin/supports/{cg}/trash-list' => 'Support_admin_ctrl@trash_list@name.supportTrashList',
+    '/admin/supports/{cg}/trash/{id}' => 'Support_admin_ctrl@move_to_trash@name.supportTrash',
+    '/admin/supports/{cg}/restore/{id}' => 'Support_admin_ctrl@restore@name.supportRestore',
+    '/admin/supports/{cg}/delete/{id}' => 'Support_admin_ctrl@delete_trash@name.supportDelete',
+    '/admin/supports/{cg}/edit/{id}' => 'Support_admin_ctrl@edit@name.supportEdit',
+    '/admin/supports/{cg}/edit/{id}/save-by-ajax' => 'Support_admin_ctrl@update@name.supportUpdateAjax',
+    '/admin/supports/{cg}/toggle-marked-comment' => 'Support_admin_ctrl@toggle_approve@name.supportToggleMarked',
+    '/admin/supports/{cg}/toggle-spam-comment' => 'Support_admin_ctrl@toggle_spam@name.supportToggleSpam',
 
     // add fuels by driver
     '/admin/fuel/{fg}/create/{driver_id}' => 'Admin_fuel_ctrl@create@name.fuelCreateByDriver',
