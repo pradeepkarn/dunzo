@@ -100,8 +100,8 @@ $admin_routes = [
     '/admin/supports/{cg}/delete/{id}' => 'Support_admin_ctrl@delete_trash@name.supportDelete',
     '/admin/supports/{cg}/edit/{id}' => 'Support_admin_ctrl@edit@name.supportEdit',
     '/admin/supports/{cg}/edit/{id}/save-by-ajax' => 'Support_admin_ctrl@update@name.supportUpdateAjax',
-    '/admin/supports/{cg}/toggle-marked-comment' => 'Support_admin_ctrl@toggle_approve@name.supportToggleMarked',
-    '/admin/supports/{cg}/toggle-spam-comment' => 'Support_admin_ctrl@toggle_spam@name.supportToggleSpam',
+    '/admin/supports/{cg}/toggle-marked-support' => 'Support_admin_ctrl@toggle_approve@name.supportToggleMarked',
+    '/admin/supports/{cg}/toggle-closed-support' => 'Support_admin_ctrl@toggle_closed@name.supportToggleClosed',
 
     // add fuels by driver
     '/admin/fuel/{fg}/create/{driver_id}' => 'Admin_fuel_ctrl@create@name.fuelCreateByDriver',

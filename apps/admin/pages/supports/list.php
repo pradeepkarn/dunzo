@@ -50,9 +50,10 @@ $req->cg = $cg;
                                 <th scope="col">Active</th>
                                 <th scope="col">Move to</th>
                                 <th scope="col">Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Post</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Order ID</th>
                                 <th scope="col">Message</th>
+                            
                                 <th scope="col">Date</th>
                                 <?php
                                 if ($active == true) { ?>
@@ -95,11 +96,13 @@ $req->cg = $cg;
                                         </button>
                                     </td>
                                     <td><?php echo $pv->name; ?></td>
-                                    <td><?php echo $pv->email; ?></td>
+                                    <td><?php echo $pv->isd_code.$pv->mobile; ?></td>
                                     <td>
-                                        <a target="_blank" href="<?php echo "/".home.route('readPost',['slug'=>$post->slug]); ?>"><?php echo $post->title; ?></a>
+                                        <?php echo $pv->unique_id; ?></a>
                                     </td>
                                     <td><?php echo $pv->message; ?></td>
+                                    
+                                   
                                     <td><?php echo $pv->created_at; ?></td>
                                     <?php
                                     if ($active == true) { ?>
@@ -199,7 +202,7 @@ $req->cg = $cg;
                         support_id: support_id,
                         action: 'content_group'
                     },
-                    `/<?php echo home . route('supportToggleclosed',['cg'=>$req->cg]) ?>`,
+                    `/<?php echo home . route('supportToggleClosed',['cg'=>$req->cg]) ?>`,
                     (err, response) => {
                         if (err) {
                             // console.error('Error:', err);

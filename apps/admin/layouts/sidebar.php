@@ -189,8 +189,13 @@
     </a>
     <ul id="components-supports" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="/<?php echo home . route('supportList', ['cg' => 'help']); ?>">
-          <i class="bi bi-menu-button-wide"></i><span>Helps</span>
+        <a href="/<?php echo home . route('supportList', ['cg' => 'open']); ?>">
+          <i class="bi bi-menu-button-wide"></i><span>Running</span>
+        </a>
+      </li>
+      <li>
+        <a href="/<?php echo home . route('supportList', ['cg' => 'closed']); ?>">
+          <i class="bi bi-menu-button-wide"></i><span>Closed</span>
         </a>
       </li>
     </ul>
