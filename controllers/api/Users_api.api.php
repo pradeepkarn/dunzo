@@ -169,7 +169,7 @@ class Users_api
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
-        }else{
+        } else {
             msg_set("Invalid token");
             $api['success'] = false;
             $api['data'] = null;
@@ -233,12 +233,12 @@ class Users_api
         }
 
         $request = obj($data);
-        $request->username = $request->username??uniqid();
+        $request->username = $request->username ?? uniqid();
         $this->db = $this->db;
         $pdo = $this->db->conn;
         $pdo->beginTransaction();
         $this->db->tableName = 'pk_user';
-        $username = generate_clean_username($request->username );
+        $username = generate_clean_username($request->username);
         $username_exists = $this->db->get(['username' => $username]);
         $email_exists = $this->db->get(['email' => $request->email]);
         // $mobile_exists = $this->db->get(['mobile' => $request->mobile]);
@@ -345,7 +345,7 @@ class Users_api
         $rules = [
             'token' => 'required|string'
         ];
-        
+
         $pass = validateData(data: $data, rules: $rules);
         if (!$pass) {
             $api['success'] = false;
@@ -391,7 +391,7 @@ class Users_api
         }
         if (isset($user)) {
             $arr = null;
-            $arr['first_name'] = $request->first_name??$user->first_name;
+            $arr['first_name'] = $request->first_name ?? $user->first_name;
             $arr['last_name'] = $request->last_name ?? $user->last_name;
             if (isset($request->password)) {
                 $arr['password'] = ($request->password);
@@ -399,7 +399,7 @@ class Users_api
             if (isset($request->password)) {
                 $arr['password'] = ($request->password);
             }
-            
+
             if (isset($request->bio)) {
                 $arr['bio'] = $request->bio;
             }
@@ -412,12 +412,13 @@ class Users_api
                 $request->username = $user->username;
                 if (isset($_FILES['image'])) {
                     $filearr = $this->upload_files($user->id, $request);
+                    if ($filearr) {
+                        $this->db->pk($user->id);
+                        $this->db->insertData = $filearr;
+                        $this->db->update();
+                    }
                 }
-                if ($filearr) {
-                    $this->db->pk($user->id);
-                    $this->db->insertData = $filearr;
-                    $this->db->update();
-                }
+
                 msg_set('Account created');
                 $ok = true;
                 $pdo->commit();
@@ -630,14 +631,15 @@ class Users_api
                     'email' => $u->email,
                     'isd_code' => $u->isd_code,
                     'mobile' => $u->mobile,
-                    'is_online' => $u->is_online==1?true:false,
+                    'is_online' => $u->is_online == 1 ? true : false,
                     'token' => $u->app_login_token,
                 );
             }
         }
         return false;
     }
-    function set_user_online($req=null) {
+    function set_user_online($req = null)
+    {
         header('Content-Type: application/json');
         $req = obj($req);
         $data  = json_decode(file_get_contents('php://input'));
@@ -667,14 +669,14 @@ class Users_api
                 echo json_encode($api);
                 exit;
             }
-            
+
             try {
-                $is_online = $data->is_online=="true"?1:0;
+                $is_online = $data->is_online == "true" ? 1 : 0;
                 $this->db->tableName = 'pk_user';
                 $this->db->pk($user['id']);
                 $this->db->insertData['is_online'] = $is_online;
                 $rpl = $this->db->update();
-                msg_set($rpl ? "State changed to $data->is_online": "State not changed");
+                msg_set($rpl ? "State changed to $data->is_online" : "State not changed");
                 $api['success'] = $rpl ? true : false;
                 $api['data'] =  $rpl ? [] : null;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
