@@ -393,7 +393,7 @@ class Users_api
             $arr = null;
             $arr['first_name'] = $request->first_name??$user->first_name;
             $arr['last_name'] = $request->last_name ?? $user->last_name;
-            $arr['password'] = md5($request->password)??$user->password;
+            $arr['password'] = isset($request->password)?md5($request->password):$user->password;
             if (isset($request->bio)) {
                 $arr['bio'] = $request->bio;
             }
