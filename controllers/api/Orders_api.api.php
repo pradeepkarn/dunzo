@@ -7,6 +7,7 @@ class Orders_api
     {
         $this->db = (new DB_ctrl)->db;
     }
+    // fetch all orders by status list
     function fetch_orders($req = null)
     {
         header("Content-type:application/json");
@@ -75,6 +76,7 @@ class Orders_api
             exit;
         }
     }
+    // supporting method order list
     function order_list($status = [0])
     {
         $arr = [];
@@ -124,6 +126,7 @@ class Orders_api
         // $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
     }
+    // supporting method order list by driver id and status code separated by comma
     function order_list_by_driver($driver_id, $status = "0,1")
     {
         $arr = [];
@@ -171,6 +174,7 @@ class Orders_api
         }
         return $arr;
     }
+    // supporting method for task anlytic data
     function task_analysis_driver($driver_id, $from = null, $to = null)
     {
         $statusCount = [
@@ -178,18 +182,18 @@ class Orders_api
             "cancelled" => 0
         ];
         if ($from != null && $to != null) {
-            $from = date('Y-m-d 00:00:00',$from);
-            $to = date('Y-m-d 23:59:00',$to);
+            $from = is_numeric($from) ? date('Y-m-d 00:00:00', $from) : date('Y-m-d 00:00:00', strtotime($from));
+            $to = is_numeric($to) ? date('Y-m-d 23:59:00', $to) : date('Y-m-d 23:59:00', strtotime($to));
             $sql = "SELECT orders.unique_id as orderid, orders.delivery_status 
-            FROM orders 
-            WHERE orders.driver_id = '$driver_id' 
-            AND orders.created_at BETWEEN '$from' AND '$to';";
-        }else{
+                    FROM orders 
+                    WHERE orders.driver_id = '$driver_id' 
+                    AND orders.updated_at BETWEEN '$from' AND '$to';";
+        } else {
             $sql = "SELECT orders.unique_id as orderid, orders.delivery_status 
-            FROM orders 
-            WHERE orders.driver_id = '$driver_id'";
+                    FROM orders 
+                    WHERE orders.driver_id = '$driver_id'";
         }
-        $data = $this->db->show($sql);
+        $data = $this->db->show($sql);        
 
         if (!empty($data)) {
             foreach ($data as $d) {
@@ -530,6 +534,7 @@ class Orders_api
             try {
                 $db->tableName = 'orders';
                 $db->insertData['delivery_status'] = $req->delivery_status;
+                $db->insertData['updated_at'] = date('Y-m-d H:i:s');
                 $db->insertData['cancel_info'] = $data->cancel_info ?? null;
                 $old = $db->findOne(['unique_id' => $data->orderid, 'driver_id' => $user['id']]);
                 if ($old['delivery_status'] != $req->delivery_status) {
