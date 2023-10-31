@@ -438,7 +438,7 @@ class Users_api
         header('Content-Type: application/json');
         $ok = true;
         $req = obj($req);
-        $data  = file_get_contents("php://input");
+        $data  = json_decode(file_get_contents("php://input"),true);
         if (isset($req->ug)) {
             if (!in_array($req->ug, USER_GROUP_LIST)) {
                 $ok = false;
@@ -459,7 +459,7 @@ class Users_api
             'email' => 'required|email'
         ];
 
-        $pass = validateData(data: arr($data), rules: $rules);
+        $pass = validateData(data: $data, rules: $rules);
         if (!$pass) {
             $api['success'] = false;
             $api['data'] = null;
