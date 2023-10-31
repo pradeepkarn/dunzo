@@ -394,11 +394,11 @@ class Users_api
             $arr['first_name'] = $request->first_name ?? $user->first_name;
             $arr['last_name'] = $request->last_name ?? $user->last_name;
             if (isset($request->password)) {
-                $arr['password'] = ($request->password);
+                $arr['password'] = md5($request->password);
             }
-            if (isset($request->password)) {
-                $arr['password'] = ($request->password);
-            }
+            // if (isset($request->password)) {
+            //     $arr['password'] = ($request->password);
+            // }
 
             if (isset($request->bio)) {
                 $arr['bio'] = $request->bio;

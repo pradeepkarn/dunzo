@@ -390,9 +390,18 @@ class Support_admin_ctrl
     }
     public function support_list($content_group = "open", $ord = "DESC", $limit = 5, $active = 1)
     {
-        $cntobj = new Model('supports');
-        return $cntobj->filter_index(array('content_group' => $content_group, 'is_active' => $active), $ord, $limit);
+        $cntobj = new Dbobjects;
+        $sql = "SELECT supports.id, supports.user_id, supports.unique_id, supports.content_id, supports.content_group, supports.is_active, supports.is_approved, supports.created_at, supports.message, pk_user.first_name as name, pk_user.last_name, pk_user.isd_code, pk_user.mobile, pk_user.email
+        FROM supports 
+        LEFT JOIN pk_user ON COALESCE(supports.user_id, 0) = COALESCE(pk_user.id, 0)
+        WHERE supports.is_active = $active AND supports.content_group = '$content_group' 
+        ORDER BY supports.id $ord 
+        LIMIT $limit
+        ";
+        return $cntobj->show($sql);
+        
     }
+    // return $cntobj->filter_index(array('content_group' => $content_group, 'is_active' => $active), $ord, $limit);
     // support detail
     public function support_detail($id, $content_group = 'open')
     {
