@@ -489,9 +489,9 @@ class Users_api
                 exit;
             } else {
                 try {
-                    $randpass = random_bytes(6);
+                    $randpass = random_int(100000,999999);
                     $mail = php_mailer(new PHPMailer());
-                    $mail->setFrom(email, SITE_NAME . "Temporary Password");
+                    $mail->setFrom(email, SITE_NAME . " Temporary Password");
                     $mail->isHTML(true);
                     $mail->Subject = 'Password';
                     $mailObj = obj([
