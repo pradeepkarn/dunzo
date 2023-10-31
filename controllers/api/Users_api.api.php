@@ -605,7 +605,7 @@ class Users_api
                     'username' => strval($u->username),
                     'first_name' => $u->first_name,
                     'last_name' => $u->last_name,
-                    'image' => img_or_null($u->image),
+                    'image' => dp_or_null($u->image),
                     'email' => $u->email,
                     'isd_code' => $u->isd_code,
                     'mobile' => $u->mobile,
