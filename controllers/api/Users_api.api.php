@@ -393,7 +393,13 @@ class Users_api
             $arr = null;
             $arr['first_name'] = $request->first_name??$user->first_name;
             $arr['last_name'] = $request->last_name ?? $user->last_name;
-            $arr['password'] = isset($request->password)?md5($request->password):$user->password;
+            if (isset($request->password)) {
+                $arr['password'] = ($request->password);
+            }
+            if (isset($request->password)) {
+                $arr['password'] = ($request->password);
+            }
+            
             if (isset($request->bio)) {
                 $arr['bio'] = $request->bio;
             }
@@ -404,7 +410,9 @@ class Users_api
                 $this->db->pk($user->id);
                 $this->db->update();
                 $request->username = $user->username;
-                $filearr = $this->upload_files($user->id, $request);
+                if (isset($_FILES['image'])) {
+                    $filearr = $this->upload_files($user->id, $request);
+                }
                 if ($filearr) {
                     $this->db->pk($user->id);
                     $this->db->insertData = $filearr;
