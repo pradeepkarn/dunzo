@@ -405,14 +405,13 @@ class Support_admin_ctrl
         return $cntobj->show($sql);
     }
     // support detail
-    public function support_detail($id, $content_group = 'open')
+    public function support_detail($id)
     {
         $cntobj = new Dbobjects;
         $sql = "SELECT supports.id, supports.user_id, supports.unique_id, supports.content_id, supports.content_group, supports.is_active, supports.is_approved, supports.created_at, supports.message, pk_user.first_name as name, pk_user.isd_code, pk_user.mobile, pk_user.email
         FROM supports 
         LEFT JOIN pk_user ON COALESCE(supports.user_id, 0) = COALESCE(pk_user.id, 0)
-        WHERE supports.id = '$id' AND supports.content_group = '$content_group'
-        ";
+        WHERE supports.id = '$id'";
         return $cntobj->showOne($sql);
     }
     public function render_main($context = null)
