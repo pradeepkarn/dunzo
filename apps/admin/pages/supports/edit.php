@@ -1,13 +1,13 @@
 <?php
-$comment_detail = $context->comment_detail;
-$cd = obj($comment_detail);
+$support_detail = $context->support_detail;
+$cd = obj($support_detail);
 $cg =  explode("/",REQUEST_URI);
 $cg = $cg[3];
 $req = new stdClass;
 $req->cg = $cg;
 ?>
 
-<form action="/<?php echo home.route('commentUpdateAjax',['id'=>$cd->id,'cg'=>$req->cg]); ?>" id="update-comment-form">
+<form action="/<?php echo home.route('supportUpdateAjax',['id'=>$cd->id,'cg'=>$req->cg]); ?>" id="update-support-form">
     <div class="card">
         <div class="card-body">
             <div class="row">
@@ -15,7 +15,7 @@ $req->cg = $cg;
                     <h5 class="card-title">Add user</h5>
                 </div>
                 <div class="col text-end my-3">
-                    <a class="btn btn-dark" href="/<?php echo home . route('commentList',['cg'=>$req->cg]); ?>">Back</a>
+                    <a class="btn btn-dark" href="/<?php echo home . route('supportList',['cg'=>$req->cg]); ?>">Back</a>
                 </div>
             </div>
             <div id="res"></div>
@@ -40,7 +40,7 @@ $req->cg = $cg;
 
                 <div class="col-md-4">
                     <div class="d-grid">
-                        <button id="update-comment-btn" type="button" class="btn btn-primary my-3">Update</button>
+                        <button id="update-support-btn" type="button" class="btn btn-primary my-3">Update</button>
                     </div>
                 </div>
             </div>
@@ -64,4 +64,4 @@ $req->cg = $cg;
         fileReader.readAsDataURL(file);
     });
 </script>
-<?php pkAjax_form("#update-comment-btn", "#update-comment-form", "#res"); ?>
+<?php pkAjax_form("#update-support-btn", "#update-support-form", "#res"); ?>

@@ -37,9 +37,9 @@ $req->cg = $cg;
                                 </div>
                             </form>
                         </div>
-                        <div class="col text-end my-3">
-                            <a class="btn btn-dark" href="/<?php echo home . route('supportCreate', ['cg' => $req->cg]); ?>">Add New</a>
-                        </div>
+                        <!-- <div class="col text-end my-3">
+                            <a class="btn btn-dark" href="/<?php // echo home . route('supportCreate', ['cg' => $req->cg]); ?>">Add New</a>
+                        </div> -->
                     </div>
 
                     <!-- Table with stripped rows -->
