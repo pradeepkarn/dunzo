@@ -411,7 +411,7 @@ class Users_api
                 $this->db->update();
                 $request->username = $user->username;
                 if (isset($_FILES['image'])) {
-                    $filearr = $this->upload_files($user->id, $request,  arr($user));
+                    $filearr = $this->upload_files($user->id, $request);
                     if ($filearr) {
                         $this->db->pk($user->id);
                         $this->db->insertData = $filearr;
@@ -447,9 +447,10 @@ class Users_api
         }
     }
 
-    function upload_files($postid, $request, array $user = null)
+    function upload_files($userid, $request)
     {
-        if (intval($postid)) {
+        if (intval($userid)) {
+            $user = $this->get_user_by_id($userid);
             $old = $user ? obj($user) : null;
             if (isset($request->image) && $request->image['name'] != "" && $request->image['error'] == 0) {
                 $ext = pathinfo($request->image['name'], PATHINFO_EXTENSION);
