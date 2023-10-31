@@ -439,7 +439,6 @@ class Users_api
         $ok = true;
         $req = obj($req);
         $data  = file_get_contents("php://input");
-        $data['image'] = $_FILES['image'] ?? null;
         if (isset($req->ug)) {
             if (!in_array($req->ug, USER_GROUP_LIST)) {
                 $ok = false;
