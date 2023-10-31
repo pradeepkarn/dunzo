@@ -92,7 +92,7 @@ $req->cg = $cg;
                                     </td>
                                     <td>
                                         <button data-support-id="<?php echo $pv->id; ?>" class="closed-btn btn btn-sm <?php echo $pv->content_group=='closed' ? 'btn-primary' : 'btn-basic'; ?>">
-                                            <?php echo $pv->content_group=='closed' ? 'open' : 'closed'; ?>
+                                            <?php echo $pv->content_group=='closed' ? 'Reopen' : 'closed'; ?>
                                         </button>
                                     </td>
                                     <td><?php echo $pv->name; ?></td>
