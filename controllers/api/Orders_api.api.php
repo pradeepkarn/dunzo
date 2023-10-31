@@ -614,7 +614,7 @@ class Orders_api
             $this->db->insertData['is_approved'] = "0";
             $id = $this->db->create();
             msg_set("Ticket created");
-            $api['success'] = false;
+            $api['success'] = true;
             $api['data'] = (new Support_admin_ctrl)->support_detail($id);
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
