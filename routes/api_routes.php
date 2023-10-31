@@ -5,6 +5,7 @@ $api_routes = [
     "/api/v1/account/login/{ug}" => 'Users_api@login@name.loginAccountApi',
     "/api/v1/account/login-via-token/{ug}" => 'Users_api@login_via_token@name.loginAccountViaTokenApi',
     "/api/v1/account/set-user-online/{ug}" => 'Users_api@set_user_online@name.setUserOnlineApi',
+    "/api/v1/account/generate-temp-pass/{ug}" => 'Users_api@generate_temp_password@name.generateTempPassApi',
 
     "/api/v1/fuels/show-fuels" => 'Fuels_api@get_fules@name.getFuelsApi',
 

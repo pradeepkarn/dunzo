@@ -1,5 +1,7 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 class Users_api
 {
     public $get;
@@ -322,9 +324,7 @@ class Users_api
         $req = obj($req);
         $data  = $_POST;
         $data['image'] = $_FILES['image'] ?? null;
-        // $data['vhcl_doc'] = $_FILES['vhcl_doc'] ?? null;
-        // $data['dl_doc'] = $_FILES['dl_doc'] ?? null;
-        // $data['nid_doc'] = $_FILES['nid_doc'] ?? null;
+
 
         if (isset($req->ug)) {
             if (!in_array($req->ug, USER_GROUP_LIST)) {
@@ -371,17 +371,7 @@ class Users_api
         $pdo = $this->db->conn;
         $pdo->beginTransaction();
         $this->db->tableName = 'pk_user';
-        // $username = generate_clean_username($request->username );
-        // $username_exists = $this->db->get(['username' => $username]);
-        // $email_exists = $this->db->get(['email' => $request->email]);
-        // if ($username_exists) {
-        //     $_SESSION['msg'][] = 'Usernam not availble please try with another username';
-        //     $ok = false;
-        // }
-        // if ($email_exists) {
-        //     $_SESSION['msg'][] = 'Email is already exists';
-        //     $ok = false;
-        // }
+
         if (!$ok) {
             $api['success'] = false;
             $api['data'] = null;
@@ -396,9 +386,169 @@ class Users_api
             if (isset($request->password)) {
                 $arr['password'] = md5($request->password);
             }
-            // if (isset($request->password)) {
-            //     $arr['password'] = ($request->password);
-            // }
+
+            if (isset($request->bio)) {
+                $arr['bio'] = $request->bio;
+            }
+            $arr['created_at'] = date('Y-m-d H:i:s');
+            $this->db->tableName = 'pk_user';
+            $this->db->insertData = $arr;
+            try {
+                $this->db->pk($user->id);
+                $this->db->update();
+                $request->username = $user->username;
+                if (isset($_FILES['image'])) {
+                    $filearr = $this->upload_files($user->id, $request);
+                    if ($filearr) {
+                        $this->db->pk($user->id);
+                        $this->db->insertData = $filearr;
+                        $this->db->update();
+                    }
+                }
+
+                msg_set('Account created');
+                $ok = true;
+                $pdo->commit();
+            } catch (PDOException $th) {
+                $pdo->rollBack();
+                msg_set('Account not created');
+                $ok = false;
+            }
+        } else {
+            $pdo->rollBack();
+            msg_set('Missing required field, uaser not created');
+            $ok = false;
+        }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        } else {
+            $api['success'] = true;
+            $api['data'] = $this->get_user_by_token($request->token);
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
+    function generate_temp_password($req = null)
+    {
+        header('Content-Type: application/json');
+        $ok = true;
+        $req = obj($req);
+        $data  = file_get_contents("php://input");
+        $data['image'] = $_FILES['image'] ?? null;
+        if (isset($req->ug)) {
+            if (!in_array($req->ug, USER_GROUP_LIST)) {
+                $ok = false;
+                msg_set("Invalid account group");
+            }
+        } else {
+            $ok = false;
+            msg_set("No user group provided");
+        }
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $rules = [
+            'email' => 'required|email'
+        ];
+
+        $pass = validateData(data: $data, rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+
+        $request = obj($data);
+        $valid_email = email_has_valid_dns($request->email);
+        if (!$valid_email) {
+            msg_set("Your email is not valid");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        } else {
+            $this->db->tableName = 'pk_user';
+            $user = $this->db->findOne(['email' => $request->email]);
+            if (!$user) {
+                msg_set("This email does not exists in our database");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            } else {
+                try {
+                    $randpass = random_bytes(6);
+                    $mail = php_mailer(new PHPMailer());
+                    $mail->setFrom(email, SITE_NAME . "Temporary Password");
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Password';
+                    $mailObj = obj([
+                        'password' => $randpass
+                    ]);
+                    $body = render_template("emails/password_reset/temp-pass.php", $mailObj);
+                    $mail->Body = $body;
+                    $mail->addAddress($request->email, "{$user['first_name']}");
+                    $mail->send();
+                    $this->db->insertData['password'] = md5($randpass);
+                    $this->db->update();
+                    $data['msg'] = "A temporary password has been sent to $request->email, please check.";
+                    $data['success'] = true;
+                    $data['data'] = obj([]);
+                    echo json_encode($data);
+                    exit;
+                } catch (ErrorException $e) {
+                    $data['msg'] = "Email not sent";
+                    $data['success'] = false;
+                    $data['data'] = null;
+                    echo json_encode($data);
+                    exit;
+                }
+            }
+        }
+
+        $user = $this->get_user_by_token($request->token);
+        if (!$user) {
+            msg_set("Invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = obj($user);
+        // $request->username = $user->username;
+        $this->db = $this->db;
+        $pdo = $this->db->conn;
+        $pdo->beginTransaction();
+        $this->db->tableName = 'pk_user';
+
+        if (!$ok) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        if (isset($user)) {
+            $arr = null;
+            $arr['first_name'] = $request->first_name ?? $user->first_name;
+            $arr['last_name'] = $request->last_name ?? $user->last_name;
+            if (isset($request->password)) {
+                $arr['password'] = md5($request->password);
+            }
 
             if (isset($request->bio)) {
                 $arr['bio'] = $request->bio;
