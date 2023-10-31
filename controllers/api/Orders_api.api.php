@@ -612,6 +612,7 @@ class Orders_api
             $this->db->insertData['message'] = $data->issue;
             $this->db->insertData['unique_id'] = $data->orderid ?? null;
             $this->db->insertData['user_id'] = $user['id'];
+            $this->db->insertData['is_active'] = 1;
             $this->db->insertData['is_approved'] = "0";
             $id = $this->db->create();
             $issue = (new Support_admin_ctrl)->support_detail($id);
