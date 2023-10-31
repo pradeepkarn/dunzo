@@ -576,7 +576,7 @@ class Orders_api
 
         $rules = [
             'token' => 'required|string',
-            'message' => 'required|string'
+            'issue' => 'required|string'
         ];
 
         $pass = validateData(data: arr($data), rules: $rules);
@@ -608,14 +608,21 @@ class Orders_api
         }
         try {
             $this->db->tableName = "supports";
-            $this->db->insertData['message'] = $data->message;
+            $this->db->insertData['message'] = $data->issue;
             $this->db->insertData['unique_id'] = $data->orderid??null;
             $this->db->insertData['user_id'] = $user['id'];
             $this->db->insertData['is_approved'] = "0";
             $id = $this->db->create();
+            $issue = (new Support_admin_ctrl)->support_detail($id);
+            if ($issue) {
+                $issue['id'] = $issue['id'];
+                $issue['name'] = $issue['name'];
+                $issue['mobile'] = $issue['isd_code'].$issue['mobile'];
+                $issue['issue'] = $issue['message'];
+            }
             msg_set("Ticket created");
-            $api['success'] = true;
-            $api['data'] = (new Support_admin_ctrl)->support_detail($id);
+            $api['success'] = $issue?true:false;
+            $api['data'] = $issue;
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
