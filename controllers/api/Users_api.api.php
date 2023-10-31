@@ -322,9 +322,9 @@ class Users_api
         $req = obj($req);
         $data  = $_POST;
         $data['image'] = $_FILES['image'] ?? null;
-        $data['vhcl_doc'] = $_FILES['vhcl_doc'] ?? null;
-        $data['dl_doc'] = $_FILES['dl_doc'] ?? null;
-        $data['nid_doc'] = $_FILES['nid_doc'] ?? null;
+        // $data['vhcl_doc'] = $_FILES['vhcl_doc'] ?? null;
+        // $data['dl_doc'] = $_FILES['dl_doc'] ?? null;
+        // $data['nid_doc'] = $_FILES['nid_doc'] ?? null;
 
         if (isset($req->ug)) {
             if (!in_array($req->ug, USER_GROUP_LIST)) {
@@ -343,22 +343,9 @@ class Users_api
             exit;
         }
         $rules = [
-            'token' => 'required|string',
-            'image' => 'required|file',
-            'first_name' => 'required|string',
-            'password' => 'required|string'
+            'token' => 'required|string'
         ];
-        if ($req->ug == 'driver') {
-            // $rules_driver = [
-            //     'dl_doc' => 'required|file',
-            //     'nid_doc' => 'required|file',
-            //     'vhcl_doc' => 'required|file',
-            //     'dl_no' => 'required|string',
-            //     'nid_no' => 'required|string',
-            //     'vhcl_no' => 'required|string',
-            // ];
-            // $rules = array_merge($rules, $rules_driver);
-        }
+        
         $pass = validateData(data: $data, rules: $rules);
         if (!$pass) {
             $api['success'] = false;
@@ -404,17 +391,9 @@ class Users_api
         }
         if (isset($user)) {
             $arr = null;
-            // $arr['user_group'] = $req->ug;
-            // $arr['email'] = $request->email;
-            // $arr['username'] = $username;
             $arr['first_name'] = $request->first_name??$user->first_name;
             $arr['last_name'] = $request->last_name ?? $user->last_name;
-            // $arr['isd_code'] = intval($request?->isd_code) ?? $user->isd_code;
-            // $arr['mobile'] = intval($request?->mobile) ?? $user->mobile;
             $arr['password'] = md5($request->password)??$user->password;
-            // $arr['nid_no'] = sanitize_remove_tags($request->nid_no ?? $user->nid_no);
-            // $arr['dl_no'] = sanitize_remove_tags($request->dl_no ?? $user->dl_no);
-            // $arr['vhcl_no'] = sanitize_remove_tags($request->vhcl_no ?? $user->vhcl_no);
             if (isset($request->bio)) {
                 $arr['bio'] = $request->bio;
             }
@@ -452,7 +431,7 @@ class Users_api
             exit;
         } else {
             $api['success'] = true;
-            $api['data'] = [];
+            $api['data'] = $this->get_user_by_token($request->token);
             $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
             echo json_encode($api);
             exit;
