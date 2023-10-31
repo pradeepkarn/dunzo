@@ -610,7 +610,7 @@ class Orders_api
             $this->db->tableName = "supports";
             $this->db->insertData['message'] = $data->message;
             $this->db->insertData['unique_id'] = $data->orderid??null;
-            $this->db->insertData['user_id'] = $user['user_id'];
+            $this->db->insertData['user_id'] = $user['id'];
             $this->db->insertData['is_approved'] = "0";
             $id = $this->db->create();
             msg_set("Ticket created");
