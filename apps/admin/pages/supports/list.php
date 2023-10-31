@@ -57,7 +57,7 @@ $req->cg = $cg;
                                 <th scope="col">Date</th>
                                 <?php
                                 if ($active == true) { ?>
-                                    <th scope="col">Edit</th>
+                                    <!-- <th scope="col">Edit</th> -->
                                 <?php    }
                                 ?>
                                 <th scope="col">Action</th>
@@ -106,9 +106,9 @@ $req->cg = $cg;
                                     <td><?php echo $pv->created_at; ?></td>
                                     <?php
                                     if ($active == true) { ?>
-                                        <td>
-                                            <a class="btn-primary btn btn-sm" href="/<?php echo home . route('supportEdit', ['id' => $pv->id, 'cg' => $req->cg]); ?>">Edit</a>
-                                        </td>
+                                        <!-- <td>
+                                            <a class="btn-primary btn btn-sm" href="/<?php //echo home . route('supportEdit', ['id' => $pv->id, 'cg' => $req->cg]); ?>">Edit</a>
+                                        </td> -->
                                     <?php    }
                                     ?>
 
