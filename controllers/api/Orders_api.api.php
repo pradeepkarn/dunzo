@@ -608,6 +608,7 @@ class Orders_api
         }
         try {
             $this->db->tableName = "supports";
+            $this->db->insertData['content_group'] = "open";
             $this->db->insertData['message'] = $data->issue;
             $this->db->insertData['unique_id'] = $data->orderid ?? null;
             $this->db->insertData['user_id'] = $user['id'];
