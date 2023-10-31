@@ -20,6 +20,6 @@ $api_routes = [
 
     '/api/orders/update-single-order' => 'Orders_api_ctrl@update_on_purchase_event_from_client@name.updateSingleOrder',
    
-    '/api/supports/create/ticket/{ug}' => 'Orders_api_ctrl@create_ticket@name.supportCreateTicketApi',
+    '/api/supports/create/ticket/{ug}' => 'Orders_api@create_ticket@name.supportCreateTicketApi',
 ];
 
