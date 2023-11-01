@@ -3,10 +3,6 @@
 use PHPMailer\PHPMailer\PHPMailer;
 
 
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\ServiceAccount;
-use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Notification;
 
 require_once(__DIR__ . "/config.php");
 require_once(__DIR__ . "/settings.php");
@@ -16,7 +12,6 @@ import("settings.php");
 define("direct_access", 1);
 ############################################################################
 
-echo time() - 24*60*60*2;
 
 exit;
 function updateProgressBar($current, $total)
