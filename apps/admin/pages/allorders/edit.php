@@ -14,7 +14,7 @@ $req = $context->req;
             <div id="res"></div>
             <div class="row">
                 <div class="col-md-8">
-                <form action="/<?php echo home . route('fuelUpdateAjaxByDriver', ['id' => $fd->id, 'fg' => $req->fg, 'driver_id' => $req->driver_id]); ?>" id="update-new-fuel-form">
+                <form action="" id="update-new-fuel-form">
                     <div class="row">
                         <div class="col">
                             <h5 class="card-title">Update</h5>
