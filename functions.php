@@ -829,9 +829,9 @@ function validateData($data, $rules)
       switch ($ruleName) {
         case 'bool':
           if (isset($data[$field]) && $data[$field] !== "true" && $data[$field] !== "false") {
-              $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be a boolean (true or false)';
+            $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be a boolean (true or false)';
           }
-          break;      
+          break;
         case 'integer':
           if (isset($data[$field]) && !filter_var($data[$field], FILTER_VALIDATE_INT)) {
             $errors[] = str_replace("_", " ", ucfirst($field)) . ' must be an integer';
@@ -881,7 +881,7 @@ function validateData($data, $rules)
           if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
             $errors[] = str_replace("_", " ", ucfirst($field)) . ' is required';
           } else {
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'csv', 'pdf'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'csv', 'xlsx', 'pdf'];
             $extension = pathinfo($_FILES[$field]['name'], PATHINFO_EXTENSION);
             if (!in_array($extension, $allowedExtensions)) {
               $errors[] = 'Only files with extensions ' . implode(', ', $allowedExtensions) . ' are allowed for ' . $field;

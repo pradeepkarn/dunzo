@@ -114,6 +114,8 @@ $admin_routes = [
     '/admin/fuel/{fg}/delete/{id}/{driver_id}' => 'Admin_fuel_ctrl@delete_trash@name.fuelDeleteByDriver',
     '/admin/fuel/{fg}/edit/{id}/save-by-ajax/{driver_id}' => 'Admin_fuel_ctrl@update@name.fuelUpdateAjaxByDriver',
 
+    '/admin/all-orders/import' => 'Orders_ctrl@import_orders@name.ordersCreate',
+
     // Comments
     '/admin/comments/{cg}/list' => 'Comment_admin_ctrl@list@name.commentList',
     '/admin/comments/{cg}/trash-list' => 'Comment_admin_ctrl@trash_list@name.commentTrashList',

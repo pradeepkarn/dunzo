@@ -41,7 +41,7 @@
                 msg: res.msg,
                 icon: 'success'
             });
-            location.reload();
+            // location.reload();
         } else if (res.success === false) {
             swalert({
                 title: 'Failed',

@@ -119,5 +119,5 @@ function smsControllersLoader($className){
         return false;
     }
 }
-
+$GLOBALS['PDO'] = (new Dbh)->conn();
 ?>

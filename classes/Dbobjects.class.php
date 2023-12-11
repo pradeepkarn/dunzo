@@ -13,9 +13,11 @@ class Dbobjects extends Dbh
     public $qry; //get current qury
     public $insertData; //set data to update, delete
     public $conn;
+    public $pdo;
     public function __construct()
     {
-        $this->conn = $this->conn();
+        $this->conn = $GLOBALS['PDO'];
+        $this->pdo = $this->conn;
     }
 
     protected function setColNames($tableName)
