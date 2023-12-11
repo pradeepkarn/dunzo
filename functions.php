@@ -1467,6 +1467,47 @@ function calculateDistance($startLat, $startLon, $endLat, $endLon)
     return null;
   }
 }
+
+
+function getCoordinatesFromAddress($address)
+{
+  $mapboxApiKey = MAPBOX_ACCESS_TOKEN;
+  // Format the address for the API request
+  $formattedAddress = urlencode($address);
+
+  // Mapbox Geocoding API endpoint
+  $apiEndpoint = "https://api.mapbox.com/geocoding/v5/mapbox.places/$formattedAddress.json";
+
+  // Include the API key in the request URL
+  $apiUrl = "$apiEndpoint?access_token=$mapboxApiKey";
+
+  // Make the API request using cURL
+  $ch = curl_init($apiUrl);
+  curl_setopt($ch, CURLOPT_URL, $apiUrl);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $response = curl_exec($ch);
+  curl_close($ch);
+
+  // Decode the JSON response
+  $data = json_decode($response, true);
+
+  // Check if the response contains features (geocoded locations)
+  if (isset($data['features']) && count($data['features']) > 0) {
+      // Retrieve the coordinates from the first feature
+      $coordinates = $data['features'][0]['geometry']['coordinates'];
+
+      // Return the coordinates
+      return [
+          'latitude' => $coordinates[1],
+          'longitude' => $coordinates[0],
+      ];
+  } else {
+      // Return null if no coordinates were found
+      return null;
+  }
+}
+
+
 function getStatusText($statusCode)
 {
   $statusCodes = STATUS_CODES;

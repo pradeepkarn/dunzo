@@ -142,8 +142,13 @@
     </a>
     <ul id="components-orders" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="/<?php echo home . route('orderListApi',['fg'=>'food']); ?>">
-          <i class="bi bi-circle"></i><span>List</span>
+        <a href="/<?php echo home . route('allOrdersCreate'); ?>">
+          <i class="bi bi-circle"></i><span>Import New Orders</span>
+        </a>
+      </li>
+      <li>
+        <a href="/<?php echo home . route('allOrdersList'); ?>">
+          <i class="bi bi-circle"></i><span>All Orders List</span>
         </a>
       </li>
     </ul>
