@@ -84,14 +84,18 @@ class Orders_v2_api
         // echo $statusString;
         $data = $this->db->show("
         SELECT manual_orders.id, manual_orders.created_at, manual_orders.delivery_status, manual_orders.driver_id, 
-        manual_orders.add_on_price, manual_orders.jsn AS api_data, 
+        manual_orders.add_on_price, 
         manual_orders.amount, 
         manual_orders.name,
         manual_orders.email,
         manual_orders.phone,
         manual_orders.lat,
         manual_orders.lon,
-        manual_orders.address
+        manual_orders.address,
+        manual_orders.pickup_address,
+        manual_orders.pickup_lat,
+        manual_orders.pickup_lon,
+        manual_orders.order_type
         FROM manual_orders
         LEFT JOIN pk_user ON pk_user.id = manual_orders.driver_id 
         where manual_orders.driver_id = '0' AND manual_orders.delivery_status IN ($statusString)
@@ -99,40 +103,10 @@ class Orders_v2_api
         if (!empty($data)) {
             // Loop through the data and decode the JSON values
             foreach ($data as $d) {
-                $d['id'] = intval($d['id']); // true parameter for associative array
-                $d['delivery_status_text'] = getStatusText($d['delivery_status']);
-                // $apidata = json_decode($d['api_data']);
-                $apidata = obj($d);
-                $dat = array(
-                    // 'id' => $apidata->id,
-                    'orderid' => $apidata->id,
-                    'is_prepaid' => false,
-                    'amount' => $apidata->amount,
-                    'created_at' => $apidata->created_at,
-                    'buyer_name' => $apidata->name,
-                    "buyer_id" => $apidata->email,
-                    "buyer_lat" => $apidata->lat,
-                    "buyer_lon" => $apidata->lon,
-                    "rest_id" => null,
-                    'isd_code' => 0,
-                    'mobile' => $apidata->phone,
-                    'address' => $apidata->address,
-                    'city' => "na",
-                    'state' => 'na',
-                    'country' => 'na',
-                    "rest_name" => 'na',
-                    "rest_address" => 'na',
-                    "rest_lat" => 'na',
-                    "rest_lon" => 'na',
-                    "distance_unit" => 'na',
-                    "user_to_rest" => 'na',
-                    "logo" => null,
-                );
-                $d['api_data'] = $dat;
+                $d['api_data'] = $this->format_orders($d);
                 $arr[] = $d;
             }
         }
-        // $arr['status_codes'] = obj(STATUS_CODES);
         return $arr;
     }
     // supporting method order list by driver id and status code separated by comma
@@ -141,56 +115,56 @@ class Orders_v2_api
         $arr = [];
         $data = $this->db->show("
         SELECT manual_orders.id, manual_orders.created_at, manual_orders.delivery_status, manual_orders.driver_id, 
-        manual_orders.add_on_price, manual_orders.jsn AS api_data, 
+        manual_orders.add_on_price, 
         manual_orders.amount, 
         manual_orders.name,
         manual_orders.email,
         manual_orders.phone,
         manual_orders.lat,
         manual_orders.lon,
-        manual_orders.address
+        manual_orders.address,
+        manual_orders.pickup_address,
+        manual_orders.pickup_lat,
+        manual_orders.pickup_lon,
+        manual_orders.order_type
         FROM manual_orders
         LEFT JOIN pk_user ON pk_user.id = manual_orders.driver_id 
         where manual_orders.driver_id = '$driver_id'
         AND manual_orders.delivery_status IN ($status)
         ;");
         if (!empty($data)) {
-            // Loop through the data and decode the JSON values
             foreach ($data as $d) {
-                $d['id'] = intval($d['id']); // true parameter for associative array
-                $d['delivery_status_text'] = getStatusText($d['delivery_status']);
-                // $apidata = json_decode($d['api_data']);
-                $apidata = obj($d);
-                $dat = array(
-                    // 'id' => $apidata->id,
-                    'orderid' => $apidata->id,
-                    'is_prepaid' => false,
-                    'amount' => $apidata->amount,
-                    'created_at' => $apidata->created_at,
-                    'buyer_name' => $apidata->name,
-                    "buyer_id" => $apidata->email,
-                    "buyer_lat" => $apidata->lat,
-                    "buyer_lon" => $apidata->lon,
-                    "rest_id" => null,
-                    'isd_code' => 0,
-                    'mobile' => $apidata->phone,
-                    'address' => $apidata->address,
-                    'city' => "na",
-                    'state' => 'na',
-                    'country' => 'na',
-                    "rest_name" => 'na',
-                    "rest_address" => 'na',
-                    "rest_lat" => 'na',
-                    "rest_lon" => 'na',
-                    "distance_unit" => 'na',
-                    "user_to_rest" => 'na',
-                    "logo" => null,
-                );
-                $d['api_data'] = $dat;
+                $d['api_data'] = $this->format_orders($d);
                 $arr[] = $d;
             }
         }
         return $arr;
+    }
+    function format_orders($d)
+    {
+        $d['id'] = intval($d['id']); // true parameter for associative array
+        $d['delivery_status_text'] = getStatusText($d['delivery_status']);
+        $apidata = obj($d);
+        $meter = calculateDistance($startLat=$apidata->lat,$startLon=$apidata->lon,$endLat=$apidata->pickup_lat,$endLon=$apidata->pickup_lon);
+        $data = array(
+            'id' => $apidata->id,
+            'orderid' => $apidata->id,
+            'is_prepaid' => strtolower($apidata->order_type) == '0' ? false : true,
+            'amount' => strtolower($apidata->order_type) == '0' ? $apidata->amount : "0",
+            'created_at' => $apidata->created_at,
+            'buyer_name' => $apidata->name,
+            "buyer_id" => $apidata->email,
+            "buyer_lat" => $apidata->lat,
+            "buyer_lon" => $apidata->lon,
+            'phone' => $apidata->phone,
+            'address' => $apidata->address,
+            "pickup_address" => $apidata->pickup_address,
+            "pickup_lat" => $apidata->pickup_lat,
+            "pickup_lon" => $apidata->pickup_lon,
+            "pickup_to_drop" => $meter,
+            "distance_unit" => 'm'
+        );
+        return $data;
     }
     // supporting method for task anlytic data
     function task_analysis_driver($driver_id, $from = null, $to = null)
@@ -554,7 +528,16 @@ class Orders_v2_api
                 $db->insertData['delivery_status'] = $req->delivery_status;
                 $db->insertData['updated_at'] = date('Y-m-d H:i:s');
                 $db->insertData['cancel_info'] = $data->cancel_info ?? null;
-                $old = $db->findOne(['unique_id' => $data->orderid, 'driver_id' => $user['id']]);
+                $old = $db->findOne(['id' => $data->orderid, 'driver_id' => $user['id']]);
+                if (!$old) {
+                    msg_set("Order not found");
+                    $api['success'] = false;
+                    $api['data'] = null;
+                    $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                    echo json_encode($api);
+                    $pdo->rollBack();
+                    exit;
+                }
                 if ($old['delivery_status'] != $req->delivery_status) {
                     $db->update();
                     $pdo->commit();

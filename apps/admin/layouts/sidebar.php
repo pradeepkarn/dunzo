@@ -143,12 +143,12 @@
     <ul id="components-orders" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
         <a href="/<?php echo home . route('allOrdersCreate'); ?>">
-          <i class="bi bi-circle"></i><span>Import New Orders</span>
+          <i class="bi bi-circle"></i><span>Import XLSX File</span>
         </a>
       </li>
       <li>
         <a href="/<?php echo home . route('allOrdersList'); ?>">
-          <i class="bi bi-circle"></i><span>All Orders List</span>
+          <i class="bi bi-circle"></i><span>All Orders</span>
         </a>
       </li>
     </ul>

@@ -8,7 +8,7 @@ $uri =  explode("/", REQUEST_URI);
     <div class="card">
         <div class="card-body">
 
-            <div id="res"></div>
+            <div style="overflow-y: scroll; max-height:200px;" id="res"></div>
             <div class="row">
                 <div class="col-md-8">
                     <div class="row">

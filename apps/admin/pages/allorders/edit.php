@@ -8,13 +8,14 @@ $req = $context->req;
 ?>
 
 
-    <div class="card">
-        <div class="card-body">
+<div class="card">
+    <div class="card-body">
 
-            <div id="res"></div>
+        <div id="res"></div>
+        <form action="" id="update-new-fuel-form">
             <div class="row">
                 <div class="col-md-8">
-                <form action="" id="update-new-fuel-form">
+
                     <div class="row">
                         <div class="col">
                             <h5 class="card-title">Update</h5>
@@ -40,27 +41,26 @@ $req = $context->req;
                     <div class="d-grid">
 
                         <input type="hidden" name="action" value="update_order">
+                        <input type="hidden" name="id" value="<?php echo $fd->id; ?>">
                         <button id="update-fuel-btn" type="button" class="btn btn-primary my-3">Update</button>
                     </div>
-                    </form>
+
                 </div>
                 <div class="col-md-4">
                     <div class="row">
                         <div class="col-md-12 text-end my-3">
                             <a class="btn btn-dark" href="/<?php echo home . route('allOrdersList'); ?>">Back</a>
                         </div>
-                        <div class="col-md-12">
-                            <form id="location-form">
-                            </form>
-                            <div id="map"></div>
-                            <label for="">Address(auto filled by map) *</label>
-                            <input id="set-location" type="text" readonly class="form-control my-2" name="address" value="">
-                        </div>
+
                         <div class="col-md-12">
 
                             <b>Customer address</b>
-                            <textarea name="name" class="form-control my-3" placeholder="Customer address"><?php echo $fd->address; ?></textarea>
-                            <button type="button" class="btn btn-primary btn-sm">Search on map</button>
+                            <textarea name="address" class="form-control my-3" placeholder="Customer address"><?php echo $fd->address; ?></textarea>
+                            <div class="col-md-12">
+                                <div id="location-form">
+                                </div>
+                                <div id="map"></div>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <b>Customer Latitude</b>
@@ -70,10 +70,15 @@ $req = $context->req;
                             <b>Customer Longitude</b>
                             <input id="custLon" type="text" name="lon" value="<?php echo $fd->lon; ?>" class="form-control my-3">
                         </div>
+
                         <div class="col-md-12">
                             <b>Pickup address</b>
-                            <textarea name="name" class="form-control my-3" placeholder="Pickup address"><?php echo $fd->pickup_address; ?></textarea>
-                            <button type="button" class="btn btn-primary btn-sm">Search on map</button>
+                            <textarea name="pickup_address" class="form-control my-3" placeholder="Pickup address"><?php echo $fd->pickup_address; ?></textarea>
+                            <div class="col-md-12">
+                                <div id="location-form-shop">
+                                </div>
+                                <div id="map-shop"></div>
+                            </div>
                         </div>
                         <div class="col-md-6">
                             <b>Pickup Latitude</b>
@@ -86,12 +91,16 @@ $req = $context->req;
                     </div>
                 </div>
             </div>
-
-        </div>
+        </form>
     </div>
+</div>
 
 
 
 <?php pkAjax_form("#update-fuel-btn", "#update-new-fuel-form", "#res"); ?>
-<?php import("apps/admin/pages/allorders/api.mapbox.js.php");
+<?php import("apps/admin/pages/allorders/mapbox.js.php");
 ?>
+<script>
+    initializeMap('map-shop', '<?php echo MAPBOX_ACCESS_TOKEN; ?>', 'location-form-shop', 'pickLat', 'pickLon', 'Seach coordinates');
+    initializeMap('map', '<?php echo MAPBOX_ACCESS_TOKEN; ?>', 'location-form', 'custLat', 'custLon', 'Seach coordinates');
+</script>

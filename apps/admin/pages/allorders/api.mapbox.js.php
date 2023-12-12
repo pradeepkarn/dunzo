@@ -1,9 +1,11 @@
-   <!-- Include Mapbox Geocoding SDK -->
+  
+  <?php 
+  $cust_addrs = $context['cust_address'];
+  $pickup_addrs = $context['pickup_address'];
+  ?>
+  <!-- Include Mapbox Geocoding SDK -->
 
-   <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css" />
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+   
    <script>
        // Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
        mapboxgl.accessToken = '<?php echo MAPBOX_ACCESS_TOKEN; ?>';
@@ -31,22 +33,7 @@
            var locationName = e.result.text;
            var place_name = e.result.place_name;
            document.getElementById('set-location').value = place_name;
-           document.getElementById('lat_save').value = coordinates[1];
-           document.getElementById('lon_save').value = coordinates[0];
-           // console.log(e);
-           // Display the selected location's coordinates
-           // var coordinatesDiv = document.getElementById('coordinates');
-           // coordinatesDiv.innerHTML = '<p>Location: ' + locationName + '</p>' +
-           //     '<p>Latitude: ' + coordinates[1] + '</p>' +
-           //     '<p>Longitude: ' + coordinates[0] + '</p>';
-       });
-
-       // Handle form submission with AJAX when the button is clicked
-       document.getElementById('search-button').addEventListener('click', function() {
-           var locationInput = document.getElementById('location-input').value;
-
-
-           // Use the geocoder to search for the location
-           geocoder.query(locationInput);
+           document.getElementById('custLat').value = coordinates[1];
+           document.getElementById('custLon').value = coordinates[0];
        });
    </script>

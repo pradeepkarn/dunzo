@@ -27,7 +27,7 @@ class Orders_ctrl
     public function edit_order($req = null)
     {
         if (isset($_POST['action'], $_FILES)) {
-            $this->save_imported_orders($req = new stdClass);
+            $this->update_order($req = new stdClass);
             exit;
         }
         $req = obj($req);
@@ -54,7 +54,7 @@ class Orders_ctrl
             $current_page = (abs($req->page) - 1) * $data_limit;
             $page_limit = "$current_page,$data_limit";
         }
-        $res = $this->order_list(ord:"ASC", limit:$page_limit, active:1);
+        $res = $this->order_list(ord: "DESC", limit: $page_limit, active: 1);
         if ($res) {
             $orders_list = [];
             foreach ($res as $d) {
@@ -81,8 +81,8 @@ class Orders_ctrl
             $orders_list = [];
         }
         // myprint($orders_list);
-        
-        $tu = $this->order_list_count($active = 1)['total_orders']??0;
+
+        $tu = $this->order_list_count($active = 1)['total_orders'] ?? 0;
         if ($tu %  $data_limit == 0) {
             $tu = $tu / $data_limit;
         } else {
@@ -134,49 +134,123 @@ class Orders_ctrl
                 $sheet = $spreadsheet->getActiveSheet();
 
                 // Prepare the SQL statement
-                $sql = "INSERT INTO manual_orders (created_at, name, email, phone, address, quantity, amount) VALUES (:created_at, :name, :email, :phone, :address, :quantity, :amount)";
+                $sql = "INSERT INTO manual_orders 
+                (created_at, name, email, phone, address, lat, lon, order_item, quantity, amount, order_type) 
+                VALUES 
+                (:created_at, :name, :email, :phone, :address, :lat, :lon, :order_item, :quantity, :amount, :order_type)";
                 // Loop through each row and insert data into the database
+                $count = 0;
                 for ($row = 2; $row <= $sheet->getHighestRow(); $row++) {
                     $created_at = $sheet->getCell('A' . $row)->getCalculatedValue();
-                    $created_at = $this->convertToValidDateFormat($created_at);
+                    $name = $sheet->getCell('B' . $row)->getCalculatedValue();
                     $email = $sheet->getCell('C' . $row)->getCalculatedValue();
-                    $qty = $sheet->getCell('F' . $row)->getCalculatedValue();
-                    $amt = $sheet->getCell('G' . $row)->getCalculatedValue();
+                    $phone = $sheet->getCell('D' . $row)->getCalculatedValue();
+                    $address = $sheet->getCell('E' . $row)->getCalculatedValue();
+                    $loc = $sheet->getCell('F' . $row)->getCalculatedValue();
+                    $pkg = $sheet->getCell('G' . $row)->getCalculatedValue();
+                    $qty = $sheet->getCell('H' . $row)->getCalculatedValue();
+                    $amt = $sheet->getCell('I' . $row)->getCalculatedValue();
+                    $order_type = $sheet->getCell('J' . $row)->getCalculatedValue();
+
+                    $created_at = $this->convertToValidDateFormat($created_at);
+                    $cord = $this->separateCoordinates($coordinates = $loc);
                     $old_sql = "select id from manual_orders where email='$email' and created_at = '$created_at'";
                     $exists = $db->showOne($old_sql);
                     if (!$exists) {
-                        if ($email==null) {
-                            msg_set("Email not found in the entry");
+                        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                            msg_set("Valid Email not found in the row $row");
+                        }
+                        if ($cord[0] == '' || $cord[1] == '') {
+                            msg_set("Valid location not found in the row $row");
                         }
                         $params = [
                             ':created_at' => $created_at,
-                            ':name' => $sheet->getCell('B' . $row)->getCalculatedValue(),
+                            ':name' => $name,
                             ':email' => $email,
-                            ':phone' => $sheet->getCell('D' . $row)->getCalculatedValue(),
-                            ':address' => $sheet->getCell('E' . $row)->getCalculatedValue(),
+                            ':phone' => $phone,
+                            ':address' => $address,
+                            ':lat' => $cord[0],
+                            ':lon' => $cord[1],
+                            ':order_item' => $pkg,
                             ':quantity' => $qty,
                             ':amount' => floatval($amt),
+                            ':order_type' => intval($order_type) == 1 ? 1 : 0,
                         ];
                     } else {
-                        msg_set("Duplicate entry found");
+                        msg_set("Duplicate entry found in the row $row");
+                        $count = -2;
                     }
                     try {
                         if (isset($params)) {
                             $stmt = $db->pdo->prepare($sql);
-                            if($stmt->execute($params)){
-                                msg_set("data imported $amt");
-                            }else{
-                                msg_set("data not imported $amt");
+                            if ($stmt->execute($params)) {
+                                $count += 1;
                             }
-                        } else {
-                            msg_set("data not imported");
                         }
                     } catch (PDOException $e) {
                         msg_set("Database import error");
                     }
                 }
-                echo js_alert(msg_ssn(return: true));
+                msg_set("$count data imported");
+                echo msg_ssn();
             }
+        }
+        exit;
+    }
+    function update_order($req = null)
+    {
+        $req = (object) $_POST;
+        $rules = [
+            'action' => 'required|string',
+            'id' => 'required|numeric',
+            'address' => 'required|string',
+            'pickup_address' => 'required|string',
+            'lat' => 'required|string',
+            'lon' => 'required|string',
+            'pickup_lat' => 'required|string',
+            'pickup_lon' => 'required|string',
+
+        ];
+        $pass = validateData(data: arr($req), rules: $rules);
+        if (!$pass) {
+            echo js_alert(msg_ssn(return: true));
+            exit;
+        } else {
+            $db = $this->db;
+            $old_sql = "select id from manual_orders where id='$req->id';";
+            $exists = $db->showOne($old_sql);
+            if ($exists) {
+                try {
+                    $params = [
+                        ':id' => $req->id,
+                        ':address' => $req->address,
+                        ':pickup_address' => $req->pickup_address,
+                        ':lat' => $req->lat,
+                        ':lon' => $req->lon,
+                        ':pickup_lat' => $req->pickup_lat,
+                        ':pickup_lon' => $req->pickup_lon,
+                    ];
+                    $sql = "UPDATE manual_orders SET 
+                    address = :address ,
+                    pickup_address = :pickup_address ,
+                    lat = :lat ,
+                    lon = :lon ,
+                    pickup_lat = :pickup_lat ,
+                    pickup_lon = :pickup_lon 
+                    WHERE id = :id";
+                    $stmt = $db->pdo->prepare($sql);
+                    if ($stmt->execute($params)) {
+                        msg_set("data updated");
+                    } else {
+                        msg_set("data not updated");
+                    }
+                } catch (PDOException $e) {
+                    msg_set("Database import error");
+                }
+            } else {
+                msg_set("Object not found in database");
+            }
+            echo js_alert(msg_ssn(return: true));
         }
         exit;
     }
@@ -204,6 +278,31 @@ class Orders_ctrl
 
         // Return null if the date couldn't be parsed
         return null;
+    }
+    function separateCoordinates($coordinates)
+    {
+        // Trim leading and trailing spaces
+        $coordinates = trim($coordinates);
+
+        // Check if the string is empty or contains only a comma
+        if (empty($coordinates) || $coordinates === ',') {
+            return [null, null];
+        }
+
+        // Split the coordinates by comma
+        $coordinatesArray = explode(',', $coordinates);
+
+        // Trim each coordinate and remove empty values
+        $coordinatesArray = array_map('trim', $coordinatesArray);
+        $coordinatesArray = array_filter($coordinatesArray);
+
+        // Check if there are at least two coordinates (latitude and longitude)
+        if (count($coordinatesArray) < 2) {
+            return [null, null];
+        }
+
+        // Return the separated coordinates
+        return $coordinatesArray;
     }
     function update_addon_price($req = null)
     {
