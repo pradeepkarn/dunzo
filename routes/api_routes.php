@@ -18,6 +18,7 @@ $api_routes = [
     "/api/v1/orders/driver/task-history" => 'Orders_api@task_history@name.orderTaskHistoryApi',
 
     // version 2
+    "/api/v2/orders/list" => 'Orders_v2_api@fetch_orders@name.fetchOrdersApiV2',
     "/api/v2/orders/driver/history" => 'Orders_v2_api@order_history@name.orderHistoryApiV2',
     "/api/v2/orders/driver/running" => 'Orders_v2_api@running_orders@name.orderRunningApiV2',
     "/api/v2/orders/driver/status-change/{delivery_status}" => 'Orders_v2_api@status_update_order@name.statustOrderApiV2',
