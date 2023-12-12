@@ -30,8 +30,8 @@ $req->fg = $ug;
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Delivery Status</th>
                                     <th scope="col">Buyer</th>
-                                    <th scope="col">Driver to Pickup</th>
-                                    <th scope="col">Buyer To Pickup</th>
+                                    <!-- <th scope="col">Driver to Pickup</th> -->
+                                    <!-- <th scope="col">Buyer To Pickup</th> -->
                                     <th class="text-center">Assign driver Set price or both</th>
 
                                 </tr>
@@ -95,8 +95,8 @@ $req->fg = $ug;
                                         <!-- <th><?php //echo $pv->driver_assigned ? $pv->driver : 'NA'; 
                                                     ?></th> -->
                                         <th><?php echo $pv->buyer_name; ?></th>
-                                        <th><?php echo $driver_to_rest ?? "NA"; ?></th>
-                                        <th><?php echo $pv->user_to_rest . " " . $pv->distance_unit; ?></th>
+                                        <!-- <th><?php //echo $driver_to_rest ?? "NA"; ?></th> -->
+                                        <!-- <th><?php //echo $pv->user_to_rest . " " . $pv->distance_unit; ?></th> -->
 
                                         <th>
                                             <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('allOrdersUpdateAddOnPrice'); ?>">

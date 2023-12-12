@@ -67,12 +67,10 @@ class Orders_ctrl
                     'buyer' => $apidata->name,
                     'buyer_name' => $apidata->name,
                     "buyer_id" => $apidata->email,
-                    "buyer_lat" => "27.7987",
-                    "buyer_lon" => "76.8777",
-                    "rest_lat" => '78.87',
-                    "rest_lon" => "87.89797979",
-                    "distance_unit" => 'km',
-                    "user_to_rest" => '23'
+                    "buyer_lat" => $apidata->lat,
+                    "buyer_lon" => $apidata->lon,
+                    "pickup_lat" => $apidata->pickup_lat,
+                    "pickup_lon" => $apidata->pickup_lon
                 );
                 $d['api_data'] = $dat;
                 $orders_list[] = $d;
