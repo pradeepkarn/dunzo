@@ -30,8 +30,8 @@ $req->fg = $ug;
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Delivery Status</th>
                                     <th scope="col">Buyer</th>
-                                    <th scope="col">Driver to rest.</th>
-                                    <th scope="col">Buyer To Rest.</th>
+                                    <th scope="col">Driver to Pickup</th>
+                                    <th scope="col">Buyer To Pickup</th>
                                     <th class="text-center">Assign driver Set price or both</th>
 
                                 </tr>
@@ -47,20 +47,19 @@ $req->fg = $ug;
                                     $btnid = uniqid("btn{$pv->orderid}");
                                     $formid = uniqid("form{$pv->orderid}");
 
-                                    $ord = $db->showOne("select add_on_price,driver_id, delivery_status from manual_orders where id = '$pv->orderid'");
+                                    $ord = $db->showOne("select add_on_price, driver_id, delivery_status from manual_orders where id = '$pv->orderid'");
                                     $add_on_price = $ord['add_on_price'];
                                     $driver_id = $ord['driver_id'];
                                     $delivery_status = $ord['delivery_status'];
-                                    $driver = $db->showOne("select id, email, lat,lon from pk_user where is_active=1 and user_group = 'driver' and id ='{$driver_id}'");
-                                    $drivers = $db->show("select id, email, lat,lon from pk_user where is_active=1 and user_group = 'driver'");
+                                    $driver = $db->showOne("select id, email, lat, lon from pk_user where is_active=1 and user_group = 'driver' and id ='{$driver_id}'");
+                                    $drivers = $db->show("select id, email, lat, lon from pk_user where is_active=1 and user_group = 'driver'");
                                     $driver_to_rest = null;
                                     if ($driver) {
-                                        $driver_to_rest = calculateDistance($startLat = $pv->rest_lat, $startLon = $pv->rest_lon, $endLat = $driver['lat'], $endLon = $driver['lon']);
+                                        $driver_to_rest = calculateDistance($startLat = $pv->pickup_lat, $startLon = $pv->pickup_lon, $endLat = $driver['lat'], $endLon = $driver['lon']);
                                         $driver_to_rest = $driver_to_rest ? round($driver_to_rest / 1000, 3) : null;
                                     }
 
                                 ?>
-
                                     <tr>
                                         <th>
                                             <a href="<?php echo BASEURI.route('allOrdersEdit',['id'=>$pv->orderid]); ?>">
