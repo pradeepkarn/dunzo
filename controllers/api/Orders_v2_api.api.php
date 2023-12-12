@@ -49,8 +49,8 @@ class Orders_v2_api
             echo json_encode($api);
             exit;
         }
-        $req->status = urldecode($req->status);
-        $req->status = json_decode($req->status, true);
+        // $req->status = urldecode($req->status);
+        // $req->status = json_decode($req->status, true);
         // if (!is_array($req->status)) {
         //     msg_set('Invalid status format');
         //     $api['success'] = false;
