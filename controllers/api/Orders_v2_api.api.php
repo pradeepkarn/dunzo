@@ -59,6 +59,12 @@ class Orders_v2_api
             echo json_encode($api);
             exit;
         }
+        msg_set('Invalid status format');
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
         $ord_list = $this->order_list($status = $req->status);
         if ($ord_list) {
             msg_set('Orders found');
