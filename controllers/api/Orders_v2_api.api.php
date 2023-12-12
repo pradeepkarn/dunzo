@@ -51,14 +51,14 @@ class Orders_v2_api
         }
         $req->status = urldecode($req->status);
         $req->status = json_decode($req->status, true);
-        if (!is_array($req->status)) {
-            msg_set('Invalid status format');
-            $api['success'] = false;
-            $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
-            echo json_encode($api);
-            exit;
-        }
+        // if (!is_array($req->status)) {
+        //     msg_set('Invalid status format');
+        //     $api['success'] = false;
+        //     $api['data'] = null;
+        //     $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+        //     echo json_encode($api);
+        //     exit;
+        // }
         $ord_list = $this->order_list($status = $req->status);
         if ($ord_list) {
             msg_set('Orders found');
