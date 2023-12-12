@@ -77,7 +77,7 @@ class Orders_v2_api
         }
     }
     // supporting method order list
-    function order_list($status = [0])
+    function order_list($status = 0)
     {
         $arr = [];
         // $statusString = implode(',', $status);
