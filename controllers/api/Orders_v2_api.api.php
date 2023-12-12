@@ -135,7 +135,7 @@ class Orders_v2_api
         ;");
         if (!empty($data)) {
             foreach ($data as $d) {
-                $d['api_data'] = $this->format_orders($d);
+                $d['api_data'] = $this->format_orders_single($d);
                 $arr[] = $d;
             }
         }
@@ -163,6 +163,32 @@ class Orders_v2_api
             "pickup_lat" => $apidata->pickup_lat,
             "pickup_lon" => $apidata->pickup_lon,
             // "pickup_to_drop" => $meter,
+            "distance_unit" => 'm'
+        );
+        return $data;
+    }
+    function format_orders_single($d)
+    {
+        $d['id'] = intval($d['id']); // true parameter for associative array
+        $d['delivery_status_text'] = getStatusText($d['delivery_status']);
+        $apidata = obj($d);
+        $meter = calculateDistance($startLat=$apidata->lat,$startLon=$apidata->lon,$endLat=$apidata->pickup_lat,$endLon=$apidata->pickup_lon);
+        $data = array(
+            'id' => $apidata->id,
+            'orderid' => $apidata->id,
+            'is_prepaid' => strtolower($apidata->order_type) == '0' ? false : true,
+            'amount' => strtolower($apidata->order_type) == '0' ? $apidata->amount : "0",
+            'created_at' => $apidata->created_at,
+            'buyer_name' => $apidata->name,
+            "buyer_id" => $apidata->email,
+            "buyer_lat" => $apidata->lat,
+            "buyer_lon" => $apidata->lon,
+            'phone' => $apidata->phone,
+            'address' => $apidata->address,
+            "pickup_address" => $apidata->pickup_address,
+            "pickup_lat" => $apidata->pickup_lat,
+            "pickup_lon" => $apidata->pickup_lon,
+            "pickup_to_drop" => $meter,
             "distance_unit" => 'm'
         );
         return $data;
