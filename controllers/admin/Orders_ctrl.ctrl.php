@@ -133,9 +133,9 @@ class Orders_ctrl
 
                 // Prepare the SQL statement
                 $sql = "INSERT INTO manual_orders 
-                (created_at, name, email, phone, address, lat, lon, order_item, quantity, amount, order_type) 
+                (created_at, name, email, phone, address, lat, lon, pickup_address, pickup_lat, pickup_lon, order_item, quantity, amount, order_type) 
                 VALUES 
-                (:created_at, :name, :email, :phone, :address, :lat, :lon, :order_item, :quantity, :amount, :order_type)";
+                (:created_at, :name, :email, :phone, :address, :lat, :lon, :pickup_address, :pickup_lat, :pickup_lon, :order_item, :quantity, :amount, :order_type)";
                 // Loop through each row and insert data into the database
                 $count = 0;
                 for ($row = 2; $row <= $sheet->getHighestRow(); $row++) {
@@ -167,6 +167,9 @@ class Orders_ctrl
                             ':email' => $email,
                             ':phone' => $phone,
                             ':address' => $address,
+                            ':pickup_address' => WAREHOUSE['pickup_address'],
+                            ':pickup_lat' => WAREHOUSE['pickup_lat'],
+                            ':pickup_lon' => WAREHOUSE['pickup_lon'],
                             ':lat' => $cord[0],
                             ':lon' => $cord[1],
                             ':order_item' => $pkg,

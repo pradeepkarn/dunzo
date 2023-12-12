@@ -29,5 +29,9 @@ const USER_GROUP = array(
     'driver'=>'driver',
 );
 const USER_GROUP_LIST = ['driver','user'];
-
+const WAREHOUSE = array(
+    'pickup_address'=>"ABC LTD, Central Point Zimbawe",
+    'pickup_lat'=>"-17.8020004",
+    'pickup_lon'=>"31.0194396"
+);
 const RESTAURANT_API_KEY = "6SedFzPnMuFxC9L3hyLbLCJnevY+k8HAv6afu8WiQa0=";
