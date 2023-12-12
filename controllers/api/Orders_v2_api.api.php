@@ -59,12 +59,6 @@ class Orders_v2_api
             echo json_encode($api);
             exit;
         }
-        msg_set('Invalid status format');
-            $api['success'] = false;
-            $api['data'] = null;
-            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
-            echo json_encode($api);
-            exit;
         $ord_list = $this->order_list($status = $req->status);
         if ($ord_list) {
             msg_set('Orders found');
@@ -86,7 +80,8 @@ class Orders_v2_api
     function order_list($status = [0])
     {
         $arr = [];
-        $statusString = implode(',', $status);
+        // $statusString = implode(',', $status);
+        $statusString = $status;
         // echo $statusString;
         $data = $this->db->show("
         SELECT manual_orders.id, manual_orders.created_at, manual_orders.delivery_status, manual_orders.driver_id, 
