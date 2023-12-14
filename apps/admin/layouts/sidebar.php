@@ -137,10 +137,10 @@
   </li>
   <!-- orders component -->
   <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#components-orders" data-bs-toggle="collapse" href="#">
+    <a class="nav-link" data-bs-target="#components-orders" data-bs-toggle="collapse" href="#">
       <i class="bi bi-menu-button-wide"></i><span>Orders </span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
-    <ul id="components-orders" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+    <ul id="components-orders" class="nav-content collapse show" data-bs-parent="#sidebar-nav">
       <li>
         <a href="/<?php echo home . route('allOrdersCreate'); ?>">
           <i class="bi bi-circle"></i><span>Import XLSX File</span>
@@ -148,7 +148,22 @@
       </li>
       <li>
         <a href="/<?php echo home . route('allOrdersList',['status'=>0]); ?>">
-          <i class="bi bi-circle"></i><span>New Orders</span>
+          <i class="bi bi-circle"></i><span>New</span>
+        </a>
+      </li>
+      <li>
+        <a href="/<?php echo home . route('allOrdersList',['status'=>1]); ?>">
+          <i class="bi bi-circle"></i><span>Picked up</span>
+        </a>
+      </li>
+      <li>
+        <a href="/<?php echo home . route('allOrdersList',['status'=>2]); ?>">
+          <i class="bi bi-circle"></i><span>Delivered</span>
+        </a>
+      </li>
+      <li>
+        <a href="/<?php echo home . route('allOrdersList',['status'=>3]); ?>">
+          <i class="bi bi-circle"></i><span>Cancelled</span>
         </a>
       </li>
     </ul>
