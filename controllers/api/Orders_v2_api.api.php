@@ -150,9 +150,10 @@ class Orders_v2_api
         $data = array(
             'id' => $apidata->id,
             'orderid' => $apidata->id,
+            'add_on_price' => $apidata->add_on_price,
             'is_prepaid' => strtolower($apidata->order_type) == '0' ? false : true,
             'amount' => strtolower($apidata->order_type) == '0' ? $apidata->amount : "0",
-            'created_at' => $apidata->created_at,
+            'created_at' => strtotime($apidata->created_at),
             'buyer_name' => $apidata->name,
             "buyer_id" => $apidata->email,
             "buyer_lat" => $apidata->lat,
@@ -176,9 +177,10 @@ class Orders_v2_api
         $data = array(
             'id' => $apidata->id,
             'orderid' => $apidata->id,
+            'add_on_price' => $apidata->add_on_price,
             'is_prepaid' => strtolower($apidata->order_type) == '0' ? false : true,
             'amount' => strtolower($apidata->order_type) == '0' ? $apidata->amount : "0",
-            'created_at' => $apidata->created_at,
+            'created_at' => strtotime($apidata->created_at),
             'buyer_name' => $apidata->name,
             "buyer_id" => $apidata->email,
             "buyer_lat" => $apidata->lat,
