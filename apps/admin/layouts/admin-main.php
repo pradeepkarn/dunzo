@@ -47,7 +47,9 @@
                 msg: res.msg,
                 icon: 'success'
             });
-            // location.reload();
+            if (res.dada.action && res.dada.action=="update_status") {
+              location.reload();
+            }
         } else if (res.success === false) {
             swalert({
                 title: 'Failed',
