@@ -105,7 +105,7 @@ class Orders_v2_api
             // Loop through the data and decode the JSON values
             foreach ($data as $d) {
                 $d['api_data'] = $this->format_orders($d);
-                $arr[] = $d;
+                $arr[] = $d['api_data'];
             }
         }
         return $arr;
