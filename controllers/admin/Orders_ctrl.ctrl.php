@@ -55,7 +55,7 @@ class Orders_ctrl
             $page_limit = "$current_page,$data_limit";
         }
         if (isset($req->status)) {
-            $res =  $this->order_list_by_delv_status($ord = "DESC", $limit = 5, $active = 1, $delv_sts = $req->status);
+            $res =  $this->order_list_by_delv_status(ord: "DESC", limit: $page_limit, active: 1, delv_sts: $req->status);
         } else {
             $res = $this->order_list(ord: "DESC", limit: $page_limit, active: 1);
         }
