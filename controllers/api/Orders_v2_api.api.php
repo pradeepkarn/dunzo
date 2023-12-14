@@ -213,12 +213,12 @@ class Orders_v2_api
         if ($from != null && $to != null) {
             $from = is_numeric($from) ? date('Y-m-d 00:00:00', $from) : date('Y-m-d 00:00:00', strtotime($from));
             $to = is_numeric($to) ? date('Y-m-d 23:59:00', $to) : date('Y-m-d 23:59:00', strtotime($to));
-            $sql = "SELECT manual_orders.unique_id as orderid, manual_orders.delivery_status 
+            $sql = "SELECT manual_orders.id as orderid, manual_orders.delivery_status 
                     FROM manual_orders 
                     WHERE manual_orders.driver_id = '$driver_id' 
                     AND manual_orders.updated_at BETWEEN '$from' AND '$to';";
         } else {
-            $sql = "SELECT manual_orders.unique_id as orderid, manual_orders.delivery_status 
+            $sql = "SELECT manual_orders.id as orderid, manual_orders.delivery_status 
                     FROM manual_orders 
                     WHERE manual_orders.driver_id = '$driver_id'";
         }
@@ -470,7 +470,7 @@ class Orders_v2_api
                 $db->tableName = 'manual_orders';
                 $db->insertData['driver_id'] = $user['id'];
                 // $db->insertData['delivery_status'] = $data->delivery_status;
-                $db->findOne(['unique_id' => $data->orderid]);
+                $db->findOne(['id' => $data->orderid]);
                 $db->update();
                 $pdo->commit();
                 msg_set("Assigned");
@@ -648,7 +648,7 @@ class Orders_v2_api
             $this->db->tableName = "supports";
             $this->db->insertData['content_group'] = "open";
             $this->db->insertData['message'] = $data->issue;
-            $this->db->insertData['unique_id'] = $data->orderid ?? null;
+            $this->db->insertData['id'] = $data->orderid ?? null;
             $this->db->insertData['user_id'] = $user['id'];
             $this->db->insertData['is_active'] = 1;
             $this->db->insertData['is_approved'] = "0";
