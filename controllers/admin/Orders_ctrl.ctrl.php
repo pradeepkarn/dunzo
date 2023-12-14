@@ -399,7 +399,8 @@ class Orders_ctrl
             if ($this->db->update()) {
                 msg_set('Order updated');
                 $api['success'] = true;
-                $api['data'] = ['action'=>'order_update'];
+                $api['data'] = [];
+                $api['reload'] = true;
                 $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
                 echo json_encode($api);
                 exit;

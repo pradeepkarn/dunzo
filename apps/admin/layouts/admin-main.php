@@ -47,7 +47,7 @@
                 msg: res.msg,
                 icon: 'success'
             });
-            if (res.data.action && res.data.action=="update_status") {
+            if (res.reload) {
               location.reload();
             }
         } else if (res.success === false) {
