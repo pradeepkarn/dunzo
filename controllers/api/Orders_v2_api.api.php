@@ -136,7 +136,7 @@ class Orders_v2_api
         if (!empty($data)) {
             foreach ($data as $d) {
                 $d['api_data'] = $this->format_orders_single($d);
-                $arr[] = $d;
+                $arr[] = $d['api_data'];
             }
         }
         return $arr;

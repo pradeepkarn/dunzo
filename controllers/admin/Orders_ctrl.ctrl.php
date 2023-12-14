@@ -54,7 +54,11 @@ class Orders_ctrl
             $current_page = (abs($req->page) - 1) * $data_limit;
             $page_limit = "$current_page,$data_limit";
         }
-        $res = $this->order_list(ord: "DESC", limit: $page_limit, active: 1);
+        if (isset($req->status)) {
+            $res =  $this->order_list_by_delv_status($ord = "DESC", $limit = 5, $active = 1, $delv_sts = $req->status);
+        } else {
+            $res = $this->order_list(ord: "DESC", limit: $page_limit, active: 1);
+        }
         if ($res) {
             $orders_list = [];
             foreach ($res as $d) {
@@ -80,7 +84,7 @@ class Orders_ctrl
         }
         // myprint($orders_list);
 
-        $tu = $this->order_list_count($active = 1)['total_orders'] ?? 0;
+        $tu = $this->order_list_count($active = 1, $req->status ?? null)['total_orders'] ?? 0;
         if ($tu %  $data_limit == 0) {
             $tu = $tu / $data_limit;
         } else {
@@ -98,17 +102,27 @@ class Orders_ctrl
         );
         $this->render_main($context);
     }
+    function order_list_by_delv_status($ord = "DESC", $limit = 5, $active = 1, $delv_sts = 0)
+    {
+        $db = new Dbobjects;
+        $db->tableName = "manual_orders";
+        return $db->filter(assoc_arr: ['is_active' => $active, 'delivery_status' => $delv_sts], ord: $ord, limit: $limit);
+    }
     function order_list($ord = "DESC", $limit = 5, $active = 1)
     {
         $db = new Dbobjects;
         $db->tableName = "manual_orders";
         return $db->filter(assoc_arr: ['is_active' => $active], ord: $ord, limit: $limit);
     }
-    function order_list_count($active = 1)
+    function order_list_count($active = 1, $delv_sts = null)
     {
+        $delv_str  = null;
+        if ($delv_sts) {
+            $delv_str = "and delivery_status= '$delv_sts'";
+        }
         $db = new Dbobjects;
         $db->tableName = "manual_orders";
-        return $db->showOne("select COUNT(id) as total_orders from manual_orders where is_active=$active");
+        return $db->showOne("select COUNT(id) as total_orders from manual_orders where is_active=$active $delv_str");
     }
     function save_imported_orders($req = null)
     {
@@ -210,7 +224,6 @@ class Orders_ctrl
             'lon' => 'required|string',
             'pickup_lat' => 'required|string',
             'pickup_lon' => 'required|string',
-
         ];
         $pass = validateData(data: arr($req), rules: $rules);
         if (!$pass) {

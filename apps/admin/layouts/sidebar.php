@@ -147,7 +147,7 @@
         </a>
       </li>
       <li>
-        <a href="/<?php echo home . route('allOrdersList'); ?>">
+        <a href="/<?php echo home . route('allOrdersList',['status'=>null]); ?>">
           <i class="bi bi-circle"></i><span>All Orders</span>
         </a>
       </li>

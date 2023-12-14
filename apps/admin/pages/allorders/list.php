@@ -4,11 +4,12 @@ $tp = $context->total_orders;
 $cp = $context->current_page;
 $active = $context->is_active;
 
-$ug =  explode("/", REQUEST_URI);
-$ug = $ug[3];
-$req = new stdClass;
-$req->fg = $ug;
+// $ug =  explode("/", REQUEST_URI);
+// $ug = $ug[3];
+// $req = new stdClass;
+// $req->fg = $ug;
 // myprint($fl);
+$req = $context->req;
 ?>
 
 <section class="section">
@@ -141,9 +142,9 @@ $req->fg = $ug;
                     $tu = $tp; // Total pages
                     $current_page = $cp; // Assuming first page is the current page
                     if ($active == true) {
-                        $link =  route('allOrdersList');
+                        $link =  route('allOrdersList',['status'=>$req->status??null]);
                     } else {
-                        $link =  route('allOrdersList');
+                        $link =  route('allOrdersList',['status'=>$req->status??null]);
                     }
                     // Calculate start and end page numbers to display
                     $start_page = max(1, $current_page - 2);

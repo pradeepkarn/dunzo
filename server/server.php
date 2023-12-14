@@ -2,6 +2,7 @@
 if (!defined("direct_access")) {
     define("direct_access", 1);
 }
+
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
@@ -15,7 +16,8 @@ try {
     $server = IoServer::factory(
         new HttpServer(
             new WsServer(
-                new MyChatP2P()
+                new MyChatP2P(),
+                new Notification()
             )
         ),
         WS_PORT

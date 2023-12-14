@@ -114,7 +114,7 @@ $admin_routes = [
     '/admin/fuel/{fg}/delete/{id}/{driver_id}' => 'Admin_fuel_ctrl@delete_trash@name.fuelDeleteByDriver',
     '/admin/fuel/{fg}/edit/{id}/save-by-ajax/{driver_id}' => 'Admin_fuel_ctrl@update@name.fuelUpdateAjaxByDriver',
 
-    '/admin/all-orders/list' => 'Orders_ctrl@list@name.allOrdersList',
+    '/admin/all-orders/list/{status}' => 'Orders_ctrl@list@name.allOrdersList',
     '/admin/all-orders/import' => 'Orders_ctrl@import_orders@name.allOrdersCreate',
     '/admin/all-orders/edit/{id}' => 'Orders_ctrl@edit_order@name.allOrdersEdit',
     '/admin/all-orders/update-addon-price-ajax' => 'Orders_ctrl@update_addon_price@name.allOrdersUpdateAddOnPrice',
