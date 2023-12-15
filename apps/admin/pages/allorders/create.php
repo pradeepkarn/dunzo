@@ -14,7 +14,7 @@ $uri =  explode("/", REQUEST_URI);
                         <div class="col">
                             <h5 class="card-title">Import Orders</h5>
                         </div>
-                        <div class="col text-end my-3">
+                        <div class="col text-end">
                             <a class="btn btn-dark" href="<?php echo BASEURI.route('allOrdersList'); ?>">Got to all orders</a>
                         </div>
                     </div>
@@ -29,7 +29,7 @@ $uri =  explode("/", REQUEST_URI);
                     </div>
                 </div>
                 <div class="col-md-4 my-2">
-                    <a class="btn btn-success btn-sm" href="/<?php echo MEDIA_URL; ?>/site/sample.xlsx" download="">Download Sample File</a>
+                    <a class="btn btn-success" href="/<?php echo MEDIA_URL; ?>/site/sample.xlsx" download="">Download Sample File</a>
                 </div>
             </div>
 
