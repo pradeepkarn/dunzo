@@ -154,6 +154,7 @@ class Orders_ctrl
                 $count = 0;
                 for ($row = 2; $row <= $sheet->getHighestRow(); $row++) {
                     $created_at = $sheet->getCell('A' . $row)->getCalculatedValue();
+                    $created_at = timestampToDatetime($created_at);
                     $name = $sheet->getCell('B' . $row)->getCalculatedValue();
                     $email = $sheet->getCell('C' . $row)->getCalculatedValue();
                     $phone = $sheet->getCell('D' . $row)->getCalculatedValue();

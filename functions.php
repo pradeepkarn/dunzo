@@ -1517,3 +1517,17 @@ function getStatusText($statusCode)
     return "Status code not found";
   }
 }
+
+function timestampToDatetime($timestampOrDatetime) {
+  // Check if the input is already a datetime string
+  if (strtotime($timestampOrDatetime) !== false) {
+      return $timestampOrDatetime; // Return unchanged if it's already a datetime
+  }
+
+  // Format the timestamp to a human-readable date and time
+  $datetime = date("Y-m-d H:i:s", $timestampOrDatetime);
+
+  return $datetime;
+}
+
+?>
