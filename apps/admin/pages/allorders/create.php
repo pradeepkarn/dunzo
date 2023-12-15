@@ -9,7 +9,7 @@ $uri =  explode("/", REQUEST_URI);
         <div class="card-body">
             <div style="overflow-y: scroll; max-height:200px;" id="res"></div>
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-8 my-2">
                     <div class="row">
                         <div class="col">
                             <h5 class="card-title">Import Orders</h5>
@@ -29,7 +29,7 @@ $uri =  explode("/", REQUEST_URI);
                     </div>
                 </div>
                 <div class="col-md-4 my-2">
-                    <a class="btn btn-success" href="/<?php echo MEDIA_URL; ?>/site/sample.xlsx" download="">Download Sample File</a>
+                    <a class="btn btn-success btn-sm" href="/<?php echo MEDIA_URL; ?>/site/sample.xlsx" download="">Download Sample File</a>
                 </div>
             </div>
 
