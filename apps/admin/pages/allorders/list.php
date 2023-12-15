@@ -19,7 +19,7 @@ $req = $context->req;
             <div class="card">
                 <div class="card-body mt-3">
 
-                    <form action="<?php echo BASEURI ; ?>" id="delete-bulk-form">
+                    <form action="<?php echo BASEURI . route('ordersDeleteBulkAJax'); ?>" id="delete-bulk-form">
                         <div id="deletebulkres"></div>
                         <div class="row">
                             <div class="col-md-4">

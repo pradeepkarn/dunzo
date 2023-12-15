@@ -119,6 +119,7 @@ $admin_routes = [
     '/admin/all-orders/edit/{id}' => 'Orders_ctrl@edit_order@name.allOrdersEdit',
     '/admin/all-orders/update-addon-price-ajax' => 'Orders_ctrl@update_addon_price@name.allOrdersUpdateAddOnPrice',
     '/admin/all-orders/update-delivery-status-ajax' => 'Orders_ctrl@update_status@name.allOrdersUpdateStatus',
+    '/admin/all-orders/delete-bulk-orders-ajax' => 'Orders_ctrl@delete_bulk@name.ordersDeleteBulkAJax',
 
     // Comments
     '/admin/comments/{cg}/list' => 'Comment_admin_ctrl@list@name.commentList',
