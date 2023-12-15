@@ -7,7 +7,6 @@ $uri =  explode("/", REQUEST_URI);
 <form action="" id="register-new-fuel-form">
     <div class="card">
         <div class="card-body">
-
             <div style="overflow-y: scroll; max-height:200px;" id="res"></div>
             <div class="row">
                 <div class="col-md-8">
@@ -28,6 +27,9 @@ $uri =  explode("/", REQUEST_URI);
                     <div class="d-grid">
                         <button id="register-fuel-btn" type="button" class="btn btn-primary my-3">Import</button>
                     </div>
+                </div>
+                <div class="col-md-4 my-2">
+                    <a class="btn btn-success" href="/<?php echo MEDIA_URL; ?>/site/sample.xlsx" download="">Download Sample File</a>
                 </div>
             </div>
 
