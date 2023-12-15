@@ -17,9 +17,28 @@ $req = $context->req;
         <div class="col-lg-12">
 
             <div class="card">
-                <div class="card-body">
+                <div class="card-body mt-3">
 
+                    <form action="<?php echo BASEURI . route('orderDeleteBulkAJax'); ?>" id="delete-bulk-form">
+                        <div id="deletebulkres"></div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <select name="action" class="form-select" id="">
+                                    <option value="">Action</option>
+                                    <option value="delete_selected_items">Delete selected (Parmanently)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
 
+                                <button type="submit" id="delete-bulk-btn" class="btn btn-danger">Done</button>
+
+                            </div>
+                        </div>
+                    </form>
+                    <?php
+                    ajaxActive("#upload-info");
+                    pkAjax_form("#delete-bulk-btn", "#delete-bulk-form", "#deletebulkres");
+                    ?>
                     <!-- Table with stripped rows -->
                     <div class="table-responsive">
 
@@ -27,6 +46,9 @@ $req = $context->req;
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th scope="col">
+                                        <input type="checkbox" id="selct_all_ids"> Select
+                                    </th>
                                     <th class="text-center">Edit</th>
                                     <th scope="col">Order ID</th>
                                     <th scope="col">Delivery Status</th>
@@ -63,7 +85,10 @@ $req = $context->req;
                                 ?>
                                     <tr>
                                         <th>
-                                            <a href="<?php echo BASEURI.route('allOrdersEdit',['id'=>$pv->orderid]); ?>">
+                                            <input type="checkbox" name="selected_obj_id" value="<?php echo $pv->id; ?>">
+                                        </th>
+                                        <th>
+                                            <a href="<?php echo BASEURI . route('allOrdersEdit', ['id' => $pv->orderid]); ?>">
                                                 <div class="bi bi-pen"></div>
                                             </a>
                                         </th>
@@ -96,8 +121,10 @@ $req = $context->req;
                                         <!-- <th><?php //echo $pv->driver_assigned ? $pv->driver : 'NA'; 
                                                     ?></th> -->
                                         <th><?php echo $pv->buyer_name; ?></th>
-                                        <!-- <th><?php //echo $driver_to_rest ?? "NA"; ?></th> -->
-                                        <!-- <th><?php //echo $pv->user_to_rest . " " . $pv->distance_unit; ?></th> -->
+                                        <!-- <th><?php //echo $driver_to_rest ?? "NA"; 
+                                                    ?></th> -->
+                                        <!-- <th><?php //echo $pv->user_to_rest . " " . $pv->distance_unit; 
+                                                    ?></th> -->
 
                                         <th>
                                             <form id="<?php echo $formid; ?>" method="post" action="<?php echo BASEURI . route('allOrdersUpdateAddOnPrice'); ?>">
@@ -142,9 +169,9 @@ $req = $context->req;
                     $tu = $tp; // Total pages
                     $current_page = $cp; // Assuming first page is the current page
                     if ($active == true) {
-                        $link =  route('allOrdersList',['status'=>$req->status??null]);
+                        $link =  route('allOrdersList', ['status' => $req->status ?? null]);
                     } else {
-                        $link =  route('allOrdersList',['status'=>$req->status??null]);
+                        $link =  route('allOrdersList', ['status' => $req->status ?? null]);
                     }
                     // Calculate start and end page numbers to display
                     $start_page = max(1, $current_page - 2);
@@ -183,8 +210,54 @@ $req = $context->req;
         </div>
     </div>
 </section>
+
 <script>
-    const testCode = (res) => {
-        console.log(res);
+    const selectAllCheckbox = document.getElementById('selct_all_ids');
+    const individualCheckboxes = document.querySelectorAll('input[name="selected_obj_id"]');
+    const deleteBulkForm = document.getElementById('delete-bulk-form');
+
+    selectAllCheckbox.addEventListener('change', function() {
+        individualCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+            updateFormInputs(checkbox);
+        });
+    });
+
+    individualCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateFormInputs(checkbox);
+            selectAllCheckbox.checked = Array.from(individualCheckboxes).every(checkbox => checkbox.checked);
+        });
+    });
+
+    function updateFormInputs(checkbox) {
+        if (checkbox.checked) {
+            appendInput(deleteBulkForm, 'selected_ids[]', checkbox.value);
+        } else {
+            removeInput(deleteBulkForm, 'selected_ids[]', checkbox.value);
+        }
     }
+
+    function appendInput(form, name, value) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value;
+        form.appendChild(input);
+    }
+
+    function removeInput(form, name, value) {
+        const inputToRemove = form.querySelector(`input[name="${name}"][value="${value}"]`);
+        if (inputToRemove) {
+            form.removeChild(inputToRemove);
+        }
+    }
+
+    deleteBulkForm.addEventListener('submit', function(event) {
+        individualCheckboxes.forEach(checkbox => {
+            if (!checkbox.checked) {
+                removeInput(deleteBulkForm, 'selected_ids[]', checkbox.value);
+            }
+        });
+    });
 </script>

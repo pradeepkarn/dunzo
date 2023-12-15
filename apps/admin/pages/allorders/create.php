@@ -15,7 +15,7 @@ $uri =  explode("/", REQUEST_URI);
                             <h5 class="card-title">Import Orders</h5>
                         </div>
                         <div class="col text-end">
-                            <a class="btn btn-dark" href="<?php echo BASEURI.route('allOrdersList'); ?>">Got to all orders</a>
+                            <a class="btn btn-dark" href="<?php echo BASEURI.route('allOrdersList',['status'=>0]); ?>">Got to orders</a>
                         </div>
                     </div>
                     <div class="row">
