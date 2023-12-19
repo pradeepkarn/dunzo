@@ -21,18 +21,41 @@ $req = $context->req;
 
                     </div>
                     <div class="row">
+                        <div class="col-md-12">
+                            <h4>Order Item</h4>
+                            <input type="text" name="order_item" class="form-control my-3" placeholder="Order Item Name">
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Created At</h4>
+                            <input type="datetime-local" name="created_at" class="form-control my-3" placeholder="Order datetime">
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Quantity</h4>
+                            <input id="qty" type="number" scope="any" name="quantity" class="form-control my-3" placeholder="Quantity in numeric value">
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Amount</h4>
+                            <input id="amt" type="number" scope="any" name="amount" class="form-control my-3" placeholder="Final amount (quantity X price)">
+                        </div>
+                        <div class="col-md-4">
+                            <h4>Order Type</h4>
+                            <select id="ot" name="order_type" class="form-select my-3">
+                                <option value="0">COD</option>
+                                <option value="1">Prepaid</option>
+                            </select>
+                        </div>
                         <div class="col-md-8">
                             <h4>Email</h4>
-                            <input readonly type="email" name="email" class="form-control my-3" placeholder="Eemail">
+                            <input type="email" name="email" class="form-control my-3" placeholder="Email">
                         </div>
 
                         <div class="col-md-4">
                             <h4>Mobile</h4>
-                            <input id="mobile" type="number" name="mobile" class="form-control my-3" placeholder="mobile">
+                            <input id="mobile" type="number" name="phone" class="form-control my-3" placeholder="phone">
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-8">
                             <h4>Name</h4>
-                            <input type="text" name="name" class="form-control my-3" placeholder="First name">
+                            <input type="text" name="name" class="form-control my-3" placeholder="Full name">
                         </div>
 
                     </div>

@@ -27,7 +27,7 @@ class Orders_ctrl
     public function create_order_manually($req = null)
     {
         if (isset($_POST['action'], $_FILES)) {
-            $this->update_order($req = new stdClass);
+            $this->add_manual_order($req = new stdClass);
             exit;
         }
         $req = obj($req);
@@ -312,6 +312,11 @@ class Orders_ctrl
         $req = (object) $_POST;
         $rules = [
             'email' => 'required|email',
+            'name' => 'required|string',
+            'phone' => 'required|numeric',
+            'order_item' => 'required|string',
+            'quantity' => 'required|numeric',
+            'amount' => 'required|numeric',
             'created_at' => 'required|datetime',
             'action' => 'required|string',
             'address' => 'required|string',
@@ -333,7 +338,13 @@ class Orders_ctrl
                 try {
                     $params = [
                         ':created_at' => $req->created_at,
+                        ':phone' => $req->phone,
+                        ':order_item' => $req->order_item,
+                        ':quantity' => $req->quantity,
+                        ':amount' => $req->amount,
+                        ':order_type' => $req->order_type?1:0,
                         ':email' => $req->email,
+                        ':name' => $req->name,
                         ':address' => $req->address,
                         ':pickup_address' => $req->pickup_address,
                         ':lat' => $req->lat,
@@ -341,25 +352,25 @@ class Orders_ctrl
                         ':pickup_lat' => $req->pickup_lat,
                         ':pickup_lon' => $req->pickup_lon,
                     ];
-                    $sql = "UPDATE manual_orders SET 
-                    address = :address ,
-                    pickup_address = :pickup_address ,
-                    lat = :lat ,
-                    lon = :lon ,
-                    pickup_lat = :pickup_lat ,
-                    pickup_lon = :pickup_lon 
-                    WHERE id = :id";
+                    
+                    $sql = "INSERT INTO manual_orders 
+                            (created_at, phone, order_item, quantity, amount, order_type, email, name, address, pickup_address, lat, lon, pickup_lat, pickup_lon)
+                            VALUES 
+                            (:created_at, :phone, :order_item, :quantity, :amount, :order_type, :email, :name, :address, :pickup_address, :lat, :lon, :pickup_lat, :pickup_lon)";                    
+                
                     $stmt = $db->pdo->prepare($sql);
+                
                     if ($stmt->execute($params)) {
-                        msg_set("data updated");
+                        msg_set("data inserted");
                     } else {
-                        msg_set("data not updated");
+                        msg_set("data not inserted");
                     }
                 } catch (PDOException $e) {
                     msg_set("Database import error");
                 }
+                
             } else {
-                msg_set("Object not found in database");
+                msg_set("This order is already in database");
             }
             echo js_alert(msg_ssn(return: true));
         }
@@ -391,6 +402,7 @@ class Orders_ctrl
                     $params = [
                         ':id' => $req->id,
                         ':address' => $req->address,
+                        ':name' => $req->name??null,
                         ':pickup_address' => $req->pickup_address,
                         ':lat' => $req->lat,
                         ':lon' => $req->lon,
@@ -399,6 +411,7 @@ class Orders_ctrl
                     ];
                     $sql = "UPDATE manual_orders SET 
                     address = :address ,
+                    name = :name ,
                     pickup_address = :pickup_address ,
                     lat = :lat ,
                     lon = :lon ,
