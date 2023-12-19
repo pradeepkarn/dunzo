@@ -388,7 +388,64 @@ class Orders_v2_api
             }
 
             try {
-                $dt = $this->order_list_by_driver($driver_id = $user['id'], "0,1");
+                $dt = $this->order_list_by_driver($driver_id = $user['id'], "1");
+                msg_set(count($dt) ? "Orders found" : "Orders not found");
+                $api['success'] = count($dt) ? true : false;
+                $api['data'] = count($dt) ? $dt[0] : null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            } catch (PDOException $th) {
+                // echo $th;
+                msg_set("Unable to fetch");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+        } else {
+            msg_set("User not found, invalid token");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+    }
+    function assigned_orders($req = null)
+    {
+        header('Content-Type: application/json');
+        $req = obj($req);
+        $data  = json_decode(file_get_contents('php://input'));
+
+        $rules = [
+            'token' => 'required|string'
+        ];
+
+        $pass = validateData(data: arr($data), rules: $rules);
+        if (!$pass) {
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
+        $user = false;
+        $user = (new Users_api)->get_user_by_token($data->token);
+        if ($user) {
+            if ($user['user_group'] != 'driver') {
+                $ok = false;
+                msg_set("Invalid login portal");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
+
+            try {
+                $dt = $this->order_list_by_driver($driver_id = $user['id'], "0");
                 msg_set(count($dt) ? "Orders found" : "Orders not found");
                 $api['success'] = count($dt) ? true : false;
                 $api['data'] = count($dt) ? $dt : null;
