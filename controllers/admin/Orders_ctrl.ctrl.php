@@ -391,12 +391,10 @@ class Orders_ctrl
                             $stmt = $db->pdo->prepare($sql);
                             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                                 $reply = $stmt->execute($params);
-                                if ($reply) {
-                                    $count += 1;
-                                }
                             }else{
                                 msg_set("Invalid email $row");
                             }
+                            $count += 1;
                         }
                     } catch (PDOException $e) {
                         msg_set("Database import error");
