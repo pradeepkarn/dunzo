@@ -22,6 +22,7 @@ $api_routes = [
     "/api/v2/orders/driver/accept" => 'Orders_v2_api@accept_order@name.acceptOrderApiV2',
     "/api/v2/orders/driver/history" => 'Orders_v2_api@order_history@name.orderHistoryApiV2',
     "/api/v2/orders/driver/assigned" => 'Orders_v2_api@assigned_orders@name.orderAssignedApiV2',
+    "/api/v2/orders/driver/picked-orders" => 'Orders_v2_api@picked_orders@name.orderPickedApiV2',
     "/api/v2/orders/driver/running" => 'Orders_v2_api@running_orders@name.orderRunningApiV2',
     "/api/v2/orders/driver/status-change/{delivery_status}" => 'Orders_v2_api@status_update_order@name.statustOrderApiV2',
 
