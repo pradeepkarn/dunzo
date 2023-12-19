@@ -69,7 +69,8 @@ class Fuels_api
             $d['created_at'] = strtotime($d['created_at']);
             if (strval($d['balance'])=="1") {
                 $arr['net_volume'] += floatval($d['volume']);
-            }else if (strval($d['balance'])=="0"){
+            }
+            if (strval($d['balance'])=="0"){
                 $arr['net_volume'] -= floatval($d['volume']);
             }
             
