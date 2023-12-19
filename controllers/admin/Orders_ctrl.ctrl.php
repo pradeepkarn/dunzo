@@ -383,7 +383,7 @@ class Orders_ctrl
                         ];
                     } else {
                         msg_set("Duplicate entry found in the row $row");
-                        $count = -1;
+                        // $count = -2;
                     }
                     try {
                         if (isset($params)) {
