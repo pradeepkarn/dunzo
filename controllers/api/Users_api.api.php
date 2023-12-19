@@ -64,14 +64,14 @@ class Users_api
             $user = $this->db->findOne($arr);
             $arr = null;
         }
-
-        // if (!$user) {
-        //     $arr['mobile'] = $data->credit;
-        //     $arr['password'] = md5($data->password);
-        //     $user = $this->db->findOne($arr);
-        //     $arr = null;
-        // }
-
+        if ($user['is_active'] == 0) {
+            msg_set("Your account is inactive");
+            $api['success'] = false;
+            $api['data'] = null;
+            $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+            echo json_encode($api);
+            exit;
+        }
         if ($user) {
             if ($user['user_group'] != $req->ug) {
                 $ok = false;
@@ -156,6 +156,14 @@ class Users_api
         $user = $this->get_user_by_token($data->token);
 
         if ($user) {
+            if ($user['is_active'] == 0) {
+                msg_set("Your account is inactive");
+                $api['success'] = false;
+                $api['data'] = null;
+                $api['msg'] = msg_ssn(return: true, lnbrk: ", ");
+                echo json_encode($api);
+                exit;
+            }
             if ($user['user_group'] != $req->ug) {
                 $ok = false;
                 msg_set("Invalid login portal");
@@ -438,7 +446,7 @@ class Users_api
         header('Content-Type: application/json');
         $ok = true;
         $req = obj($req);
-        $data  = json_decode(file_get_contents("php://input"),true);
+        $data  = json_decode(file_get_contents("php://input"), true);
         if (isset($req->ug)) {
             if (!in_array($req->ug, USER_GROUP_LIST)) {
                 $ok = false;
@@ -489,7 +497,7 @@ class Users_api
                 exit;
             } else {
                 try {
-                    $randpass = random_int(100000,999999);
+                    $randpass = random_int(100000, 999999);
                     $mail = php_mailer(new PHPMailer());
                     $mail->setFrom(email, SITE_NAME . " Temporary Password");
                     $mail->isHTML(true);
