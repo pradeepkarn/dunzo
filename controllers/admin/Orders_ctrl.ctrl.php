@@ -394,8 +394,8 @@ class Orders_ctrl
                             }else{
                                 msg_set("Invalid email $row");
                             }
-                            $count += 1;
                         }
+                        $count += 1;
                     } catch (PDOException $e) {
                         msg_set("Database import error");
                     }
