@@ -705,6 +705,7 @@ class Users_api
                     'mobile' => $u->mobile,
                     'is_online' => $u->is_online,
                     'token' => $u->app_login_token,
+                    'is_active' => $u->is_active
                 );
             }
         }
@@ -728,6 +729,7 @@ class Users_api
                     'mobile' => $u->mobile,
                     'is_online' => $u->is_online == 1 ? true : false,
                     'token' => $u->app_login_token,
+                    'is_active' => $u->is_active
                 );
             }
         }
