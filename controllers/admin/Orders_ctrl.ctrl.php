@@ -24,6 +24,24 @@ class Orders_ctrl
         );
         $this->render_main($context);
     }
+    public function create_order_manually($req = null)
+    {
+        if (isset($_POST['action'], $_FILES)) {
+            $this->update_order($req = new stdClass);
+            exit;
+        }
+        $req = obj($req);
+        // $order = $this->db->showOne("select * from manual_orders where id = $req->id");
+        $context = (object) array(
+            'page' => 'allorders/create-manually.php',
+            'data' => (object) array(
+                'req' => obj($req),
+                'is_active' => true,
+                // 'order_detail' => $order,
+            )
+        );
+        $this->render_main($context);
+    }
     public function edit_order($req = null)
     {
         if (isset($_POST['action'], $_FILES)) {
@@ -102,6 +120,72 @@ class Orders_ctrl
         );
         $this->render_main($context);
     }
+    public function assigned_order_list($req = null)
+    {
+        $req = obj($req);
+        $current_page = 0;
+        $data_limit = DB_ROW_LIMIT;
+        $page_limit = "0,$data_limit";
+        $cp = 0;
+        if (isset($req->page) && intval($req->page)) {
+            $cp = $req->page;
+            $current_page = (abs($req->page) - 1) * $data_limit;
+            $page_limit = "$current_page,$data_limit";
+        }
+        $res =  $this->new_assigned_order_list(ord: "DESC", limit: $page_limit, active: 1, is_assigned:$req->is_assigned);
+        if ($res) {
+            $orders_list = [];
+            foreach ($res as $d) {
+                // myprint($d);
+                $apidata = obj($d); // true parameter for associative array
+                // $user_to_driver = $apidata->user_to_rest*1000 + $driver_to_rest;
+                $dat = array(
+                    'id' => $apidata->id,
+                    'orderid' => $apidata->id,
+                    'buyer' => $apidata->name,
+                    'buyer_name' => $apidata->name,
+                    "buyer_id" => $apidata->email,
+                    "buyer_lat" => $apidata->lat,
+                    "buyer_lon" => $apidata->lon,
+                    "pickup_lat" => $apidata->pickup_lat,
+                    "pickup_lon" => $apidata->pickup_lon
+                );
+                $d['api_data'] = $dat;
+                $orders_list[] = $d;
+            }
+        } else {
+            $orders_list = [];
+        }
+        // myprint($orders_list);
+
+        $tu = $this->assigned_order_list_count($active = 1, $is_assigned = $req->is_assigned)['total_orders'] ?? 0;
+        if ($tu %  $data_limit == 0) {
+            $tu = $tu / $data_limit;
+        } else {
+            $tu = floor($tu / $data_limit) + 1;
+        }
+        $context = (object) array(
+            'page' => 'allorders/list.php',
+            'data' => (object) array(
+                'req' => obj($req),
+                'orders_list' => $orders_list,
+                'total_orders' => $tu,
+                'current_page' => $cp,
+                'is_active' => true
+            )
+        );
+        $this->render_main($context);
+    }
+    function new_assigned_order_list($ord = "DESC", $limit = 5, $active = 1, $is_assigned = 1)
+    {
+        $db = new Dbobjects;
+        // $db->tableName = "manual_orders";
+        if ($is_assigned == 1) {
+            return $db->show("select * from manual_orders where is_active='$active' and driver_id !='0' and delivery_status=0 order by id $ord limit $limit");
+        } else {
+            return $db->show("select * from manual_orders where is_active='$active' and driver_id ='0' and delivery_status=0 order by id $ord limit $limit");
+        }
+    }
     function order_list_by_delv_status($ord = "DESC", $limit = 5, $active = 1, $delv_sts = 0)
     {
         $db = new Dbobjects;
@@ -113,6 +197,16 @@ class Orders_ctrl
         $db = new Dbobjects;
         $db->tableName = "manual_orders";
         return $db->filter(assoc_arr: ['is_active' => $active], ord: $ord, limit: $limit);
+    }
+    function assigned_order_list_count($active = 1, $is_assigned = 1)
+    {
+        $db = new Dbobjects;
+        $db->tableName = "manual_orders";
+        if ($is_assigned == 1) {
+            return $db->showOne("select COUNT(id) as total_orders from manual_orders where is_active=$active and delivery_status='0' and driver_id!='0'");
+        } else {
+            return $db->showOne("select COUNT(id) as total_orders from manual_orders where is_active=$active and delivery_status='0' and driver_id='0'");
+        }
     }
     function order_list_count($active = 1, $delv_sts = null)
     {
@@ -210,6 +304,64 @@ class Orders_ctrl
                 msg_set("$count data imported");
                 echo msg_ssn();
             }
+        }
+        exit;
+    }
+    function add_manual_order($req = null)
+    {
+        $req = (object) $_POST;
+        $rules = [
+            'email' => 'required|email',
+            'created_at' => 'required|datetime',
+            'action' => 'required|string',
+            'address' => 'required|string',
+            'pickup_address' => 'required|string',
+            'lat' => 'required|string',
+            'lon' => 'required|string',
+            'pickup_lat' => 'required|string',
+            'pickup_lon' => 'required|string',
+        ];
+        $pass = validateData(data: arr($req), rules: $rules);
+        if (!$pass) {
+            echo js_alert(msg_ssn(return: true));
+            exit;
+        } else {
+            $db = $this->db;
+            $old_sql = "select id from manual_orders where created_at='$req->created_at' and email='$req->email';";
+            $exists = $db->showOne($old_sql);
+            if (!$exists) {
+                try {
+                    $params = [
+                        ':created_at' => $req->created_at,
+                        ':email' => $req->email,
+                        ':address' => $req->address,
+                        ':pickup_address' => $req->pickup_address,
+                        ':lat' => $req->lat,
+                        ':lon' => $req->lon,
+                        ':pickup_lat' => $req->pickup_lat,
+                        ':pickup_lon' => $req->pickup_lon,
+                    ];
+                    $sql = "UPDATE manual_orders SET 
+                    address = :address ,
+                    pickup_address = :pickup_address ,
+                    lat = :lat ,
+                    lon = :lon ,
+                    pickup_lat = :pickup_lat ,
+                    pickup_lon = :pickup_lon 
+                    WHERE id = :id";
+                    $stmt = $db->pdo->prepare($sql);
+                    if ($stmt->execute($params)) {
+                        msg_set("data updated");
+                    } else {
+                        msg_set("data not updated");
+                    }
+                } catch (PDOException $e) {
+                    msg_set("Database import error");
+                }
+            } else {
+                msg_set("Object not found in database");
+            }
+            echo js_alert(msg_ssn(return: true));
         }
         exit;
     }
