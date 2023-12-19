@@ -165,7 +165,7 @@ class Orders_ctrl
             $tu = floor($tu / $data_limit) + 1;
         }
         $context = (object) array(
-            'page' => 'allorders/list.php',
+            'page' => 'allorders/new-list.php',
             'data' => (object) array(
                 'req' => obj($req),
                 'orders_list' => $orders_list,
