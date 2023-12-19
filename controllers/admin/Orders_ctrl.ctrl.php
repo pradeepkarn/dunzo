@@ -103,6 +103,10 @@ class Orders_ctrl
         // myprint($orders_list);
 
         $tu = $this->order_list_count($active = 1, $req->status ?? null)['total_orders'] ?? 0;
+        if (isset($req->search)) {
+            $res = $this->order_search_list(keyword : $req->search, ord: "DESC", limit: $page_limit, active: 1, delv_sts: $req->status);
+            $orders_list = $this->format_orders($res);
+        }
         if ($tu %  $data_limit == 0) {
             $tu = $tu / $data_limit;
         } else {
@@ -132,7 +136,7 @@ class Orders_ctrl
             $current_page = (abs($req->page) - 1) * $data_limit;
             $page_limit = "$current_page,$data_limit";
         }
-        $res =  $this->new_assigned_order_list(ord: "DESC", limit: $page_limit, active: 1, is_assigned:$req->is_assigned);
+        $res =  $this->new_assigned_order_list(ord: "DESC", limit: $page_limit, active: 1, is_assigned: $req->is_assigned);
         if ($res) {
             $orders_list = [];
             foreach ($res as $d) {
@@ -159,6 +163,11 @@ class Orders_ctrl
         // myprint($orders_list);
 
         $tu = $this->assigned_order_list_count($active = 1, $is_assigned = $req->is_assigned)['total_orders'] ?? 0;
+        if (isset($req->search)) {
+            $res = $this->new_assigned_order_search_list(keyword : $req->search, ord: "DESC", limit: $page_limit, active: 1, is_assigned: $req->is_assigned);
+            $orders_list = $this->format_orders($res);
+            $tu = count($orders_list);
+        }
         if ($tu %  $data_limit == 0) {
             $tu = $tu / $data_limit;
         } else {
@@ -176,6 +185,28 @@ class Orders_ctrl
         );
         $this->render_main($context);
     }
+    function format_orders($res){
+        $orders_list = [];
+        foreach ($res as $d) {
+            // myprint($d);
+            $apidata = obj($d); // true parameter for associative array
+            // $user_to_driver = $apidata->user_to_rest*1000 + $driver_to_rest;
+            $dat = array(
+                'id' => $apidata->id,
+                'orderid' => $apidata->id,
+                'buyer' => $apidata->name,
+                'buyer_name' => $apidata->name,
+                "buyer_id" => $apidata->email,
+                "buyer_lat" => $apidata->lat,
+                "buyer_lon" => $apidata->lon,
+                "pickup_lat" => $apidata->pickup_lat,
+                "pickup_lon" => $apidata->pickup_lon
+            );
+            $d['api_data'] = $dat;
+            $orders_list[] = $d;
+        }
+        return $orders_list;
+    }
     function new_assigned_order_list($ord = "DESC", $limit = 5, $active = 1, $is_assigned = 1)
     {
         $db = new Dbobjects;
@@ -186,6 +217,67 @@ class Orders_ctrl
             return $db->show("select * from manual_orders where is_active='$active' and driver_id ='0' and delivery_status=0 order by id $ord limit $limit");
         }
     }
+    function order_search_list($keyword, $ord = "DESC", $limit = 5, $active = 1, $delv_sts = 1)
+    {
+        $db = new Dbobjects;
+
+        $condition = "is_active = '$active' AND delivery_status = '$delv_sts'";
+        $searchColumns = [
+            'id',
+            'created_at',
+            'phone',
+            'order_item',
+            'quantity',
+            'amount',
+            'email',
+            'name',
+            'address',
+            'pickup_address'
+        ];
+
+        $searchConditions = [];
+        foreach ($searchColumns as $column) {
+            $searchConditions[] = "$column LIKE '%$keyword%'";
+        }
+
+        $searchCondition = implode(" OR ", $searchConditions);
+
+        $sql = "SELECT * FROM manual_orders WHERE $condition AND ($searchCondition) ORDER BY id $ord LIMIT $limit";
+
+        return $db->show($sql);
+    }
+    function new_assigned_order_search_list($keyword, $ord = "DESC", $limit = 5, $active = 1, $is_assigned = 1)
+    {
+        $db = new Dbobjects;
+
+        $condition = "is_active = '$active' AND delivery_status = 0 AND ";
+        $condition .= ($is_assigned == 1) ? "driver_id != '0'" : "driver_id = '0'";
+
+        $searchColumns = [
+            'id',
+            'created_at',
+            'phone',
+            'order_item',
+            'quantity',
+            'amount',
+            'email',
+            'name',
+            'address',
+            'pickup_address'
+        ];
+
+        $searchConditions = [];
+        foreach ($searchColumns as $column) {
+            $searchConditions[] = "$column LIKE '%$keyword%'";
+        }
+
+        $searchCondition = implode(" OR ", $searchConditions);
+
+        $sql = "SELECT * FROM manual_orders WHERE $condition AND ($searchCondition) ORDER BY id $ord LIMIT $limit";
+
+        return $db->show($sql);
+    }
+
     function order_list_by_delv_status($ord = "DESC", $limit = 5, $active = 1, $delv_sts = 0)
     {
         $db = new Dbobjects;
@@ -342,7 +434,7 @@ class Orders_ctrl
                         ':order_item' => $req->order_item,
                         ':quantity' => $req->quantity,
                         ':amount' => $req->amount,
-                        ':order_type' => $req->order_type?1:0,
+                        ':order_type' => $req->order_type ? 1 : 0,
                         ':email' => $req->email,
                         ':name' => $req->name,
                         ':address' => $req->address,
@@ -352,14 +444,14 @@ class Orders_ctrl
                         ':pickup_lat' => $req->pickup_lat,
                         ':pickup_lon' => $req->pickup_lon,
                     ];
-                    
+
                     $sql = "INSERT INTO manual_orders 
                             (created_at, phone, order_item, quantity, amount, order_type, email, name, address, pickup_address, lat, lon, pickup_lat, pickup_lon)
                             VALUES 
-                            (:created_at, :phone, :order_item, :quantity, :amount, :order_type, :email, :name, :address, :pickup_address, :lat, :lon, :pickup_lat, :pickup_lon)";                    
-                
+                            (:created_at, :phone, :order_item, :quantity, :amount, :order_type, :email, :name, :address, :pickup_address, :lat, :lon, :pickup_lat, :pickup_lon)";
+
                     $stmt = $db->pdo->prepare($sql);
-                
+
                     if ($stmt->execute($params)) {
                         msg_set("data inserted");
                     } else {
@@ -368,7 +460,6 @@ class Orders_ctrl
                 } catch (PDOException $e) {
                     msg_set("Database import error");
                 }
-                
             } else {
                 msg_set("This order is already in database");
             }
@@ -402,7 +493,7 @@ class Orders_ctrl
                     $params = [
                         ':id' => $req->id,
                         ':address' => $req->address,
-                        ':name' => $req->name??null,
+                        ':name' => $req->name ?? null,
                         ':pickup_address' => $req->pickup_address,
                         ':lat' => $req->lat,
                         ':lon' => $req->lon,

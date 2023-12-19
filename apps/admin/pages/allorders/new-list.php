@@ -18,7 +18,19 @@ $req = $context->req;
 
             <div class="card">
                 <div class="card-body mt-3">
-
+                    <form action="" class="p-1" style="background-color: lightgray;">
+                        <div class="row my-3">
+                            <div class="col">
+                                <input value="<?php echo isset($_GET['search']) ? $_GET['search'] : null; ?>" type="search" class="form-control" name="search" placeholder="Search...">
+                            </div>
+                            <div class="col-2 text-end">
+                                <div class="d-grid">
+                                <button type="submit" class="btn btn-primary ">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
                     <form action="<?php echo BASEURI . route('ordersDeleteBulkAJax'); ?>" id="delete-bulk-form">
                         <div id="deletebulkres"></div>
                         <div class="row">
