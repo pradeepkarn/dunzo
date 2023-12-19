@@ -104,7 +104,7 @@ class Orders_ctrl
 
         $tu = $this->order_list_count($active = 1, $req->status ?? null)['total_orders'] ?? 0;
         if (isset($req->search)) {
-            $res = $this->order_search_list(keyword : $req->search, ord: "DESC", limit: $page_limit, active: 1, delv_sts: $req->status);
+            $res = $this->order_search_list(keyword: $req->search, ord: "DESC", limit: $page_limit, active: 1, delv_sts: $req->status);
             $orders_list = $this->format_orders($res);
         }
         if ($tu %  $data_limit == 0) {
@@ -164,7 +164,7 @@ class Orders_ctrl
 
         $tu = $this->assigned_order_list_count($active = 1, $is_assigned = $req->is_assigned)['total_orders'] ?? 0;
         if (isset($req->search)) {
-            $res = $this->new_assigned_order_search_list(keyword : $req->search, ord: "DESC", limit: $page_limit, active: 1, is_assigned: $req->is_assigned);
+            $res = $this->new_assigned_order_search_list(keyword: $req->search, ord: "DESC", limit: $page_limit, active: 1, is_assigned: $req->is_assigned);
             $orders_list = $this->format_orders($res);
             $tu = count($orders_list);
         }
@@ -185,7 +185,8 @@ class Orders_ctrl
         );
         $this->render_main($context);
     }
-    function format_orders($res){
+    function format_orders($res)
+    {
         $orders_list = [];
         foreach ($res as $d) {
             // myprint($d);
@@ -333,9 +334,9 @@ class Orders_ctrl
 
                 // Prepare the SQL statement
                 $sql = "INSERT INTO manual_orders 
-                (created_at, name, email, phone, address, lat, lon, pickup_address, pickup_lat, pickup_lon, order_item, quantity, amount, order_type) 
+                (created_at, name, email, phone, address, lat, lon, pickup_address, pickup_lat, pickup_lon, order_item, quantity, amount, order_type, driver_id) 
                 VALUES 
-                (:created_at, :name, :email, :phone, :address, :lat, :lon, :pickup_address, :pickup_lat, :pickup_lon, :order_item, :quantity, :amount, :order_type)";
+                (:created_at, :name, :email, :phone, :address, :lat, :lon, :pickup_address, :pickup_lat, :pickup_lon, :order_item, :quantity, :amount, :order_type, :driver_id)";
                 // Loop through each row and insert data into the database
                 $count = 0;
                 for ($row = 2; $row <= $sheet->getHighestRow(); $row++) {
@@ -350,6 +351,7 @@ class Orders_ctrl
                     $qty = $sheet->getCell('H' . $row)->getCalculatedValue();
                     $amt = $sheet->getCell('I' . $row)->getCalculatedValue();
                     $order_type = $sheet->getCell('J' . $row)->getCalculatedValue();
+                    $driver_id = $sheet->getCell('K' . $row)->getCalculatedValue();
 
                     $created_at = $this->convertToValidDateFormat($created_at);
                     $cord = $this->separateCoordinates($coordinates = $loc);
@@ -377,6 +379,7 @@ class Orders_ctrl
                             ':quantity' => $qty,
                             ':amount' => floatval($amt),
                             ':order_type' => intval($order_type) == 1 ? 1 : 0,
+                            ':driver_id' => intval($driver_id) ? intval($driver_id) : 0,
                         ];
                     } else {
                         msg_set("Duplicate entry found in the row $row");
@@ -384,9 +387,15 @@ class Orders_ctrl
                     }
                     try {
                         if (isset($params)) {
+                            $reply = false;
                             $stmt = $db->pdo->prepare($sql);
-                            if ($stmt->execute($params)) {
-                                $count += 1;
+                            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                                $reply = $stmt->execute($params);
+                                if ($reply) {
+                                    $count += 1;
+                                }
+                            }else{
+                                msg_set("Invalid email $row");
                             }
                         }
                     } catch (PDOException $e) {
