@@ -383,11 +383,12 @@ class Orders_ctrl
                         ];
                     } else {
                         msg_set("Duplicate entry found in the row $row");
-                        $count = -2;
+                        $count = -1;
                     }
                     try {
                         if (isset($params)) {
                             $reply = false;
+                            $count += 1;
                             $stmt = $db->pdo->prepare($sql);
                             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                                 $reply = $stmt->execute($params);
@@ -395,7 +396,6 @@ class Orders_ctrl
                                 msg_set("Invalid email $row");
                             }
                         }
-                        $count += 1;
                     } catch (PDOException $e) {
                         msg_set("Database import error");
                     }
