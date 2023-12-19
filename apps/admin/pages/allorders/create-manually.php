@@ -41,7 +41,7 @@ $req = $context->req;
                             <h4>Order Type</h4>
                             <select id="ot" name="order_type" class="form-select my-3">
                                 <option value="0">COD</option>
-                                <option value="1">Prepaid</option>
+                                <option value="1">PREPAID</option>
                             </select>
                         </div>
                         <div class="col-md-8">
