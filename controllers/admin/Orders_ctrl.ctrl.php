@@ -598,7 +598,8 @@ class Orders_ctrl
         if ($driver_id != "0") {
             $ruuning = $this->db->showOne("select * from manual_orders where driver_id = '{$driver_id}' and delivery_status IN (0,1)");
             if ($ruuning) {
-                msg_set("Driver already assigned");
+                // msg_set("Driver already assigned");
+                $this->db->insertData['driver_id'] = $driver_id;
             } else {
                 $this->db->insertData['driver_id'] = $driver_id;
             }
