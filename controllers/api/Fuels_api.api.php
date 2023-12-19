@@ -67,13 +67,12 @@ class Fuels_api
         foreach ($data as $key => $d) {
             $d['balance'] = strval($d['balance'])=="1"?"added":"deducted";
             $d['created_at'] = strtotime($d['created_at']);
-            if (strval($d['balance'])=="1") {
+            if (strval($d['balance'])=="added") {
                 $arr['net_volume'] += floatval($d['volume']);
             }
-            if (strval($d['balance'])=="0"){
+            if (strval($d['balance'])=="deducted"){
                 $arr['net_volume'] -= floatval($d['volume']);
             }
-            
             $arr['fuels'][] = $d;
         }
         return $arr;
