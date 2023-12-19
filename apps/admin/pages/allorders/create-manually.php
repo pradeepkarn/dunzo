@@ -69,7 +69,7 @@ $req = $context->req;
                 <div class="col-md-4">
                     <div class="row">
                         <div class="col-md-12 text-end my-3">
-                        <a class="btn btn-dark" href="/<?php echo home . route('allOrdersAssignedList',['is_assgined'=>'0']); ?>">Back</a>
+                        <a class="btn btn-dark" href="/<?php echo home . route('allOrdersAssignedList',['is_assigned'=>'0']); ?>">Back</a>
                         </div>
 
                         <div class="col-md-12">
