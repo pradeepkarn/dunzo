@@ -169,9 +169,9 @@ $req = $context->req;
                     $tu = $tp; // Total pages
                     $current_page = $cp; // Assuming first page is the current page
                     if ($active == true) {
-                        $link =  route('allOrdersAssignedList', ['is_assigned' => $req->is_assigned ?? 0]);
+                        $link =  route('allOrdersList', ['status' => $req->status ?? 0]);
                     } else {
-                        $link =  route('allOrdersAssignedList', ['is_assigned' => $req->is_assigned ?? 0]);
+                        $link =  route('allOrdersList', ['status' => $req->status ?? 0]);
                     }
                     // Calculate start and end page numbers to display
                     $start_page = max(1, $current_page - 2);
