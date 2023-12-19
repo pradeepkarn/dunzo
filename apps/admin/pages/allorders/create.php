@@ -42,3 +42,37 @@ $uri =  explode("/", REQUEST_URI);
 <!-- Helpers -->
 
 <?php import("apps/admin/helpers/js/user-search.js.php"); ?>
+
+
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the value of the 'sponserid' cookie
+        var sponserid = getCookie('sponserid');
+
+        // Set a default value if 'sponserid' is not found in the cookie
+        if (!sponserid) {
+            sponserid = 'pool'; // Replace 'defaultSponserid' with your desired default value
+        }
+
+        // Find all elements with class '.maxbutton-1'
+        var afl1 = document.querySelector('#afl-1');
+        var afl2 = document.querySelector('#afl-2');
+        var afl3 = document.querySelector('#afl-3');
+
+        // Set the href attribute based on the 'sponserid' value for each element
+        if(afl1) {
+            afl1.href = 'https://member.viamo.world/signup/?sponserid=' + encodeURIComponent(sponserid);
+        }
+        if(afl2) {
+            afl1.href = 'https://member.viamo.world/signup/?sponserid=' + encodeURIComponent(sponserid);
+        }
+        if(afl3) {
+            afl1.href = 'https://member.viamo.world/signup/?sponserid=' + encodeURIComponent(sponserid);
+        }
+
+        secondAnchors.forEach(function(anchor) {
+            afl1.href = 'https://member.viamo.world/signup/?sponserid=' + encodeURIComponent(sponserid);
+        });
+    });
+</script>

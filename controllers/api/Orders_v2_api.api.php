@@ -154,6 +154,7 @@ class Orders_v2_api
         $data = array(
             'id' => $apidata->id,
             'orderid' => $apidata->id,
+            "delivery_status" => $apidata->delivery_status,
             'add_on_price' => $apidata->add_on_price,
             'is_prepaid' => strtolower($apidata->order_type) == '0' ? false : true,
             'qty' => $apidata->quantity,
@@ -169,7 +170,6 @@ class Orders_v2_api
             "pickup_address" => $apidata->pickup_address,
             "pickup_lat" => $apidata->pickup_lat,
             "pickup_lon" => $apidata->pickup_lon,
-            // "pickup_to_drop" => $meter,
             "distance_unit" => 'm'
         );
         return $data;
@@ -183,6 +183,7 @@ class Orders_v2_api
         $data = array(
             'id' => $apidata->id,
             'orderid' => $apidata->id,
+            "delivery_status" => $apidata->delivery_status,
             'add_on_price' => $apidata->add_on_price,
             'is_prepaid' => strtolower($apidata->order_type) == '0' ? false : true,
             'qty' => $apidata->quantity,
