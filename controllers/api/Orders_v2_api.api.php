@@ -179,7 +179,7 @@ class Orders_v2_api
         $d['id'] = intval($d['id']); // true parameter for associative array
         $d['delivery_status_text'] = getStatusText($d['delivery_status']);
         $apidata = obj($d);
-        $meter = 0; //calculateDistance($startLat=$apidata->lat,$startLon=$apidata->lon,$endLat=$apidata->pickup_lat,$endLon=$apidata->pickup_lon);
+        $meter = strval(0); //calculateDistance($startLat=$apidata->lat,$startLon=$apidata->lon,$endLat=$apidata->pickup_lat,$endLon=$apidata->pickup_lon);
         $data = array(
             'id' => $apidata->id,
             'orderid' => $apidata->id,
